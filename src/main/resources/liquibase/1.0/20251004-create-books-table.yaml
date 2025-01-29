@@ -1,0 +1,92 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-books-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: author
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publisher
+                  type: VARCHAR(255)
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: pages
+                  type: INTEGER
+              - column:
+                  name: file_path
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publication_year
+                  type: INTEGER
+              - column:
+                  name: created_at
+                  type: DATE
+
+
+  - changeSet:
+      id: book  set inventory
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: books
+            baseColumnNames: inventory_id
+            constraintName: fk_book_inventory_category
+            referencedTableName: book_inventory
+            referencedColumnNames: id
+
+  - changeSet:
+      id: book  set category
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: books
+            baseColumnNames: category_id
+            constraintName: fk_books_category
+            referencedTableName: categories
+            referencedColumnNames: id

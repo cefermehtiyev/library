@@ -14,6 +14,8 @@ public interface BookService {
 
     BookResponse getBook(String bookCode);
 
+    void processBookReturn(String studentFin,String bookCode);
+
     void borrowBook(String studentFin, String bookCode);
 
     List<BookResponse> getAllBooksByFin(String fin);

@@ -12,6 +12,7 @@ import az.ingress.model.enums.CategoryStatus;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.request.CategoryRequest;
 import az.ingress.model.response.BookResponse;
+import az.ingress.model.response.CategoryResponse;
 import az.ingress.service.abstraction.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,11 @@ public class CategoryServiceHandler implements CategoryService {
         var category = fetchEntityExist(categoryId);
         category.setCategoryStatus(CategoryStatus.DELETED);
         categoryRepository.save(category);
+    }
+
+    @Override
+    public List<CategoryResponse> getAllCategory() {
+        return categoryRepository.findAll().stream().map(CATEGORY_MAPPER::buildCategoryResponse).toList();
     }
 
     @Override

@@ -18,7 +18,6 @@ public class UserResponse {
     private Long id;
     private String name;
     private String email;
-    private String password;
     private UserStatus userStatus;
     private UserRole userRole;
     private LocalDate createdAt;

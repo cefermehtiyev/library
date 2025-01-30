@@ -49,7 +49,7 @@ public class BookServiceHandler implements BookService {
                               @Lazy StudentService studentService,
                               @Lazy BookInventoryService bookInventoryService,
                               @Lazy BookBorrowHistoryService bookBorrowHistoryService
-    ) {
+                              ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
@@ -65,15 +65,15 @@ public class BookServiceHandler implements BookService {
         var filePath = fileService.uploadFile(bookRequest.getFile());
         log.info("Book filePath: {}", filePath);
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, filePath);
-        addBookRelationships(bookRequest, bookEntity);
+        addBookRelationships(bookRequest,bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
         bookRepository.save(bookEntity);
     }
 
 
-    private void addBookRelationships(BookRequest bookRequest, BookEntity bookEntity) {
+    private void addBookRelationships(BookRequest bookRequest,BookEntity bookEntity) {
         authorService.addBookToAuthor(bookEntity);
-        categoryService.addBookToCategory(bookRequest.getCategoryId(), bookEntity);
+        categoryService.addBookToCategory(bookRequest.getCategoryId(),bookEntity);
     }
 
 
@@ -82,6 +82,12 @@ public class BookServiceHandler implements BookService {
         return BOOK_MAPPER.buildBookResponse(fetchEntityExist(bookCode));
     }
 
+    @Override
+    public void processBookReturn(String studentFin, String bookCode) {
+        var student = studentService.getStudentEntityByFin(studentFin);
+        var book = fetchEntityExist(bookCode);
+
+    }
 
     @Override
     @Transactional
@@ -89,7 +95,7 @@ public class BookServiceHandler implements BookService {
         var student = studentService.getStudentEntityByFin(studentFin);
         var book = fetchEntityExist(bookCode);
         student.getBookEntities().add(book);
-        bookBorrowHistoryService.addBookToBorrowHistory(student, book);
+        bookBorrowHistoryService.addBookToBorrowHistory(student,book);
         bookInventoryService.decreaseBookQuantity(book);
     }
 
@@ -101,7 +107,7 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public List<BookResponse> getAllBooksByFin(String fin) {
+    public List<BookResponse> getAllBooksByFin( String fin){
         var student = studentService.getStudentEntityByFin(fin);
         return student.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
     }

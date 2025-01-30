@@ -1,9 +1,7 @@
 package az.ingress.service.concurate;
 
-import az.ingress.dao.entity.EmployeeEntity;
 import az.ingress.dao.entity.UserEntity;
 import az.ingress.dao.repository.EmployeeRepository;
-import az.ingress.mapper.EmployeeMapper;
 import az.ingress.model.request.RegistrationRequest;
 import az.ingress.service.abstraction.EmployeeService;
 import lombok.RequiredArgsConstructor;

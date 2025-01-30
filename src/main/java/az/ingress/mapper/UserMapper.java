@@ -29,7 +29,6 @@ public enum UserMapper {
                 .id(userEntity.getId())
                 .name(userEntity.getUserName())
                 .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
                 .userStatus(userEntity.getUserStatus())
                 .createdAt(userEntity.getCreatedAt())
                 .build();

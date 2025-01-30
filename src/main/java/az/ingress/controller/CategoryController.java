@@ -3,6 +3,7 @@ package az.ingress.controller;
 import az.ingress.model.enums.BookCategory;
 import az.ingress.model.request.CategoryRequest;
 import az.ingress.model.response.BookResponse;
+import az.ingress.model.response.CategoryResponse;
 import az.ingress.service.abstraction.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,11 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public List<BookResponse> getBooksByCategory(@PathVariable Long categoryId){
         return categoryService.getBooksByCategory(categoryId);
+    }
+
+    @GetMapping
+    private List<CategoryResponse> getAllCategories(){
+        return categoryService.getAllCategory();
     }
 
     @DeleteMapping("/{id}")

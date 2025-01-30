@@ -5,7 +5,6 @@ import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.model.enums.InventoryStatus;
 import az.ingress.model.request.BookRequest;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
@@ -54,6 +53,12 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         bookInventoryRepository.save(bookInventory);
     }
 
+    public void increaseReadCount(Long inventoryId) {
+        var bookInventory = fetchEntityExist(inventoryId);
+        BOOK_INVENTORY_MAPPER.increaseReadCount(bookInventory);
+        bookInventoryRepository.save(bookInventory);
+    }
+
     @Override
     public void decreaseBookQuantity(BookEntity bookEntity) {
         var bookInventoryEntity = bookEntity.getBookInventoryEntity();
@@ -71,8 +76,15 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private BookInventoryEntity fetchEntityExist(String title, Integer publicationYear) {
         return bookInventoryRepository.findByTitleAndPublicationYear(title, publicationYear)
                 .orElseThrow(
-                () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
-        );
+                        () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
+                );
+    }
+
+    private BookInventoryEntity fetchEntityExist(Long inventoryid) {
+        return bookInventoryRepository.findById(inventoryid)
+                .orElseThrow(
+                        () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
+                );
     }
 
 

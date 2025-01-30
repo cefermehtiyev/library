@@ -15,6 +15,7 @@ public enum BookInventoryMapper {
                 .availableQuantity(1)
                 .borrowedQuantity(0)
                 .reservedQuantity(1)
+                .readCount(0L)
                 .status(InventoryStatus.LOW_STOCK)
                 .build();
     }
@@ -44,6 +45,10 @@ public enum BookInventoryMapper {
     public void updateInventoryOnReturn (BookInventoryEntity bookInventoryEntity){
         bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() - 1);
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);
+    }
+
+    public void increaseReadCount(BookInventoryEntity bookInventoryEntity){
+        bookInventoryEntity.setReadCount(bookInventoryEntity.getReadCount() + 1);
     }
 
 

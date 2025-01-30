@@ -9,5 +9,7 @@ public interface BookInventoryService {
 
     void updateBookInventoryOnReturn(String title, Integer publicationYear);
 
+    void increaseReadCount(Long inventoryId);
+
     void decreaseBookQuantity(BookEntity bookEntity);
 }

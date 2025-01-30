@@ -99,6 +99,7 @@ public class BookServiceHandler implements BookService {
         student.getBookEntities().add(book);
         bookBorrowHistoryService.addBookToBorrowHistory(student,book);
         bookInventoryService.decreaseBookQuantity(book);
+        bookInventoryService.increaseReadCount(book.getBookInventoryEntity().getId());
     }
 
     @Override

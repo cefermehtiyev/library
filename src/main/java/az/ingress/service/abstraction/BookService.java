@@ -20,6 +20,8 @@ public interface BookService {
 
     List<BookResponse> getAllBooksByFin(String fin);
 
+    void updateBookCategory(Long bookId, Long categoryId);
+
     PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria);
 
     void updateBook(Long id, BookRequest bookRequest);

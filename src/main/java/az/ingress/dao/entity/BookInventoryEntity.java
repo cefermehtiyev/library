@@ -46,6 +46,7 @@ public class BookInventoryEntity {
     private Integer reservedQuantity;
     private Integer borrowedQuantity;
     private Integer availableQuantity;
+    private Long readCount;
     @Enumerated(STRING)
     private InventoryStatus status;
     @UpdateTimestamp

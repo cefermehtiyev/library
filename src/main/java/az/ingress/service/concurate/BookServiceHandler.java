@@ -7,6 +7,7 @@ import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.model.enums.BookCategory;
 import az.ingress.model.enums.BookStatus;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.BookResponse;
@@ -111,6 +112,12 @@ public class BookServiceHandler implements BookService {
     public List<BookResponse> getAllBooksByFin( String fin){
         var student = studentService.getStudentEntityByFin(fin);
         return student.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
+    }
+
+    public void updateBookCategory(Long bookId, Long categoryId){
+        var book = fetchEntityExist(bookId);
+        categoryService.addBookToCategory(categoryId,book);
+        bookRepository.save(book);
     }
 
     @Override

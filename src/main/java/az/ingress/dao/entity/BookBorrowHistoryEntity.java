@@ -28,7 +28,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "book_loan_history")
+@Table(name = "book_borrow_history")
 @Entity
 public class BookBorrowHistoryEntity {
     @Id
@@ -47,7 +47,7 @@ public class BookBorrowHistoryEntity {
     private BorrowStatus status;
 
     @CreationTimestamp
-    private LocalDate borrowDate; // Kitap alındığı tarih
-    private LocalDate returnDate; // Kitap geri verildiği tarih
+    private LocalDate borrowDate;
+    private LocalDate returnDate;
 
 }

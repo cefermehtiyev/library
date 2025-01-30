@@ -6,28 +6,37 @@ import az.ingress.dao.entity.StudentEntity;
 import az.ingress.model.enums.BorrowStatus;
 import az.ingress.model.response.BookBorrowHistoryResponse;
 
+import java.time.LocalDate;
+
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
+import static az.ingress.model.enums.BorrowStatus.DELAYED;
 import static az.ingress.model.enums.BorrowStatus.PENDING;
+import static az.ingress.model.enums.BorrowStatus.RETURNED;
 
 public enum BookBorrowHistoryMapper {
     BOOK_LOAN_HISTORY_MAPPER;
 
-    public BookBorrowHistoryEntity buildBookLoanHistoryEntity(StudentEntity student, BookEntity book){
+    public BookBorrowHistoryEntity buildBookBorrowHistoryEntity(StudentEntity student, BookEntity book){
         return BookBorrowHistoryEntity
                 .builder()
                 .book(book)
                 .student(student)
-                .status(BorrowStatus.DELAYED).build();
+                .status(PENDING).build();
     }
 
-    public BookBorrowHistoryResponse buildBookLoanHistoryResponse(BookBorrowHistoryEntity bookBorrowHistory,BookEntity bookEntity){
+    public BookBorrowHistoryResponse buildBookBorrowHistoryResponse(BookBorrowHistoryEntity bookBorrowHistory, BookEntity bookEntity){
         return BookBorrowHistoryResponse
                 .builder()
                 .bookResponse(BOOK_MAPPER.buildBookResponse(bookEntity))
-                .borrowStatus(PENDING)
+                .borrowStatus(bookBorrowHistory.getStatus())
                 .borrowDate(bookBorrowHistory.getBorrowDate())
                 .returnedDate(bookBorrowHistory.getReturnDate())
                 .build();
 
+    }
+
+    public void updateReturnBookBorrowHistory(BookBorrowHistoryEntity bookBorrowHistory){
+        bookBorrowHistory.setStatus(RETURNED);
+        bookBorrowHistory.setReturnDate(LocalDate.now());
     }
 }

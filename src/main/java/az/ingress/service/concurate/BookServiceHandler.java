@@ -83,10 +83,11 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public void processBookReturn(String studentFin, String bookCode) {
-        var student = studentService.getStudentEntityByFin(studentFin);
+    public void processBookReturn(String fin, String bookCode) {
+        var student = studentService.getStudentEntityByFin(fin);
         var book = fetchEntityExist(bookCode);
-
+        bookInventoryService.updateBookInventoryOnReturn(book.getTitle(),book.getPublicationYear());
+        bookBorrowHistoryService.returnBookHistory(student.getId(),book.getId());
     }
 
     @Override

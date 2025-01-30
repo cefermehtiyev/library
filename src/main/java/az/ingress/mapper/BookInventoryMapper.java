@@ -40,4 +40,11 @@ public enum BookInventoryMapper {
             bookInventoryEntity.setStatus(InventoryStatus.LOW_STOCK);
         }
     }
+
+    public void updateInventoryOnReturn (BookInventoryEntity bookInventoryEntity){
+        bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() - 1);
+        bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);
+    }
+
+
 }

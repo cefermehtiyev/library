@@ -1,6 +1,7 @@
 package az.ingress.service.concurate;
 
 import az.ingress.dao.entity.BookEntity;
+import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
@@ -47,6 +48,13 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
     @Override
+    public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
+        var bookInventory = fetchEntityExist(title, publicationYear);
+        BOOK_INVENTORY_MAPPER.updateInventoryOnReturn(bookInventory);
+        bookInventoryRepository.save(bookInventory);
+    }
+
+    @Override
     public void decreaseBookQuantity(BookEntity bookEntity) {
         var bookInventoryEntity = bookEntity.getBookInventoryEntity();
 
@@ -58,6 +66,13 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
         bookInventoryRepository.save(bookInventoryEntity);
 
+    }
+
+    private BookInventoryEntity fetchEntityExist(String title, Integer publicationYear) {
+        return bookInventoryRepository.findByTitleAndPublicationYear(title, publicationYear)
+                .orElseThrow(
+                () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
+        );
     }
 
 

@@ -54,6 +54,11 @@ public class BookController {
         return fileService.downloadFile(bookCode);
     }
 
+    @PostMapping("/return")
+    public void processBookReturn(@RequestParam String fin,@RequestParam String bookCode){
+        bookService.processBookReturn(fin,bookCode);
+    }
+
 
     @GetMapping("/by-fin")
     public List<BookResponse> getAllBooksByFin(@RequestParam String fin) {

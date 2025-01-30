@@ -22,7 +22,8 @@ public enum ErrorMessage {
     FILE_STORAGE_FAILURE("File storage operation failed"),
     STUDENT_NOT_FOUND("Student not found"),
     OUT_OF_STOCK("The book is out of stock"),
-    BOOK_BORROW_NOT_FOUND("Book borrow not found");
+    BOOK_BORROW_NOT_FOUND("Book borrow not found"),
+    BOOK_INVENTORY_NOT_FOUND("Book not Found in inventory");
 
     private final String message;
 }

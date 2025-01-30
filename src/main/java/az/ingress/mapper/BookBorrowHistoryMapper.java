@@ -7,6 +7,7 @@ import az.ingress.model.enums.BorrowStatus;
 import az.ingress.model.response.BookBorrowHistoryResponse;
 
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
+import static az.ingress.model.enums.BorrowStatus.PENDING;
 
 public enum BookBorrowHistoryMapper {
     BOOK_LOAN_HISTORY_MAPPER;
@@ -23,7 +24,7 @@ public enum BookBorrowHistoryMapper {
         return BookBorrowHistoryResponse
                 .builder()
                 .bookResponse(BOOK_MAPPER.buildBookResponse(bookEntity))
-                .borrowStatus(BorrowStatus.DELAYED)
+                .borrowStatus(PENDING)
                 .borrowDate(bookBorrowHistory.getBorrowDate())
                 .returnedDate(bookBorrowHistory.getReturnDate())
                 .build();

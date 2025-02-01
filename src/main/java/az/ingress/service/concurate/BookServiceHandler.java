@@ -4,10 +4,10 @@ import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
+import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.dao.repository.BookRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.model.enums.BookCategory;
 import az.ingress.model.enums.BookStatus;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.BookResponse;
@@ -22,13 +22,18 @@ import az.ingress.service.abstraction.StudentService;
 import az.ingress.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 
@@ -42,6 +47,7 @@ public class BookServiceHandler implements BookService {
     private final StudentService studentService;
     private final BookInventoryService bookInventoryService;
     private final BookBorrowHistoryService bookBorrowHistoryService;
+    private final BookInventoryRepository bookInventoryRepository;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
@@ -49,8 +55,9 @@ public class BookServiceHandler implements BookService {
                               @Lazy FileService fileService,
                               @Lazy StudentService studentService,
                               @Lazy BookInventoryService bookInventoryService,
-                              @Lazy BookBorrowHistoryService bookBorrowHistoryService
-                              ) {
+                              @Lazy BookBorrowHistoryService bookBorrowHistoryService,
+                              @Lazy BookInventoryRepository bookInventoryRepository
+    ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
@@ -58,6 +65,7 @@ public class BookServiceHandler implements BookService {
         this.studentService = studentService;
         this.bookInventoryService = bookInventoryService;
         this.bookBorrowHistoryService = bookBorrowHistoryService;
+        this.bookInventoryRepository = bookInventoryRepository;
     }
 
     @Override
@@ -66,15 +74,15 @@ public class BookServiceHandler implements BookService {
         var filePath = fileService.uploadFile(bookRequest.getFile());
         log.info("Book filePath: {}", filePath);
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, filePath);
-        addBookRelationships(bookRequest,bookEntity);
+        addBookRelationships(bookRequest, bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
         bookRepository.save(bookEntity);
     }
 
 
-    private void addBookRelationships(BookRequest bookRequest,BookEntity bookEntity) {
+    private void addBookRelationships(BookRequest bookRequest, BookEntity bookEntity) {
         authorService.addBookToAuthor(bookEntity);
-        categoryService.addBookToCategory(bookRequest.getCategoryId(),bookEntity);
+        categoryService.addBookToCategory(bookRequest.getCategoryId(), bookEntity);
     }
 
 
@@ -87,8 +95,8 @@ public class BookServiceHandler implements BookService {
     public void processBookReturn(String fin, String bookCode) {
         var student = studentService.getStudentEntityByFin(fin);
         var book = fetchEntityExist(bookCode);
-        bookInventoryService.updateBookInventoryOnReturn(book.getTitle(),book.getPublicationYear());
-        bookBorrowHistoryService.returnBookHistory(student.getId(),book.getId());
+        bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
+        bookBorrowHistoryService.returnBookHistory(student.getId(), book.getId());
     }
 
     @Override
@@ -97,7 +105,7 @@ public class BookServiceHandler implements BookService {
         var student = studentService.getStudentEntityByFin(studentFin);
         var book = fetchEntityExist(bookCode);
         student.getBookEntities().add(book);
-        bookBorrowHistoryService.addBookToBorrowHistory(student,book);
+        bookBorrowHistoryService.addBookToBorrowHistory(student, book);
         bookInventoryService.decreaseBookQuantity(book);
         bookInventoryService.increaseReadCount(book.getBookInventoryEntity().getId());
     }
@@ -110,14 +118,14 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public List<BookResponse> getAllBooksByFin( String fin){
+    public List<BookResponse> getAllBooksByFin(String fin) {
         var student = studentService.getStudentEntityByFin(fin);
         return student.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
     }
 
-    public void updateBookCategory(Long bookId, Long categoryId){
+    public void updateBookCategory(Long bookId, Long categoryId) {
         var book = fetchEntityExist(bookId);
-        categoryService.addBookToCategory(categoryId,book);
+        categoryService.addBookToCategory(categoryId, book);
         bookRepository.save(book);
     }
 
@@ -130,6 +138,26 @@ public class BookServiceHandler implements BookService {
 
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
+
+
+    public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
+        var distinctBookEntities = bookRepository.findDistinctByTitle();
+        System.out.println(distinctBookEntities);
+        System.out.println(distinctBookEntities);
+
+        var bookList = distinctBookEntities.stream()
+                .sorted((book1, book2) -> Long.compare(
+                        book2.getBookInventoryEntity().getReadCount(),
+                        book1.getBookInventoryEntity().getReadCount()))
+                .toList();
+
+
+        Pageable pageable = PageRequest.of(pageCriteria.getCount(), pageCriteria.getPage());
+        Page<BookEntity> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
+
+        return BOOK_MAPPER.pageableBookResponse(bookPage);
+    }
+
 
     @Override
     public void deleteBook(Long id) {

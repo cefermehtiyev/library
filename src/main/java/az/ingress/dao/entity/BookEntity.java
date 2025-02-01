@@ -37,6 +37,7 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Builder
 @Entity
 public class BookEntity  {

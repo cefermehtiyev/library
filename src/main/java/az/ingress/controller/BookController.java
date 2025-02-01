@@ -70,6 +70,11 @@ public class BookController {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 
+    @GetMapping("/readCount")
+    public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
+        return bookService.getBooksSortedByReadCount(pageCriteria);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
     public void updateBook(@PathVariable Long id, @RequestBody BookRequest bookRequest) {

@@ -137,7 +137,24 @@ public class BookServiceHandler implements BookService {
 
     public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
         var bookPage = bookRepository.findDistinctBooksByReadCount(
-                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount()));
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        return BOOK_MAPPER.pageableBookResponse(bookPage);
+    }
+
+    @Override
+    public PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria) {
+        var bookPage = bookRepository.findDistinctBooksByPagesDesc(
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
+        );
+        return BOOK_MAPPER.pageableBookResponse(bookPage);
+    }
+
+    @Override
+    public PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria) {
+        var bookPage = bookRepository.findDistinctBooksByPagesAsc(
+                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+        );
+
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 

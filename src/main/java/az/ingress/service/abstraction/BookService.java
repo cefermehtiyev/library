@@ -26,6 +26,11 @@ public interface BookService {
 
     PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria);
 
+    PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria);
+
+    PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria);
+
+
     void updateBook(Long id, BookRequest bookRequest);
 
     void deleteBook(Long id);

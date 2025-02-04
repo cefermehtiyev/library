@@ -20,6 +20,10 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
     Page<BookEntity> findDistinctBooksByReadCount(Pageable pageable);
 
 
+    @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)ORDER BY b.pages DESC",nativeQuery = true)
+    Page<BookEntity> findDistinctBooksByPagesDesc(Pageable pageable);
 
+    @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)ORDER BY b.pages ASC ",nativeQuery = true)
+    Page<BookEntity> findDistinctBooksByPagesAsc(Pageable pageable);
 }
 

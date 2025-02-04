@@ -70,9 +70,19 @@ public class BookController {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 
-    @GetMapping("/readCount")
+    @GetMapping("/sorted-by-readcount")
     public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
         return bookService.getBooksSortedByReadCount(pageCriteria);
+    }
+
+    @GetMapping("/sorted-by-pages-desc")
+    public PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria) {
+        return bookService.getBooksSortedByPagesDesc(pageCriteria);
+    }
+
+    @GetMapping("/sorted-by-pages-asc")
+    public PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria) {
+        return bookService.getBooksSortedByPagesAsc(pageCriteria);
     }
 
     @PutMapping("/{id}")

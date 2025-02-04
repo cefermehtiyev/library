@@ -32,7 +32,7 @@ public class UserServiceHandler implements UserService {
     public void signIn(RegistrationRequest registrationRequest) {
         var userEntity = USER_MAPPER.buildUserEntity(registrationRequest);
         userRepository.save(userEntity);
-        registrationStrategy.register(userEntity,registrationRequest);
+        registrationStrategy.register(userEntity, registrationRequest);
     }
 
     @Override

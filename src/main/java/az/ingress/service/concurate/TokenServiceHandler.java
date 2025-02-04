@@ -76,7 +76,6 @@ public class TokenServiceHandler implements TokenService {
             var authCacheData = fetchFromCache(userId);
 
 
-
             if (authCacheData == null) throw new AuthException(TOKEN_EXPIRED.getMessage(), 406);
             var publicKey = CERTIFICATE_KEY_UTIL.getPublicKey(authCacheData.getPublicKey());
             log.info("Public Key: {}", authCacheData.getPublicKey());

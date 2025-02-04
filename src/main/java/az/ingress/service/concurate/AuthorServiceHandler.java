@@ -39,7 +39,7 @@ public class AuthorServiceHandler implements AuthorService {
     public void updateAuthor(Long authorId, AuthorRequest authorRequest) {
         var authorEntity = fetchEntityExist(authorId);
 
-        AUTHOR_MAPPER.updateAuthor(authorEntity,authorRequest);
+        AUTHOR_MAPPER.updateAuthor(authorEntity, authorRequest);
         authorRepository.save(authorEntity);
     }
 
@@ -66,12 +66,13 @@ public class AuthorServiceHandler implements AuthorService {
         return List.of();
     }
 
-    private AuthorEntity fetchEntityExist(String name){
+    private AuthorEntity fetchEntityExist(String name) {
         return authorRepository.findByName(name).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.AUTHOR_NOT_FOUND.getMessage())
         );
     }
-    private AuthorEntity fetchEntityExist(Long id){
+
+    private AuthorEntity fetchEntityExist(Long id) {
         return authorRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.AUTHOR_NOT_FOUND.getMessage())
         );

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 
-import static az.ingress.model.enums.UserRole.STUDENT;
 import static az.ingress.model.enums.UserStatus.ACTIVE;
 
 public enum UserMapper {
@@ -46,7 +45,7 @@ public enum UserMapper {
 
     public PageableResponse pageableUserResponse(Page<UserEntity> userEntityPage){
         return PageableResponse.builder()
-                .users(Collections.singletonList(userEntityPage.map(this::buildUserResponse).toList()))
+                .list(Collections.singletonList(userEntityPage.map(this::buildUserResponse).toList()))
                 .lastPageNumber(userEntityPage.getNumber())
                 .totalPageNumber(userEntityPage.getTotalPages())
                 .hasNextPage(userEntityPage.hasNext())

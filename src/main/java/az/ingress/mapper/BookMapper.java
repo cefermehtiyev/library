@@ -43,7 +43,7 @@ public enum BookMapper {
     }
     public PageableResponse pageableBookResponse(Page<BookEntity> bookEntityPage) {
         return PageableResponse.builder()
-                .users(Collections.singletonList((bookEntityPage.map(this::buildBookResponse).toList())))
+                .list(Collections.singletonList((bookEntityPage.map(this::buildBookResponse).toList())))
                 .lastPageNumber(bookEntityPage.getNumber())
                 .totalPageNumber(bookEntityPage.getTotalPages())
                 .hasNextPage(bookEntityPage.hasNext())

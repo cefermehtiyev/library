@@ -22,18 +22,13 @@ import az.ingress.service.abstraction.StudentService;
 import az.ingress.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 
@@ -141,20 +136,8 @@ public class BookServiceHandler implements BookService {
 
 
     public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
-        var distinctBookEntities = bookRepository.findDistinctByTitle();
-        System.out.println(distinctBookEntities);
-        System.out.println(distinctBookEntities);
-
-        var bookList = distinctBookEntities.stream()
-                .sorted((book1, book2) -> Long.compare(
-                        book2.getBookInventoryEntity().getReadCount(),
-                        book1.getBookInventoryEntity().getReadCount()))
-                .toList();
-
-
-        Pageable pageable = PageRequest.of(pageCriteria.getCount(), pageCriteria.getPage());
-        Page<BookEntity> bookPage = new PageImpl<>(bookList, pageable, bookList.size());
-
+        var bookPage = bookRepository.findDistinctBooksByReadCount(
+                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount()));
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 

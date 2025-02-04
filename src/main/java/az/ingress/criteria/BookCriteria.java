@@ -12,6 +12,7 @@ public class BookCriteria {
     private String author;
     private Integer publicationYearFrom;
     private Integer publicationYearTo;
+    private Integer readCount;
 
 
 }

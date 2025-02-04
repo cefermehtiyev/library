@@ -13,14 +13,11 @@ import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static az.ingress.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
-import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 
 @Slf4j
 @Service
@@ -85,7 +82,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     public List<BookInventoryEntity> getAllBookInventoryEntity(){
         return bookInventoryRepository.findAllByOrderByReadCountDesc();
     }
-
 
 
     private BookInventoryEntity fetchEntityExist(String title, Integer publicationYear) {

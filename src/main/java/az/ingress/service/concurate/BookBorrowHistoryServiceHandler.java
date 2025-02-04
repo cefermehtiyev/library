@@ -48,8 +48,8 @@ public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService
     }
 
 
-    private BookBorrowHistoryEntity fetchEntityExist(Long studentId, Long bookId){
-        return bookBorrowHistoryRepository.findByStudentIdAndBookId(studentId , bookId)
+    private BookBorrowHistoryEntity fetchEntityExist(Long studentId, Long bookId) {
+        return bookBorrowHistoryRepository.findByStudentIdAndBookId(studentId, bookId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_BORROW_NOT_FOUND.getMessage())
                 );

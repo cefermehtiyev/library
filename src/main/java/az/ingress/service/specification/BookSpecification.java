@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import static az.ingress.model.constants.CriteriaConstants.PUBLICATION_YEAR;
+import static az.ingress.model.constants.CriteriaConstants.READ_COUNT;
 import static az.ingress.util.PredicateUtil.applyLikePattern;
 
 @AllArgsConstructor
@@ -21,7 +22,6 @@ public class BookSpecification implements Specification<BookEntity> {
 
     @Override
     public Predicate toPredicate(Root<BookEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        System.out.println(bookCriteria.getPublicationYearFrom());
         var predicates = PredicateUtil.builder().addNullSafety(
                 bookCriteria.getTitle(),title -> criteriaBuilder.like(root.get(CriteriaConstants.TITLE),applyLikePattern(title))
         ).addNullSafety(
@@ -36,4 +36,8 @@ public class BookSpecification implements Specification<BookEntity> {
 
         return criteriaBuilder.and(predicates);
     }
+
+
+
+
 }

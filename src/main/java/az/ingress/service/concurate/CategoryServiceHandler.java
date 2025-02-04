@@ -36,13 +36,13 @@ public class CategoryServiceHandler implements CategoryService {
     }
 
     @Override
-    public void addBookToCategory(Long categoryId,BookEntity bookEntity) {
+    public void addBookToCategory(Long categoryId, BookEntity bookEntity) {
         var category = fetchEntityExist(categoryId);
         bookEntity.setCategory(category);
     }
 
     @Override
-    public List<BookResponse> getBooksByCategory(Long categoryId){
+    public List<BookResponse> getBooksByCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
         return category.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).distinct().toList();
     }
@@ -66,7 +66,7 @@ public class CategoryServiceHandler implements CategoryService {
     }
 
 
-    private CategoryEntity fetchEntityExist(Long id){
+    private CategoryEntity fetchEntityExist(Long id) {
         return categoryRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.CATEGORY_NOT_FOUND.getMessage())
         );

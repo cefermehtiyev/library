@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PageableResponse<T>{
-    private List<T> users;
+    private List<T> list;
     private Integer lastPageNumber;
     private Integer totalPageNumber;
     private boolean hasNextPage;

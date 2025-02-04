@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class BookCriteria {
     private String title;
     private String author;
+    private String language;
     private Integer publicationYearFrom;
     private Integer publicationYearTo;
     private Integer readCount;

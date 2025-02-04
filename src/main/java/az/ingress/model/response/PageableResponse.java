@@ -13,8 +13,10 @@ import java.util.List;
 @Builder
 public class PageableResponse<T>{
     private List<T> list;
-    private Integer lastPageNumber;
-    private Integer totalPageNumber;
+    private Integer currentPageNumber;
+    private Integer totalPages;
+    private Integer numberOfElements;
+    private Long totalElements;
     private boolean hasNextPage;
 
 }

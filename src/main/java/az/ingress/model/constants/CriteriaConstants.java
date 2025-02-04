@@ -13,5 +13,6 @@ public final class CriteriaConstants {
     public static final String TITLE = "title";
     public static final String PUBLICATION_YEAR = "publicationYear";
     public static final String READ_COUNT = "readCount";
+    public static final String LANGUAGE = "language";
 }
 

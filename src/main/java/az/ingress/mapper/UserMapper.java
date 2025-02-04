@@ -46,8 +46,10 @@ public enum UserMapper {
     public PageableResponse pageableUserResponse(Page<UserEntity> userEntityPage){
         return PageableResponse.builder()
                 .list(Collections.singletonList(userEntityPage.map(this::buildUserResponse).toList()))
-                .lastPageNumber(userEntityPage.getNumber())
-                .totalPageNumber(userEntityPage.getTotalPages())
+                .currentPageNumber(userEntityPage.getNumber())
+                .totalPages(userEntityPage.getTotalPages())
+                .totalElements(userEntityPage.getTotalElements())
+                .numberOfElements(userEntityPage.getNumberOfElements())
                 .hasNextPage(userEntityPage.hasNext())
                 .build();
     }

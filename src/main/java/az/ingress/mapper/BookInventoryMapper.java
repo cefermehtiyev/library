@@ -3,6 +3,10 @@ package az.ingress.mapper;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.enums.InventoryStatus;
 
+import static az.ingress.model.enums.InventoryStatus.IN_STOCK;
+import static az.ingress.model.enums.InventoryStatus.LOW_STOCK;
+import static az.ingress.model.enums.InventoryStatus.OUT_OF_STOCK;
+
 public enum BookInventoryMapper {
     BOOK_INVENTORY_MAPPER;
 
@@ -16,7 +20,7 @@ public enum BookInventoryMapper {
                 .borrowedQuantity(0)
                 .reservedQuantity(1)
                 .readCount(0L)
-                .status(InventoryStatus.LOW_STOCK)
+                .status(LOW_STOCK)
                 .build();
     }
 
@@ -25,9 +29,7 @@ public enum BookInventoryMapper {
         bookInventoryEntity.setReservedQuantity(bookInventoryEntity.getReservedQuantity()+ 1 );
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);
 
-        if(bookInventoryEntity.getReservedQuantity() > 2){
-            bookInventoryEntity.setStatus(InventoryStatus.IN_STOCK);
-        }
+        determineInventoryStatus(bookInventoryEntity);
 
         return bookInventoryEntity;
 
@@ -37,14 +39,26 @@ public enum BookInventoryMapper {
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() - 1);
         bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() + 1);
 
-        if (bookInventoryEntity.getAvailableQuantity() < 3) {
-            bookInventoryEntity.setStatus(InventoryStatus.LOW_STOCK);
-        }
+        determineInventoryStatus(bookInventoryEntity);
+
     }
 
     public void updateInventoryOnReturn (BookInventoryEntity bookInventoryEntity){
         bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() - 1);
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);
+
+        determineInventoryStatus(bookInventoryEntity);
+
+    }
+
+    public void determineInventoryStatus (BookInventoryEntity bookInventoryEntity){
+        if (bookInventoryEntity.getAvailableQuantity() == 0){
+            bookInventoryEntity.setStatus(OUT_OF_STOCK);
+        } else if (bookInventoryEntity.getReservedQuantity() <= 2) {
+            bookInventoryEntity.setStatus(LOW_STOCK);
+        }else {
+            bookInventoryEntity.setStatus(IN_STOCK);
+        }
     }
 
     public void increaseReadCount(BookInventoryEntity bookInventoryEntity){

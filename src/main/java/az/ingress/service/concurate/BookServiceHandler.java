@@ -134,7 +134,7 @@ public class BookServiceHandler implements BookService {
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 
-
+    @Override
     public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
         var bookPage = bookRepository.findDistinctBooksByReadCount(
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));

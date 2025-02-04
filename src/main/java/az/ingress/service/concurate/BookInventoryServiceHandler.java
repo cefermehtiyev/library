@@ -1,13 +1,11 @@
 package az.ingress.service.concurate;
 
-import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.model.request.BookRequest;
-import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.CategoryService;
@@ -64,7 +62,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-
     @Override
     public void decreaseBookQuantity(BookEntity bookEntity) {
         var bookInventoryEntity = bookEntity.getBookInventoryEntity();
@@ -79,7 +76,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     }
 
-    public List<BookInventoryEntity> getAllBookInventoryEntity(){
+    public List<BookInventoryEntity> getAllBookInventoryEntity() {
         return bookInventoryRepository.findAllByOrderByReadCountDesc();
     }
 

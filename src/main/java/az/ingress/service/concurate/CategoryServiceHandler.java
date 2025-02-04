@@ -5,11 +5,7 @@ import az.ingress.dao.entity.CategoryEntity;
 import az.ingress.dao.repository.CategoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.mapper.BookMapper;
-import az.ingress.mapper.CategoryMapper;
-import az.ingress.model.enums.BookCategory;
 import az.ingress.model.enums.CategoryStatus;
-import az.ingress.model.request.BookRequest;
 import az.ingress.model.request.CategoryRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.CategoryResponse;
@@ -17,10 +13,8 @@ import az.ingress.service.abstraction.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
+
 
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;

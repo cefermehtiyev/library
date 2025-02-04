@@ -35,18 +35,19 @@ public class BookController {
 
 
     @PostMapping("/borrow")
+    @ResponseStatus(NO_CONTENT)
     public void borrowBook(@RequestParam String fin, @RequestParam String bookCode) {
         bookService.borrowBook(fin, bookCode);
     }
 
     @GetMapping("/{id}")
-    public BookResponse getBook(@PathVariable String bookCode) {
-        return bookService.getBook(bookCode);
+    public BookResponse getBook(@PathVariable Long id) {
+        return bookService.getBook(id);
     }
 
     @GetMapping("/upload")
-    public ResponseEntity<InputStreamResource> uploadBook(@RequestParam String bookCode) {
-        return fileService.downloadFile(bookCode);
+    public ResponseEntity<InputStreamResource> uploadBook(@RequestParam Long id) {
+        return fileService.downloadFile(id);
     }
 
     @PostMapping("/return")
@@ -70,7 +71,7 @@ public class BookController {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 
-    @GetMapping("/sorted-by-readcount")
+    @GetMapping("/sorted-by-read-count")
     public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
         return bookService.getBooksSortedByReadCount(pageCriteria);
     }

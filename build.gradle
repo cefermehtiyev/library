@@ -40,6 +40,7 @@ dependencies {
     testImplementation "io.github.benas:random-beans:$randomBeansVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
+
     //openfeign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${openFeign}"
     //redisson

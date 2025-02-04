@@ -7,6 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
     String uploadFile(MultipartFile file);
-    ResponseEntity<InputStreamResource> downloadFile(@RequestParam String filePath);
+    ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id);
 
 }

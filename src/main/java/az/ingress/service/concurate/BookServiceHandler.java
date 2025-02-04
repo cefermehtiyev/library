@@ -82,8 +82,8 @@ public class BookServiceHandler implements BookService {
 
 
     @Override
-    public BookResponse getBook(String bookCode) {
-        return BOOK_MAPPER.buildBookResponse(fetchEntityExist(bookCode));
+    public BookResponse getBook(Long id) {
+        return BOOK_MAPPER.buildBookResponse(fetchEntityExist(id));
     }
 
     @Override

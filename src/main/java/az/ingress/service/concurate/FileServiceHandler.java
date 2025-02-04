@@ -56,10 +56,10 @@ public class FileServiceHandler implements FileService {
 
 
     @Override
-    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam String bookCode) {
+    public ResponseEntity<InputStreamResource> downloadFile( Long id) {
 
 
-        var filePath = fetchEntityExist(bookCode).getFilePath();
+        var filePath = fetchEntityExist(id).getFilePath();
 
         try {
             File file = new File(filePath);
@@ -85,8 +85,8 @@ public class FileServiceHandler implements FileService {
         }
     }
 
-    private BookEntity fetchEntityExist(String bookCode) {
-        return bookRepository.findByBookCode(bookCode).orElseThrow(
+    private BookEntity fetchEntityExist(Long id) {
+        return bookRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );
     }

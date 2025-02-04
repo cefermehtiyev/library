@@ -12,7 +12,7 @@ import java.util.List;
 public interface BookService {
     void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity);
 
-    BookResponse getBook(String bookCode);
+    BookResponse getBook(Long id);
 
     void processBookReturn(String fin, String bookCode);
 

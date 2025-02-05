@@ -12,8 +12,7 @@ public enum BookInventoryMapper {
 
     public BookInventoryEntity buildBookInventoryEntity(String title , Integer publicationYear){
 
-        return BookInventoryEntity
-                .builder()
+        return BookInventoryEntity.builder()
                 .title(title)
                 .publicationYear(publicationYear)
                 .availableQuantity(1)

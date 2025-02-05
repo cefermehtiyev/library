@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static az.ingress.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
@@ -34,6 +36,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
     @Override
+    @Transactional
     public void addBookToInventory(BookRequest bookRequest) {
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
@@ -48,6 +51,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         bookService.addBook(bookRequest, bookInventoryEntity);
     }
 
+
+
     @Override
     public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
         var bookInventory = fetchEntityExist(title, publicationYear);
@@ -58,6 +63,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     public void increaseReadCount(Long inventoryId) {
         var bookInventory = fetchEntityExist(inventoryId);
         BOOK_INVENTORY_MAPPER.increaseReadCount(bookInventory);
+        bookInventoryRepository.save(bookInventory);
+    }
+
+    @Override
+    public void updateBookSize(Long inventoryId, BigDecimal size) {
+        var bookInventory = fetchEntityExist(inventoryId);
+        bookInventory.setSize(size);
+
         bookInventoryRepository.save(bookInventory);
     }
 
@@ -88,8 +101,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 );
     }
 
-    private BookInventoryEntity fetchEntityExist(Long inventoryid) {
-        return bookInventoryRepository.findById(inventoryid)
+    private BookInventoryEntity fetchEntityExist(Long inventoryId) {
+        return bookInventoryRepository.findById(inventoryId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
                 );

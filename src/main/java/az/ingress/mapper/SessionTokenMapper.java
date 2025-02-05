@@ -8,8 +8,7 @@ public enum SessionTokenMapper {
     SESSION_TOKEN_MAPPER;
 
     public SessionTokenEntity buildSessionTokenEntity(AuthResponse authResponse, AuthCacheData authCacheData) {
-        return SessionTokenEntity
-                .builder()
+        return SessionTokenEntity.builder()
                 .userId(authCacheData.getAccessTokenClaimsSet().getUserId())
                 .accessToken(authResponse.getAccessToken())
                 .expirationTime(authCacheData.getAccessTokenClaimsSet().getExpirationTime())

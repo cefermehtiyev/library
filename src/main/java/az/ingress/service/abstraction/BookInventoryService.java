@@ -6,6 +6,7 @@ import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.PageableResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookInventoryService {
@@ -14,6 +15,7 @@ public interface BookInventoryService {
     void updateBookInventoryOnReturn(String title, Integer publicationYear);
 
     void increaseReadCount(Long inventoryId);
+    void updateBookSize(Long inventoryId, BigDecimal size);
 
     List<BookInventoryEntity> getAllBookInventoryEntity();
 

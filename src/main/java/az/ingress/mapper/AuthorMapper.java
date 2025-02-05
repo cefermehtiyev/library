@@ -10,9 +10,8 @@ import static az.ingress.model.enums.AuthorStatus.ACTIVE;
 public enum AuthorMapper {
     AUTHOR_MAPPER;
 
-    public AuthorEntity buildAuthorEntity(AuthorRequest authorRequest){
-        return AuthorEntity
-                .builder()
+    public AuthorEntity buildAuthorEntity(AuthorRequest authorRequest) {
+        return AuthorEntity.builder()
                 .name(authorRequest.getName())
                 .biography(authorRequest.getBiography())
                 .authorStatus(ACTIVE)
@@ -20,9 +19,8 @@ public enum AuthorMapper {
                 .build();
     }
 
-    public AuthorResponse buildAuthorResponse(AuthorEntity authorEntity){
-        return AuthorResponse
-                .builder()
+    public AuthorResponse buildAuthorResponse(AuthorEntity authorEntity) {
+        return AuthorResponse.builder()
                 .id(authorEntity.getId())
                 .name(authorEntity.getName())
                 .biography(authorEntity.getBiography())
@@ -31,7 +29,7 @@ public enum AuthorMapper {
                 .build();
     }
 
-    public void updateAuthor(AuthorEntity authorEntity, AuthorRequest authorRequest){
+    public void updateAuthor(AuthorEntity authorEntity, AuthorRequest authorRequest) {
         authorEntity.setName(authorRequest.getName());
         authorEntity.setBiography(authorRequest.getBiography());
         authorEntity.setDateOfBirth(authorRequest.getDateOfBirth());

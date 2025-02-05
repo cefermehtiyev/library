@@ -8,8 +8,7 @@ public enum EmployeeMapper {
     EMPLOYEE_MAPPER;
 
     public EmployeeEntity buildEmployeeEntity(RegistrationRequest request){
-        return EmployeeEntity
-                .builder()
+        return EmployeeEntity.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .fin(request.getFin())
@@ -19,8 +18,7 @@ public enum EmployeeMapper {
     }
 
     public EmployeeResponse buildEmployeeResponse(EmployeeEntity employeeEntity){
-        return EmployeeResponse
-                .builder()
+        return EmployeeResponse.builder()
                 .id(employeeEntity.getId())
                 .firstName(employeeEntity.getFirstName())
                 .lastName(employeeEntity.getLastName())

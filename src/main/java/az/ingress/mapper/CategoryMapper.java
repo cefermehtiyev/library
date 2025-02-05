@@ -11,16 +11,14 @@ public enum CategoryMapper {
     CATEGORY_MAPPER;
 
     public CategoryEntity buildCategoryEntity(CategoryRequest categoryRequest){
-        return CategoryEntity
-                .builder()
+        return CategoryEntity.builder()
                 .bookCategory(categoryRequest.getBookCategory())
                 .categoryStatus(CategoryStatus.AVAILABLE)
                 .build();
     }
 
     public CategoryResponse buildCategoryResponse(CategoryEntity categoryEntity){
-        return CategoryResponse
-                .builder()
+        return CategoryResponse.builder()
                 .id(categoryEntity.getId())
                 .bookCategory(categoryEntity.getBookCategory())
                 .categoryStatus(categoryEntity.getCategoryStatus())

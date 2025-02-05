@@ -17,16 +17,14 @@ public enum BookBorrowHistoryMapper {
     BOOK_LOAN_HISTORY_MAPPER;
 
     public BookBorrowHistoryEntity buildBookBorrowHistoryEntity(StudentEntity student, BookEntity book){
-        return BookBorrowHistoryEntity
-                .builder()
+        return BookBorrowHistoryEntity.builder()
                 .book(book)
                 .student(student)
                 .status(PENDING).build();
     }
 
     public BookBorrowHistoryResponse buildBookBorrowHistoryResponse(BookBorrowHistoryEntity bookBorrowHistory, BookEntity bookEntity){
-        return BookBorrowHistoryResponse
-                .builder()
+        return BookBorrowHistoryResponse.builder()
                 .bookResponse(BOOK_MAPPER.buildBookResponse(bookEntity))
                 .borrowStatus(bookBorrowHistory.getStatus())
                 .borrowDate(bookBorrowHistory.getBorrowDate())

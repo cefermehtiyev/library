@@ -66,10 +66,11 @@ public class BookServiceHandler implements BookService {
     @Override
     @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
-        var filePath = fileService.uploadFile(bookRequest.getFile());
-        log.info("Book filePath: {}", filePath);
-        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, filePath);
+        var fileData = fileService.uploadFile(bookRequest.getFile());
+        log.info("Book filePath: {}", fileData.getFilePath());
+        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, fileData.getFilePath());
         addBookRelationships(bookRequest, bookEntity);
+        bookInventoryService.updateBookSize(bookInventoryEntity.getId(), fileData.getSize());
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
         bookRepository.save(bookEntity);
     }
@@ -152,7 +153,7 @@ public class BookServiceHandler implements BookService {
     @Override
     public PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria) {
         var bookPage = bookRepository.findDistinctBooksByPagesAsc(
-                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
         );
 
         return BOOK_MAPPER.pageableBookResponse(bookPage);

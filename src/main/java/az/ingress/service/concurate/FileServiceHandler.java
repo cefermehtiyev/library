@@ -7,6 +7,8 @@ import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.FileStorageFailureException;
 import az.ingress.exception.InvalidFileURLException;
 import az.ingress.exception.NotFoundException;
+import az.ingress.mapper.FileMapper;
+import az.ingress.model.response.FileResponse;
 import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.FileService;
 import az.ingress.service.abstraction.UserService;
@@ -26,6 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 @Slf4j
@@ -35,11 +39,14 @@ public class FileServiceHandler implements FileService {
     private final BookRepository bookRepository;
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public FileResponse uploadFile(MultipartFile file) {
 
         try {
             String fileName = file.getOriginalFilename();
             byte[] fileData = file.getBytes();
+
+            var size = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+
 
             String filePath = FileStorageUtil.saveFile(fileName, fileData);
             log.info("File Name: {}", file);
@@ -47,7 +54,7 @@ public class FileServiceHandler implements FileService {
             String normalizedPath = filePath.replace("\\", "/");
             log.info("Normalized File Path: {}", normalizedPath);
 
-            return normalizedPath;
+            return FileMapper.FILE_MAPPER.buildFileResponse(filePath,size);
 
         } catch (IOException e) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());

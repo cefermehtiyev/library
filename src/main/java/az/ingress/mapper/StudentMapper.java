@@ -8,8 +8,7 @@ public enum StudentMapper {
     STUDENT_MAPPER;
 
     public StudentEntity buildStudentEntity(RegistrationRequest request) {
-        return StudentEntity
-                .builder()
+        return StudentEntity.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .fin(request.getFin())
@@ -18,8 +17,7 @@ public enum StudentMapper {
     }
 
     public StudentResponse buildStudentResponse(StudentEntity studentEntity) {
-        return StudentResponse
-                .builder()
+        return StudentResponse.builder()
                 .id(studentEntity.getId())
                 .firstName(studentEntity.getFirstName())
                 .lastName(studentEntity.getLastName())

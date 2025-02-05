@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,7 @@ public class BookInventoryEntity {
     private InventoryStatus status;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    private BigDecimal size;
 
     @OneToMany(
             fetch = FetchType.LAZY,

@@ -75,8 +75,12 @@ public class TokenServiceHandler implements TokenService {
 
             var authCacheData = fetchFromCache(userId);
 
+            boolean isTokenInvalid  = sessionTokenRepository
+                    .findByUserId(userId)
+                    .map(SessionTokenEntity::getAccessToken)
+                    .isEmpty();
 
-            if (authCacheData == null) throw new AuthException(TOKEN_EXPIRED.getMessage(), 406);
+            if (authCacheData == null || isTokenInvalid ) throw new AuthException(TOKEN_EXPIRED.getMessage(), 406);
             var publicKey = CERTIFICATE_KEY_UTIL.getPublicKey(authCacheData.getPublicKey());
             log.info("Public Key: {}", authCacheData.getPublicKey());
 

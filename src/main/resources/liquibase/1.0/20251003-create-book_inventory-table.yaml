@@ -45,11 +45,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: size
-                  type: NUMERIC
-                  constraints:
-                    nullable: true
-              - column:
                   name: status
                   type: VARCHAR(50)
                   constraints:
@@ -62,6 +57,3 @@ databaseChangeLog:
                   name: updated_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
-
-
-

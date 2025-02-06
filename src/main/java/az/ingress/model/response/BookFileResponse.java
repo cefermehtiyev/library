@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileResponse {
+public class BookFileResponse {
     private String filePath;
-    private BigDecimal size;
+    private BigDecimal fileSize;
 }

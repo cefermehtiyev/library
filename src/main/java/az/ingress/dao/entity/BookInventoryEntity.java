@@ -15,8 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -28,7 +26,6 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
 
 @Table(name = "book_inventory")
 @Getter
@@ -52,7 +49,6 @@ public class BookInventoryEntity {
     private InventoryStatus status;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    private BigDecimal size;
 
     @OneToMany(
             fetch = FetchType.LAZY,

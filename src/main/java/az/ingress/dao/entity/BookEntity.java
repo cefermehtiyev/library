@@ -21,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -51,12 +52,18 @@ public class BookEntity  {
     private String language;
     private String description;
     private Integer pages;
-    private String filePath;
     @Enumerated(STRING)
     private BookStatus bookStatus;
     private Integer publicationYear;
     @CreationTimestamp
     private LocalDate createdAt;
+
+    @OneToOne(
+            mappedBy = "bookEntity",
+            cascade = {MERGE,PERSIST}
+    )
+    @ToString.Exclude
+    FileEntity fileEntity;
 
     @ManyToOne(
             fetch = LAZY,

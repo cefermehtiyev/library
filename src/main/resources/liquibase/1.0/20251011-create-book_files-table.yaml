@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book_files-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: book_files
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: file_path
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_size
+                  type: NUMERIC
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: book_files
+            baseColumnNames: id
+            constraintName: fk_book_file_book_files
+            referencedTableName: books
+            referencedColumnNames: id
+
+
+

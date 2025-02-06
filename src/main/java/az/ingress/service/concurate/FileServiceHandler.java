@@ -1,17 +1,14 @@
 package az.ingress.service.concurate;
 
-import az.ingress.controller.BookController;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.repository.BookRepository;
+import az.ingress.dao.repository.FIleRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.FileStorageFailureException;
-import az.ingress.exception.InvalidFileURLException;
 import az.ingress.exception.NotFoundException;
-import az.ingress.mapper.FileMapper;
-import az.ingress.model.response.FileResponse;
-import az.ingress.service.abstraction.BookService;
+import az.ingress.mapper.BookFileMapper;
+import az.ingress.model.response.BookFileResponse;
 import az.ingress.service.abstraction.FileService;
-import az.ingress.service.abstraction.UserService;
 import az.ingress.util.FileStorageUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -21,15 +18,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static az.ingress.mapper.BookFileMapper.FILE_MAPPER;
 
 
 @Slf4j
@@ -37,24 +34,27 @@ import java.math.RoundingMode;
 @Service
 public class FileServiceHandler implements FileService {
     private final BookRepository bookRepository;
+    private final FIleRepository fIleRepository;
 
     @Override
-    public FileResponse uploadFile(MultipartFile file) {
+    public void uploadFile(MultipartFile file, BookEntity bookEntity) {
 
         try {
             String fileName = file.getOriginalFilename();
             byte[] fileData = file.getBytes();
 
-            var size = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-
+            var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
 
             String filePath = FileStorageUtil.saveFile(fileName, fileData);
             log.info("File Name: {}", file);
 
             String normalizedPath = filePath.replace("\\", "/");
             log.info("Normalized File Path: {}", normalizedPath);
+            var fileEntity = FILE_MAPPER.buildFileEntity(filePath, fileSize);
+            fileEntity.setBookEntity(bookEntity);
 
-            return FileMapper.FILE_MAPPER.buildFileResponse(filePath,size);
+            fIleRepository.save(fileEntity);
+
 
         } catch (IOException e) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
@@ -63,10 +63,10 @@ public class FileServiceHandler implements FileService {
 
 
     @Override
-    public ResponseEntity<InputStreamResource> downloadFile( Long id) {
+    public ResponseEntity<InputStreamResource> downloadFile(Long id) {
 
 
-        var filePath = fetchEntityExist(id).getFilePath();
+        var filePath = fetchEntityExist(id).getFileEntity().getFilePath();
 
         try {
             File file = new File(filePath);

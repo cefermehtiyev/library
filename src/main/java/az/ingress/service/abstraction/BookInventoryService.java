@@ -15,7 +15,6 @@ public interface BookInventoryService {
     void updateBookInventoryOnReturn(String title, Integer publicationYear);
 
     void increaseReadCount(Long inventoryId);
-    void updateBookSize(Long inventoryId, BigDecimal size);
 
     List<BookInventoryEntity> getAllBookInventoryEntity();
 

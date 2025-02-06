@@ -66,19 +66,20 @@ public class BookServiceHandler implements BookService {
     @Override
     @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
-        var fileData = fileService.uploadFile(bookRequest.getFile());
-        log.info("Book filePath: {}", fileData.getFilePath());
-        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, fileData.getFilePath());
+
+        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest);
         addBookRelationships(bookRequest, bookEntity);
-        bookInventoryService.updateBookSize(bookInventoryEntity.getId(), fileData.getSize());
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
         bookRepository.save(bookEntity);
+        fileService.uploadFile(bookRequest.getFile(), bookEntity);
+
     }
 
 
     private void addBookRelationships(BookRequest bookRequest, BookEntity bookEntity) {
         authorService.addBookToAuthor(bookEntity);
         categoryService.addBookToCategory(bookRequest.getCategoryId(), bookEntity);
+
     }
 
 

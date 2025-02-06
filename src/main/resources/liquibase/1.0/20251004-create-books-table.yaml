@@ -52,11 +52,6 @@ databaseChangeLog:
                   name: pages
                   type: INTEGER
               - column:
-                  name: file_path
-                  type: VARCHAR
-                  constraints:
-                    nullable: false
-              - column:
                   name: book_status
                   type: VARCHAR(50)
                   constraints:

@@ -66,13 +66,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         bookInventoryRepository.save(bookInventory);
     }
 
-    @Override
-    public void updateBookSize(Long inventoryId, BigDecimal size) {
-        var bookInventory = fetchEntityExist(inventoryId);
-        bookInventory.setSize(size);
 
-        bookInventoryRepository.save(bookInventory);
-    }
 
 
     @Override

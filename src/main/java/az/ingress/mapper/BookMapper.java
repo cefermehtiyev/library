@@ -12,7 +12,7 @@ import java.util.Collections;
 public enum BookMapper {
     BOOK_MAPPER;
 
-    public BookEntity buildBookEntity(BookRequest bookRequest,String filePath){
+    public BookEntity buildBookEntity(BookRequest bookRequest){
         return az.ingress.dao.entity.BookEntity.builder()
                 .title(bookRequest.getTitle())
                 .bookCode(bookRequest.getBookCode())
@@ -22,7 +22,6 @@ public enum BookMapper {
                 .language(bookRequest.getLanguage())
                 .description(bookRequest.getDescription())
                 .pages(bookRequest.getPages())
-                .filePath(filePath)
                 .publicationYear(bookRequest.getPublicationYear())
                 .build();
     }
@@ -30,7 +29,6 @@ public enum BookMapper {
     public BookResponse buildBookResponse(BookEntity bookEntity){
         return BookResponse.builder()
                 .id(bookEntity.getId()).bookCode(bookEntity.getBookCode())
-                .filePath(bookEntity.getFilePath())
                 .title(bookEntity.getTitle())
                 .author(bookEntity.getAuthor())
                 .publisher(bookEntity.getPublisher())

@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import java.math.BigDecimal;
 
 @Getter
@@ -21,15 +20,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "book_files")
+@Table(name = "images")
 @Entity
-public class FileEntity {
+public class ImageEntity {
 
     @Id
     private Long id;
-
-    private String filePath;
-    private BigDecimal fileSize;
+    private String imagePath;
+    private String imageType;
+    private BigDecimal imageSize;
 
     @OneToOne
     @MapsId

@@ -45,10 +45,17 @@ public class BookController {
         return bookService.getBook(id);
     }
 
-    @GetMapping("/upload")
+    @GetMapping("/upload-file")
     public ResponseEntity<InputStreamResource> uploadBook(@RequestParam Long id) {
         return fileService.downloadFile(id);
     }
+
+    @GetMapping("/upload-image")
+    public ResponseEntity<InputStreamResource> uploadImage(@RequestParam Long id) {
+        return fileService.downloadFile(id);
+    }
+
+
 
     @PostMapping("/return")
     public void processBookReturn(@RequestParam String fin,@RequestParam String bookCode){

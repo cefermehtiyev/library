@@ -1,5 +1,6 @@
 package az.ingress.mapper;
 
+import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.FileEntity;
 import az.ingress.model.response.BookFileResponse;
 
@@ -15,8 +16,9 @@ public enum BookFileMapper {
                 .build();
     }
 
-    public FileEntity buildFileEntity(String filePath, BigDecimal size){
+    public FileEntity buildFileEntity(BookEntity bookEntity,String filePath, BigDecimal size){
         return FileEntity.builder()
+                .bookEntity(bookEntity)
                 .filePath(filePath)
                 .fileSize(size)
                 .build();

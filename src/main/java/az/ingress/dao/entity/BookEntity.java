@@ -63,6 +63,13 @@ public class BookEntity  {
             cascade = {MERGE,PERSIST}
     )
     @ToString.Exclude
+    ImageEntity imageEntity;
+
+    @OneToOne(
+            mappedBy = "bookEntity",
+            cascade = {MERGE,PERSIST}
+    )
+    @ToString.Exclude
     FileEntity fileEntity;
 
     @ManyToOne(

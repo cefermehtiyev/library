@@ -2,6 +2,7 @@ package az.ingress.service.abstraction;
 
 import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
+import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.BookResponse;
@@ -34,4 +35,6 @@ public interface BookService {
     void updateBook(Long id, BookRequest bookRequest);
 
     void deleteBook(Long id);
+
+    BookEntity fetchEntityExist(Long id);
 }

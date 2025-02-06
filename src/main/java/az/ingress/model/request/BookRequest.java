@@ -23,5 +23,6 @@ public class BookRequest {
     private Integer pages;
     @NotNull(message = "File must not be null")
     private MultipartFile file;
+    private MultipartFile image;
     private Integer publicationYear;
 }

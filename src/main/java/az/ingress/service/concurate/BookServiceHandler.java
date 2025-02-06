@@ -42,7 +42,6 @@ public class BookServiceHandler implements BookService {
     private final StudentService studentService;
     private final BookInventoryService bookInventoryService;
     private final BookBorrowHistoryService bookBorrowHistoryService;
-    private final BookInventoryRepository bookInventoryRepository;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
@@ -50,8 +49,7 @@ public class BookServiceHandler implements BookService {
                               @Lazy FileService fileService,
                               @Lazy StudentService studentService,
                               @Lazy BookInventoryService bookInventoryService,
-                              @Lazy BookBorrowHistoryService bookBorrowHistoryService,
-                              @Lazy BookInventoryRepository bookInventoryRepository
+                              @Lazy BookBorrowHistoryService bookBorrowHistoryService
     ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
@@ -60,7 +58,6 @@ public class BookServiceHandler implements BookService {
         this.studentService = studentService;
         this.bookInventoryService = bookInventoryService;
         this.bookBorrowHistoryService = bookBorrowHistoryService;
-        this.bookInventoryRepository = bookInventoryRepository;
     }
 
     @Override
@@ -72,6 +69,7 @@ public class BookServiceHandler implements BookService {
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
         bookRepository.save(bookEntity);
         fileService.uploadFile(bookRequest.getFile(), bookEntity);
+        fileService.uploadFile(bookRequest.getImage(),bookEntity);
 
     }
 
@@ -168,7 +166,7 @@ public class BookServiceHandler implements BookService {
         bookRepository.save(bookEntity);
     }
 
-    private BookEntity fetchEntityExist(Long id) {
+    public BookEntity fetchEntityExist(Long id) {
         return bookRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );

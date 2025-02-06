@@ -1,13 +1,14 @@
 package az.ingress.service.concurate;
 
 import az.ingress.dao.entity.BookEntity;
-import az.ingress.dao.repository.BookRepository;
-import az.ingress.dao.repository.FIleRepository;
+import az.ingress.dao.repository.FileRepository;
+import az.ingress.dao.repository.ImageRepository;
+import az.ingress.dao.repository.StudentRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.FileStorageFailureException;
 import az.ingress.exception.NotFoundException;
-import az.ingress.mapper.BookFileMapper;
-import az.ingress.model.response.BookFileResponse;
+import az.ingress.mapper.ImageMapper;
+import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.FileService;
 import az.ingress.util.FileStorageUtil;
 
@@ -25,16 +26,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import static az.ingress.mapper.BookFileMapper.FILE_MAPPER;
+import static az.ingress.mapper.ImageMapper.IMAGE_MAPPER;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class FileServiceHandler implements FileService {
-    private final BookRepository bookRepository;
-    private final FIleRepository fIleRepository;
+    private final BookService bookService;
+    private final FileRepository fIleRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     public void uploadFile(MultipartFile file, BookEntity bookEntity) {
@@ -42,18 +46,18 @@ public class FileServiceHandler implements FileService {
         try {
             String fileName = file.getOriginalFilename();
             byte[] fileData = file.getBytes();
-
             var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+            var fileType = file.getContentType();
 
-            String filePath = FileStorageUtil.saveFile(fileName, fileData);
-            log.info("File Name: {}", file);
-
-            String normalizedPath = filePath.replace("\\", "/");
-            log.info("Normalized File Path: {}", normalizedPath);
-            var fileEntity = FILE_MAPPER.buildFileEntity(filePath, fileSize);
-            fileEntity.setBookEntity(bookEntity);
-
-            fIleRepository.save(fileEntity);
+            if (Objects.requireNonNull(fileType).startsWith("image")) {
+                FileStorageUtil.saveFile(fileName, fileData, true);
+                var imageEntity = IMAGE_MAPPER.buildImageEntity(bookEntity, fileName, fileType, fileSize);
+                imageRepository.save(imageEntity);
+            } else {
+                var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
+                var fileEntity = FILE_MAPPER.buildFileEntity(bookEntity, filePath, fileSize);
+                fIleRepository.save(fileEntity);
+            }
 
 
         } catch (IOException e) {
@@ -61,12 +65,19 @@ public class FileServiceHandler implements FileService {
         }
     }
 
-
     @Override
     public ResponseEntity<InputStreamResource> downloadFile(Long id) {
+        var filePath = bookService.fetchEntityExist(id).getFileEntity().getFilePath();
+        return getFile(filePath);
+    }
 
+    @Override
+    public ResponseEntity<InputStreamResource> downloadImage(Long id) {
+        var imagePath = bookService.fetchEntityExist(id).getFileEntity().getFilePath();
+        return getFile(imagePath);
+    }
 
-        var filePath = fetchEntityExist(id).getFileEntity().getFilePath();
+    private ResponseEntity<InputStreamResource> getFile(String filePath) {
 
         try {
             File file = new File(filePath);
@@ -91,72 +102,5 @@ public class FileServiceHandler implements FileService {
             throw new NotFoundException(ErrorMessage.FILE_NOT_FOUND.getMessage());
         }
     }
-
-    private BookEntity fetchEntityExist(Long id) {
-        return bookRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
-        );
-    }
-
-//    private final String bucketName = "azmui-library-map"; // Bucket adı
-//    private final String credentialsPath = "C:\\Users\\cefer\\desktop1\\azmui\\library\\src\\main\\resources\\credentials.json"; // GCP JSON açar faylının yolu
-//    private final Storage storage;
-//
-//    public FileServiceHandler() throws IOException {
-//        // Google Cloud Storage müştərisini qurmaq
-//        storage = StorageOptions.newBuilder()
-//                .setCredentials(
-//                        GoogleCredentials.fromStream(new FileInputStream(credentialsPath))
-//                )
-//                .build()
-//                .getService();
-//    }
-//
-//    public String uploadFile(MultipartFile file) {
-//        try {
-//            String fileName = file.getOriginalFilename();
-//            byte[] fileData = file.getBytes();
-//
-//            // Faylı Google Cloud Storage-a yükləmək
-//            BlobId blobId = BlobId.of(bucketName, fileName);
-//            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-//
-//            storage.create(blobInfo, fileData);
-//            String fileUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
-//            System.out.println("Fayl uğurla yükləndi: " + fileUrl);
-//
-//            return fileUrl;
-//        } catch (IOException e) {
-//            throw new RuntimeException("Fayl yüklənərkən xəta baş verdi: " + e.getMessage(), e);
-//        }
-//    }
-//
-//    public ResponseEntity<InputStreamResource> downloadFile(String filePath) {
-//        try {
-//            String fileName = new File(filePath).getName();
-//
-//            // Google Cloud Storage-dən faylı əldə etmək
-//            Blob blob = storage.get(bucketName, fileName);
-//
-//            if (blob == null || !blob.exists()) {
-//                throw new RuntimeException("Fayl tapılmadı: " + fileName);
-//            }
-//
-//            InputStream inputStream = new ByteArrayInputStream(blob.getContent());
-//
-//            // HTTP başlıqlarını tənzimləyirik
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//
-//            return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .contentLength(blob.getSize())
-//                    .contentType(MediaType.APPLICATION_PDF)
-//                    .body(new InputStreamResource(inputStream));
-//        } catch (Exception e) {
-//            throw new RuntimeException("Fayl endirilərkən xəta baş verdi: " + e.getMessage(), e);
-//        }
-//    }
-
 
 }

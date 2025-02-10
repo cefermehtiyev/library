@@ -10,13 +10,11 @@ import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -26,7 +24,6 @@ import java.util.Objects;
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
 
 
 @Getter
@@ -39,9 +36,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class StudentEntity{
     @Id
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String fin;
+    private String specialization;
+    private Integer course;
+    private String groupName;
 
     @OneToOne
     @MapsId
@@ -63,13 +60,7 @@ public class StudentEntity{
     @JsonBackReference
     List<BookEntity> bookEntities;
 
-    @OneToMany(
-            fetch = LAZY,
-            cascade = {MERGE,PERSIST},
-            mappedBy = "student"
-    )
-    @ToString.Exclude
-    List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
+
 
 
     @Override

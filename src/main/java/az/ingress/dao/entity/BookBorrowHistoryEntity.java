@@ -34,10 +34,11 @@ public class BookBorrowHistoryEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = LAZY,
             cascade = {MERGE, PERSIST})
-    @JoinColumn(name = "student_id")
-    private StudentEntity student;
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "book_id")

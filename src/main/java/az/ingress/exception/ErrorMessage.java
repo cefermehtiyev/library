@@ -14,6 +14,7 @@ public enum ErrorMessage {
     CATEGORY_NOT_FOUND("Category not found"),
     USER_NOT_FOUND("User not found"),
     BOOK_NOT_FOUND("Book not found"),
+    EMPLOYEE_NOT_FOUND("User not found"),
     AUTHOR_NOT_FOUND("Author not found"),
     REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
     ACCESS_TOKEN_NOT_FOUND("Access token not found"),

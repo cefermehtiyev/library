@@ -1,6 +1,7 @@
 package az.ingress.mapper;
 
 import az.ingress.dao.entity.UserEntity;
+import az.ingress.model.enums.UserRole;
 import az.ingress.model.request.RegistrationRequest;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.model.response.UserIdResponse;
@@ -19,6 +20,10 @@ public enum UserMapper {
                 .userName(registrationRequest.getUserName())
                 .email(registrationRequest.getEmail())
                 .password(registrationRequest.getPassword())
+                .firstName(registrationRequest.getFirstName())
+                .lastName(registrationRequest.getLastName())
+                .fin(registrationRequest.getFin())
+                .userRole(registrationRequest.getUserRole())
                 .userStatus(ACTIVE)
                 .build();
     }
@@ -29,6 +34,7 @@ public enum UserMapper {
                 .name(userEntity.getUserName())
                 .email(userEntity.getEmail())
                 .userStatus(userEntity.getUserStatus())
+                .userRole(UserRole.STUDENT)
                 .createdAt(userEntity.getCreatedAt())
                 .build();
     }

@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 import static az.ingress.mapper.UserMapper.USER_MAPPER;
 
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class UserServiceHandler implements UserService {
     private final RegistrationStrategy registrationStrategy;
 
     @Override
+    @Transactional
     public void signIn(RegistrationRequest registrationRequest) {
         var userEntity = USER_MAPPER.buildUserEntity(registrationRequest);
         userRepository.save(userEntity);
@@ -39,6 +42,12 @@ public class UserServiceHandler implements UserService {
     public UserResponse getUser(Long userId) {
         return USER_MAPPER.buildUserResponse(fetchEntityExist(userId));
     }
+
+    @Override
+    public UserEntity getUserEntity(Long userId) {
+        return fetchEntityExist(userId);
+    }
+
 
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
         var userEntity = fetchEntityExist(authRequest);
@@ -73,6 +82,14 @@ public class UserServiceHandler implements UserService {
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
     }
+
+//    private UserEntity fetchEntityExist(String fin) {
+//        return userRepository.findBy(fin).orElseThrow(
+//                () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
+//        );
+//    }
+
+
 
     private UserEntity fetchEntityExist(AuthRequest authRequest) {
         return userRepository.findByUserNameAndPassword(authRequest.getUserName(), authRequest.getPassword()).orElseThrow(

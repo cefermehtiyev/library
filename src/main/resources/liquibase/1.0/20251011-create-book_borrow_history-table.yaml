@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: student_id
+                  name: user_id
                   type: bigint
                   constraints:
                     nullable: false
@@ -42,14 +42,14 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: book_borrow_history
-            baseColumnNames: student_id
-            referencedTableName: students
+            baseColumnNames: user_id
+            referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_book_loan_student
+            constraintName: fk_book_borrow_users
 
         - addForeignKeyConstraint:
             baseTableName: book_borrow_history
             baseColumnNames: book_id
             referencedTableName: books
             referencedColumnNames: id
-            constraintName: fk_book_loan_book
+            constraintName: fk_book_borrow_book

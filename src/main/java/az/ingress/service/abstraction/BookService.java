@@ -5,6 +5,7 @@ import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.request.BookRequest;
+import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 
@@ -17,7 +18,7 @@ public interface BookService {
 
     void processBookReturn(String fin, String bookCode);
 
-    void borrowBook(String studentFin, String bookCode);
+    void borrowBook(BorrowRequest borrowRequest);
 
     List<BookResponse> getAllBooksByFin(String fin);
 

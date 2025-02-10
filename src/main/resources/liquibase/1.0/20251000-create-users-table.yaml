@@ -31,6 +31,26 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: first_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fin
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_role
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
                   name: user_status
                   type: VARCHAR(50)
                   constraints:

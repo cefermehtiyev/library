@@ -1,5 +1,6 @@
 package az.ingress.dao.entity;
 
+import az.ingress.model.enums.UserRole;
 import az.ingress.model.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,17 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
@@ -37,6 +41,11 @@ public class UserEntity {
     private String userName;
     private String email;
     private String password;
+    @Enumerated(STRING)
+    private UserRole userRole;
+    private String firstName;
+    private String lastName;
+    private String fin;
     @Enumerated(STRING)
     private UserStatus userStatus;
     @CreationTimestamp
@@ -55,6 +64,14 @@ public class UserEntity {
     )
     @ToString.Exclude
     StudentEntity student;
+
+    @OneToMany(
+            fetch = LAZY,
+            cascade = {MERGE,PERSIST},
+            mappedBy = "user"
+    )
+    @ToString.Exclude
+    List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
 
     @Override
     public boolean equals(Object o) {

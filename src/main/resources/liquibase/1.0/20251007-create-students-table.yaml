@@ -14,17 +14,17 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: first_name
+                  name: specialization
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: VARCHAR(255)
+                  name: course
+                  type: integer
                   constraints:
                     nullable: false
               - column:
-                  name: fin
+                  name: group_name
                   type: VARCHAR(255)
                   constraints:
                     nullable: false

@@ -4,12 +4,13 @@ import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
-import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.dao.repository.BookRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.model.enums.BookStatus;
+import az.ingress.model.enums.UserRole;
 import az.ingress.model.request.BookRequest;
+import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
@@ -17,8 +18,10 @@ import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookBorrowHistoryService;
 import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.CategoryService;
+import az.ingress.service.abstraction.EmployeeService;
 import az.ingress.service.abstraction.FileService;
 import az.ingress.service.abstraction.StudentService;
+import az.ingress.service.abstraction.UserService;
 import az.ingress.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -40,6 +43,8 @@ public class BookServiceHandler implements BookService {
     private final AuthorService authorService;
     private final FileService fileService;
     private final StudentService studentService;
+    private final EmployeeService employeeService;
+    private final UserService userService;
     private final BookInventoryService bookInventoryService;
     private final BookBorrowHistoryService bookBorrowHistoryService;
 
@@ -49,7 +54,9 @@ public class BookServiceHandler implements BookService {
                               @Lazy FileService fileService,
                               @Lazy StudentService studentService,
                               @Lazy BookInventoryService bookInventoryService,
-                              @Lazy BookBorrowHistoryService bookBorrowHistoryService
+                              @Lazy BookBorrowHistoryService bookBorrowHistoryService,
+                              @Lazy UserService userService,
+                              @Lazy EmployeeService employeeService
     ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
@@ -58,18 +65,20 @@ public class BookServiceHandler implements BookService {
         this.studentService = studentService;
         this.bookInventoryService = bookInventoryService;
         this.bookBorrowHistoryService = bookBorrowHistoryService;
+        this.userService = userService;
+        this.employeeService = employeeService;
     }
 
     @Override
     @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
-
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest);
         addBookRelationships(bookRequest, bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
+
         bookRepository.save(bookEntity);
         fileService.uploadFile(bookRequest.getFile(), bookEntity);
-        fileService.uploadFile(bookRequest.getImage(),bookEntity);
+        fileService.uploadFile(bookRequest.getImage(), bookEntity);
 
     }
 
@@ -88,19 +97,36 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void processBookReturn(String fin, String bookCode) {
-        var student = studentService.getStudentEntityByFin(fin);
         var book = fetchEntityExist(bookCode);
-        bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
-        bookBorrowHistoryService.returnBookHistory(student.getId(), book.getId());
+        try {
+            var student = studentService.getStudentEntityByFin(fin);
+            bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
+            bookBorrowHistoryService.returnBookHistory(student.getId(), book.getId());
+
+        } catch (NotFoundException ex) {
+            var employee = employeeService.getEmployeeEntity(fin);
+            bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
+            bookBorrowHistoryService.returnBookHistory(employee.getId(), book.getId());
+        }
+
     }
 
     @Override
     @Transactional
-    public void borrowBook(String studentFin, String bookCode) {
-        var student = studentService.getStudentEntityByFin(studentFin);
-        var book = fetchEntityExist(bookCode);
-        student.getBookEntities().add(book);
-        bookBorrowHistoryService.addBookToBorrowHistory(student, book);
+    public void borrowBook(BorrowRequest borrowRequest) {
+        var book = fetchEntityExist(borrowRequest.getBookCode());
+
+        try {
+            var student = studentService.getStudentEntityByFin(borrowRequest.getFin());
+            student.getBookEntities().add(book);
+            bookBorrowHistoryService.addBookToBorrowHistory(student.getUser(), book);
+
+        } catch (NotFoundException ex) {
+            var employee = employeeService.getEmployeeEntity(borrowRequest.getFin());
+            employee.getBookEntities().add(book);
+            bookBorrowHistoryService.addBookToBorrowHistory(employee.getUser(), book);
+        }
+
         bookInventoryService.decreaseBookQuantity(book);
         bookInventoryService.increaseReadCount(book.getBookInventoryEntity().getId());
     }

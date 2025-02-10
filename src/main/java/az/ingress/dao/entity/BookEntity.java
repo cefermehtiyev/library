@@ -113,6 +113,17 @@ public class BookEntity  {
     )
     List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
 
+    @ManyToMany(
+            fetch = LAZY,
+            cascade = {MERGE,PERSIST},
+            mappedBy = "bookEntities"
+    )
+    @ToString.Exclude
+    @JsonBackReference
+    List<EmployeeEntity> employeeEntities;
+
+
+
 
 
     @Override

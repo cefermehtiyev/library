@@ -6,6 +6,7 @@ import az.ingress.dao.repository.StudentRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.model.request.RegistrationRequest;
+import az.ingress.model.request.StudentRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.StudentResponse;
 import az.ingress.service.abstraction.StudentService;
@@ -22,8 +23,8 @@ public class StudentServiceHandler implements StudentService {
     private final StudentRepository studentRepository;
 
     @Override
-    public void addStudent(UserEntity userEntity, RegistrationRequest registrationRequest) {
-        var student = STUDENT_MAPPER.buildStudentEntity(registrationRequest);
+    public void addStudent(UserEntity userEntity, StudentRequest studentRequest) {
+        var student = STUDENT_MAPPER.buildStudentEntity(studentRequest);
         student.setUser(userEntity);
         studentRepository.save(student);
     }
@@ -40,9 +41,10 @@ public class StudentServiceHandler implements StudentService {
 
 
     private StudentEntity fetchEntityExist(String fin) {
-        return studentRepository.findByFin(fin).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.STUDENT_NOT_FOUND.getMessage())
-        );
+//        return studentRepository.findByFin(fin).orElseThrow(
+//                () -> new NotFoundException(ErrorMessage.STUDENT_NOT_FOUND.getMessage())
+//        );
+        return null;
     }
 
     private StudentEntity fetchEntityExist(Long id) {

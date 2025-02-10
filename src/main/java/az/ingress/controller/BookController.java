@@ -2,7 +2,9 @@ package az.ingress.controller;
 
 import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
+import az.ingress.dao.repository.BookRepository;
 import az.ingress.model.request.BookRequest;
+import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookService;
@@ -32,12 +34,13 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class BookController {
     private final BookService bookService;
     private final FileService fileService;
+    private final BookRepository bookRepository;
 
 
     @PostMapping("/borrow")
     @ResponseStatus(NO_CONTENT)
-    public void borrowBook(@RequestParam String fin, @RequestParam String bookCode) {
-        bookService.borrowBook(fin, bookCode);
+    public void borrowBook(@RequestBody BorrowRequest borrowRequest) {
+        bookService.borrowBook(borrowRequest);
     }
 
     @GetMapping("/{id}")
@@ -56,15 +59,14 @@ public class BookController {
     }
 
 
-
     @PostMapping("/return")
-    public void processBookReturn(@RequestParam String fin,@RequestParam String bookCode){
-        bookService.processBookReturn(fin,bookCode);
+    public void processBookReturn(@RequestParam String fin, @RequestParam String bookCode) {
+        bookService.processBookReturn(fin, bookCode);
     }
 
-    @PutMapping ("/update-category")
-    public void updateBookCategory(@RequestParam Long bookId, @RequestParam Long categoryId){
-        bookService.updateBookCategory(bookId,categoryId);
+    @PutMapping("/update-category")
+    public void updateBookCategory(@RequestParam Long bookId, @RequestParam Long categoryId) {
+        bookService.updateBookCategory(bookId, categoryId);
     }
 
 

@@ -39,7 +39,6 @@ public class UserController {
 
     @GetMapping("{id}")
     public UserResponse getUser(@RequestHeader(AUTHORIZATION) String accessToken, @PathVariable Long id) {
-        System.out.println("Gələn Token: " + accessToken);
         return userService.getUser(id);
     }
 

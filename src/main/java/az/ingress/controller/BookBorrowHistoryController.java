@@ -16,8 +16,8 @@ import java.util.List;
 public class BookBorrowHistoryController {
     private final BookBorrowHistoryService bookBorrowHistoryService;
 
-    @GetMapping("/{studentId}")
-    public List<BookBorrowHistoryResponse> getBooksHistoryByStudent(@PathVariable Long studentId) {
-        return bookBorrowHistoryService.getBorrowedBooksByStudent(studentId);
+    @GetMapping("/{userId}")
+    public List<BookBorrowHistoryResponse> getBooksHistoryByStudent(@PathVariable Long userId) {
+        return bookBorrowHistoryService.getBorrowedBooksByStudent(userId);
     }
 }

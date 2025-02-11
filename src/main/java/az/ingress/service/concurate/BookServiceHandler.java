@@ -42,31 +42,20 @@ public class BookServiceHandler implements BookService {
     private final CategoryService categoryService;
     private final AuthorService authorService;
     private final FileService fileService;
-    private final StudentService studentService;
-    private final EmployeeService employeeService;
     private final UserService userService;
-    private final BookInventoryService bookInventoryService;
-    private final BookBorrowHistoryService bookBorrowHistoryService;
+
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
                               @Lazy AuthorService authorService,
                               @Lazy FileService fileService,
-                              @Lazy StudentService studentService,
-                              @Lazy BookInventoryService bookInventoryService,
-                              @Lazy BookBorrowHistoryService bookBorrowHistoryService,
-                              @Lazy UserService userService,
-                              @Lazy EmployeeService employeeService
+                              @Lazy UserService userService
     ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
         this.fileService = fileService;
-        this.studentService = studentService;
-        this.bookInventoryService = bookInventoryService;
-        this.bookBorrowHistoryService = bookBorrowHistoryService;
         this.userService = userService;
-        this.employeeService = employeeService;
     }
 
     @Override
@@ -96,40 +85,10 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public void processBookReturn(String fin, String bookCode) {
-        var book = fetchEntityExist(bookCode);
-        try {
-            var student = studentService.getStudentEntityByFin(fin);
-            bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
-            bookBorrowHistoryService.returnBookHistory(student.getId(), book.getId());
-
-        } catch (NotFoundException ex) {
-            var employee = employeeService.getEmployeeEntity(fin);
-            bookInventoryService.updateBookInventoryOnReturn(book.getTitle(), book.getPublicationYear());
-            bookBorrowHistoryService.returnBookHistory(employee.getId(), book.getId());
-        }
-
+    public BookEntity getBookEntityByBookCode(String bookCode) {
+        return fetchEntityExist(bookCode);
     }
 
-    @Override
-    @Transactional
-    public void borrowBook(BorrowRequest borrowRequest) {
-        var book = fetchEntityExist(borrowRequest.getBookCode());
-
-        try {
-            var student = studentService.getStudentEntityByFin(borrowRequest.getFin());
-            student.getBookEntities().add(book);
-            bookBorrowHistoryService.addBookToBorrowHistory(student.getUser(), book);
-
-        } catch (NotFoundException ex) {
-            var employee = employeeService.getEmployeeEntity(borrowRequest.getFin());
-            employee.getBookEntities().add(book);
-            bookBorrowHistoryService.addBookToBorrowHistory(employee.getUser(), book);
-        }
-
-        bookInventoryService.decreaseBookQuantity(book);
-        bookInventoryService.increaseReadCount(book.getBookInventoryEntity().getId());
-    }
 
     @Override
     public void updateBook(Long id, BookRequest bookRequest) {
@@ -140,8 +99,8 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public List<BookResponse> getAllBooksByFin(String fin) {
-        var student = studentService.getStudentEntityByFin(fin);
-        return student.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
+        var user = userService.getUserEntityByFin(fin);
+        return user.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
     }
 
     public void updateBookCategory(Long bookId, Long categoryId) {

@@ -45,18 +45,18 @@ public class EmployeeEntity {
     @ToString.Exclude
     UserEntity user;
 
-    @ManyToMany(
-            fetch = LAZY,
-            cascade = {MERGE, PERSIST}
-    )
-    @JoinTable(
-            name = "employee_books",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    @ToString.Exclude
-    @JsonBackReference
-    List<BookEntity> bookEntities;
+//    @ManyToMany(
+//            fetch = LAZY,
+//            cascade = {MERGE, PERSIST}
+//    )
+//    @JoinTable(
+//            name = "employee_books",
+//            joinColumns = @JoinColumn(name = "employee_id"),
+//            inverseJoinColumns = @JoinColumn(name = "book_id")
+//    )
+//    @ToString.Exclude
+//    @JsonBackReference
+//    List<BookEntity> bookEntities;
 
 
     @Override

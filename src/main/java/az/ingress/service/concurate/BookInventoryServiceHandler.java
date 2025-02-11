@@ -8,13 +8,11 @@ import az.ingress.exception.NotFoundException;
 import az.ingress.model.request.BookRequest;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
-import az.ingress.service.abstraction.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static az.ingress.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
@@ -25,14 +23,12 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private final BookInventoryRepository bookInventoryRepository;
     private final BookService bookService;
-    private final CategoryService categoryService;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
-                                       @Lazy BookService bookService,
-                                       @Lazy CategoryService categoryService) {
+                                       @Lazy BookService bookService
+    ) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
-        this.categoryService = categoryService;
     }
 
     @Override

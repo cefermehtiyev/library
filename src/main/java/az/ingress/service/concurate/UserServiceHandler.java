@@ -48,6 +48,11 @@ public class UserServiceHandler implements UserService {
         return fetchEntityExist(userId);
     }
 
+    @Override
+    public UserEntity getUserEntityByFin(String fin) {
+        return fetchEntityExist(fin);
+    }
+
 
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
         var userEntity = fetchEntityExist(authRequest);
@@ -83,12 +88,11 @@ public class UserServiceHandler implements UserService {
         );
     }
 
-//    private UserEntity fetchEntityExist(String fin) {
-//        return userRepository.findBy(fin).orElseThrow(
-//                () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
-//        );
-//    }
-
+    private UserEntity fetchEntityExist(String fin) {
+        return userRepository.findByFin(fin).orElseThrow(
+                () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
+        );
+    }
 
 
     private UserEntity fetchEntityExist(AuthRequest authRequest) {

@@ -41,7 +41,7 @@ import static javax.persistence.FetchType.LAZY;
 @ToString
 @Builder
 @Entity
-public class BookEntity  {
+public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,23 +60,23 @@ public class BookEntity  {
 
     @OneToOne(
             mappedBy = "bookEntity",
-            cascade = {MERGE,PERSIST}
+            cascade = {MERGE, PERSIST}
     )
     @ToString.Exclude
     ImageEntity imageEntity;
 
     @OneToOne(
             mappedBy = "bookEntity",
-            cascade = {MERGE,PERSIST}
+            cascade = {MERGE, PERSIST}
     )
     @ToString.Exclude
     FileEntity fileEntity;
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST,REMOVE}
+            cascade = {MERGE, PERSIST, REMOVE}
     )
-    @JoinColumn( name = "category_id" )
+    @JoinColumn(name = "category_id")
     @ToString.Exclude
     CategoryEntity category;
 
@@ -88,7 +88,7 @@ public class BookEntity  {
 
     @ManyToMany(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST}
+            cascade = {MERGE, PERSIST}
     )
     @JoinTable(
             name = "author_book",
@@ -97,33 +97,38 @@ public class BookEntity  {
     )
     List<AuthorEntity> authorEntities;
 
-    @ManyToMany(
-            fetch = LAZY,
-            cascade = {MERGE,PERSIST},
-            mappedBy = "bookEntities"
-    )
-    @ToString.Exclude
-    @JsonBackReference
-    List<StudentEntity> studentEntities;
+//    @ManyToMany(
+//            fetch = LAZY,
+//            cascade = {MERGE,PERSIST},
+//            mappedBy = "bookEntities"
+//    )
+//    @ToString.Exclude
+//    @JsonBackReference
+//    List<StudentEntity> studentEntities;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST},
+            cascade = {MERGE, PERSIST},
             mappedBy = "book"
     )
     List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
 
+    //    @ManyToMany(
+//            fetch = LAZY,
+//            cascade = {MERGE,PERSIST},
+//            mappedBy = "bookEntities"
+//    )
+//    @ToString.Exclude
+//    @JsonBackReference
+//    List<EmployeeEntity> employeeEntities;
     @ManyToMany(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST},
+            cascade = {MERGE, PERSIST},
             mappedBy = "bookEntities"
     )
     @ToString.Exclude
     @JsonBackReference
-    List<EmployeeEntity> employeeEntities;
-
-
-
+    List<UserEntity> userEntities;
 
 
     @Override
@@ -141,7 +146,6 @@ public class BookEntity  {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-
 
 
 }

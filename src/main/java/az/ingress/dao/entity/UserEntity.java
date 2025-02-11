@@ -2,6 +2,7 @@ package az.ingress.dao.entity;
 
 import az.ingress.model.enums.UserRole;
 import az.ingress.model.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -72,6 +76,19 @@ public class UserEntity {
     )
     @ToString.Exclude
     List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
+
+    @ManyToMany(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST}
+    )
+    @JoinTable(
+            name = "book_borrow_history",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    @ToString.Exclude
+    @JsonBackReference
+    List<BookEntity> bookEntities;
 
     @Override
     public boolean equals(Object o) {

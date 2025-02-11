@@ -16,9 +16,7 @@ public interface BookService {
 
     BookResponse getBook(Long id);
 
-    void processBookReturn(String fin, String bookCode);
-
-    void borrowBook(BorrowRequest borrowRequest);
+    BookEntity getBookEntityByBookCode(String bookCode);
 
     List<BookResponse> getAllBooksByFin(String fin);
 

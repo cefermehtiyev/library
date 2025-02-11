@@ -33,36 +33,13 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping("/v1/books")
 public class BookController {
     private final BookService bookService;
-    private final FileService fileService;
-    private final BookRepository bookRepository;
 
-
-    @PostMapping("/borrow")
-    @ResponseStatus(NO_CONTENT)
-    public void borrowBook(@RequestBody BorrowRequest borrowRequest) {
-        bookService.borrowBook(borrowRequest);
-    }
 
     @GetMapping("/{id}")
     public BookResponse getBook(@PathVariable Long id) {
         return bookService.getBook(id);
     }
 
-    @GetMapping("/upload-file")
-    public ResponseEntity<InputStreamResource> uploadBook(@RequestParam Long id) {
-        return fileService.downloadFile(id);
-    }
-
-    @GetMapping("/upload-image")
-    public ResponseEntity<InputStreamResource> uploadImage(@RequestParam Long id) {
-        return fileService.downloadFile(id);
-    }
-
-
-    @PostMapping("/return")
-    public void processBookReturn(@RequestParam String fin, @RequestParam String bookCode) {
-        bookService.processBookReturn(fin, bookCode);
-    }
 
     @PutMapping("/update-category")
     public void updateBookCategory(@RequestParam Long bookId, @RequestParam Long categoryId) {

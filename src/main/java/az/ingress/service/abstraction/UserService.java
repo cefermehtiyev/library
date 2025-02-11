@@ -13,6 +13,7 @@ public interface UserService {
     void signIn(RegistrationRequest registrationRequest);
     UserResponse getUser (Long userId);
     UserEntity getUserEntity(Long userId);
+    UserEntity getUserEntityByFin(String fin);
     UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest);
     PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria);
     void updateUser(Long userId, RegistrationRequest registrationRequest);

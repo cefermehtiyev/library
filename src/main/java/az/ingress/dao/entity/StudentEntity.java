@@ -47,18 +47,18 @@ public class StudentEntity{
     UserEntity user;
 
 
-    @ManyToMany(
-            fetch = LAZY,
-            cascade = {MERGE, PERSIST}
-    )
-    @JoinTable(
-            name = "student_books",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    @ToString.Exclude
-    @JsonBackReference
-    List<BookEntity> bookEntities;
+//    @ManyToMany(
+//            fetch = LAZY,
+//            cascade = {MERGE, PERSIST}
+//    )
+//    @JoinTable(
+//            name = "student_books",
+//            joinColumns = @JoinColumn(name = "student_id"),
+//            inverseJoinColumns = @JoinColumn(name = "book_id")
+//    )
+//    @ToString.Exclude
+//    @JsonBackReference
+//    List<BookEntity> bookEntities;
 
 
 

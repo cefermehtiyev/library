@@ -8,19 +8,13 @@ import az.ingress.dao.repository.BookRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.model.enums.BookStatus;
-import az.ingress.model.enums.UserRole;
 import az.ingress.model.request.BookRequest;
-import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
-import az.ingress.service.abstraction.BookInventoryService;
-import az.ingress.service.abstraction.BookBorrowHistoryService;
 import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.CategoryService;
-import az.ingress.service.abstraction.EmployeeService;
 import az.ingress.service.abstraction.FileService;
-import az.ingress.service.abstraction.StudentService;
 import az.ingress.service.abstraction.UserService;
 import az.ingress.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
@@ -119,30 +113,15 @@ public class BookServiceHandler implements BookService {
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 
-    @Override
-    public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
-        var bookPage = bookRepository.findDistinctBooksByReadCount(
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return BOOK_MAPPER.pageableBookResponse(bookPage);
-    }
 
     @Override
-    public PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria) {
-        var bookPage = bookRepository.findDistinctBooksByPagesDesc(
+    public PageableResponse getBooksSorted(String order, PageCriteria pageCriteria) {
+        var bookPage = bookRepository.findDistinctBooks(order,
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
         );
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
-
-    @Override
-    public PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria) {
-        var bookPage = bookRepository.findDistinctBooksByPagesAsc(
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
-        );
-
-        return BOOK_MAPPER.pageableBookResponse(bookPage);
-    }
-
+    
 
     @Override
     public void deleteBook(Long id) {

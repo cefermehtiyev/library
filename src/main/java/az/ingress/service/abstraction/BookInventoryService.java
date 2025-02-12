@@ -2,12 +2,9 @@ package az.ingress.service.abstraction;
 
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
-import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.request.BookRequest;
+import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 public interface BookInventoryService {
     void addBookToInventory(BookRequest bookRequest);
@@ -16,7 +13,7 @@ public interface BookInventoryService {
 
     void increaseReadCount(Long inventoryId);
 
-    List<BookInventoryEntity> getAllBookInventoryEntity();
+    PageableResponse getBooksSorted(String sortBy, String order, PageCriteria pageCriteria);
 
     void decreaseBookQuantity(BookEntity bookEntity);
 }

@@ -1,21 +1,29 @@
 package az.ingress.service.concurate;
 
+import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookInventoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.mapper.BookMapper;
 import az.ingress.model.request.BookRequest;
+import az.ingress.model.response.BookResponse;
+import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 import static az.ingress.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
+import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 
 @Slf4j
 @Service
@@ -48,7 +56,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-
     @Override
     public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
         var bookInventory = fetchEntityExist(title, publicationYear);
@@ -63,6 +70,16 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
+    @Override
+    public PageableResponse getBooksSorted(String sortBy, String order, PageCriteria pageCriteria) {
+
+        var page = bookInventoryRepository.findDistinctBooks(sortBy, order,
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
+        );
+
+        return BOOK_MAPPER.pageableBookResponse(page);
+
+    }
 
 
     @Override
@@ -77,10 +94,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
         bookInventoryRepository.save(bookInventoryEntity);
 
-    }
-
-    public List<BookInventoryEntity> getAllBookInventoryEntity() {
-        return bookInventoryRepository.findAllByOrderByReadCountDesc();
     }
 
 

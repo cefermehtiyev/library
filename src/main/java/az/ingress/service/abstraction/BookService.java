@@ -5,7 +5,6 @@ import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.model.request.BookRequest;
-import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 
@@ -24,12 +23,7 @@ public interface BookService {
 
     PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria);
 
-    PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria);
-
-    PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria);
-
-    PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria);
-
+    PageableResponse getBooksSorted(String order,PageCriteria pageCriteria);
 
     void updateBook(Long id, BookRequest bookRequest);
 

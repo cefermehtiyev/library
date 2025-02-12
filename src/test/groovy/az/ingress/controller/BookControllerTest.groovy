@@ -6,7 +6,6 @@ import az.ingress.service.abstraction.BookService
 import az.ingress.service.abstraction.FileService
 import io.github.benas.randombeans.EnhancedRandomBuilder
 import io.github.benas.randombeans.api.EnhancedRandom
-import liquibase.pro.packaged.S
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -188,7 +187,7 @@ class BookControllerTest extends Specification {
                 .andReturn()
 
         then:
-        1 * bookService.getBooksSortedByPagesDesc(pageCriteria)
+        1 * bookService.getBooksSorted(pageCriteria)
     }
     def "TestGetBooksSortedByPagesAsc"() {
         given:

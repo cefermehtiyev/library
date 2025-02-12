@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -20,10 +22,12 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
     Page<BookEntity> findDistinctBooksByReadCount(Pageable pageable);
 
 
-    @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)ORDER BY b.pages DESC",nativeQuery = true)
-    Page<BookEntity> findDistinctBooksByPagesDesc(Pageable pageable);
+    @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)" +
+            "ORDER BY " +
+            "CASE WHEN :order = 'desc' THEN b.pages END DESC,"+
+            "CASE WHEN :order = 'asc' THEN b.pages END ASC "
+            ,nativeQuery = true)
+    Page<BookEntity> findDistinctBooks(@RequestParam String order, Pageable pageable);
 
-    @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)ORDER BY b.pages ASC ",nativeQuery = true)
-    Page<BookEntity> findDistinctBooksByPagesAsc(Pageable pageable);
 }
 

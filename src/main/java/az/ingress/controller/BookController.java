@@ -2,20 +2,14 @@ package az.ingress.controller;
 
 import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
-import az.ingress.dao.repository.BookRepository;
 import az.ingress.model.request.BookRequest;
-import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookService;
-import az.ingress.service.abstraction.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,20 +51,12 @@ public class BookController {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 
-    @GetMapping("/sorted-by-read-count")
-    public PageableResponse getBooksSortedByReadCount(PageCriteria pageCriteria) {
-        return bookService.getBooksSortedByReadCount(pageCriteria);
+
+    @GetMapping("/sorted")
+    public PageableResponse getBooksSorted(@RequestParam(defaultValue = "asc") String order, PageCriteria pageCriteria) {
+        return bookService.getBooksSorted(order,pageCriteria);
     }
 
-    @GetMapping("/sorted-by-pages-desc")
-    public PageableResponse getBooksSortedByPagesDesc(PageCriteria pageCriteria) {
-        return bookService.getBooksSortedByPagesDesc(pageCriteria);
-    }
-
-    @GetMapping("/sorted-by-pages-asc")
-    public PageableResponse getBooksSortedByPagesAsc(PageCriteria pageCriteria) {
-        return bookService.getBooksSortedByPagesAsc(pageCriteria);
-    }
 
     @PutMapping("/{id}")
     @ResponseStatus(NO_CONTENT)

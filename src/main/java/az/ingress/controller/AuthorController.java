@@ -17,7 +17,6 @@ public class AuthorController {
 
     @PostMapping
     public void addAuthor(@RequestBody AuthorRequest authorRequest) {
-
         authorService.addAuthor(authorRequest);
     }
 

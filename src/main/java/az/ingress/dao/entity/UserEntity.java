@@ -67,6 +67,13 @@ public class UserEntity {
             cascade = {PERSIST,MERGE}
     )
     @ToString.Exclude
+    AdminEntity admin;
+
+    @OneToOne(
+            mappedBy = "user",
+            cascade = {PERSIST,MERGE}
+    )
+    @ToString.Exclude
     StudentEntity student;
 
     @OneToMany(

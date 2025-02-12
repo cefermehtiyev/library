@@ -26,6 +26,7 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter
 @Setter
@@ -44,19 +45,6 @@ public class EmployeeEntity {
     @JoinColumn(name = "id")
     @ToString.Exclude
     UserEntity user;
-
-//    @ManyToMany(
-//            fetch = LAZY,
-//            cascade = {MERGE, PERSIST}
-//    )
-//    @JoinTable(
-//            name = "employee_books",
-//            joinColumns = @JoinColumn(name = "employee_id"),
-//            inverseJoinColumns = @JoinColumn(name = "book_id")
-//    )
-//    @ToString.Exclude
-//    @JsonBackReference
-//    List<BookEntity> bookEntities;
 
 
     @Override

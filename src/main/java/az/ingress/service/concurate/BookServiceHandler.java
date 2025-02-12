@@ -91,11 +91,7 @@ public class BookServiceHandler implements BookService {
         bookRepository.save(bookEntity);
     }
 
-    @Override
-    public List<BookResponse> getAllBooksByFin(String fin) {
-        var user = userService.getUserEntityByFin(fin);
-        return user.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).toList();
-    }
+
 
     public void updateBookCategory(Long bookId, Long categoryId) {
         var book = fetchEntityExist(bookId);
@@ -121,7 +117,7 @@ public class BookServiceHandler implements BookService {
         );
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
-    
+
 
     @Override
     public void deleteBook(Long id) {

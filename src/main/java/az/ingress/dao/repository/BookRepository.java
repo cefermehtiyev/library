@@ -13,14 +13,7 @@ import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpecificationExecutor<BookEntity> {
     Optional<BookEntity> findByBookCode(String bookCode);
-
-    @Query(value = "SELECT b.* FROM books b " +
-            "LEFT JOIN book_inventory bi ON bi.id = b.inventory_id " +
-            "WHERE b.id = (SELECT MIN(b2.id) FROM books b2 WHERE b2.title = b.title) " +
-            "ORDER BY bi.read_count DESC ",
-            nativeQuery = true)
-    Page<BookEntity> findDistinctBooksByReadCount(Pageable pageable);
-
+    ;
 
     @Query(value = "SELECT b.* FROM books b Where b.id = (SELECT MIN(id) FROM books WHERE title = b.title)" +
             "ORDER BY " +

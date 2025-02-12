@@ -41,11 +41,6 @@ public class BookController {
     }
 
 
-    @GetMapping("/by-fin")
-    public List<BookResponse> getAllBooksByFin(@RequestParam String fin) {
-        return bookService.getAllBooksByFin(fin);
-    }
-
     @GetMapping
     public PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria) {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
@@ -54,7 +49,7 @@ public class BookController {
 
     @GetMapping("/sorted")
     public PageableResponse getBooksSorted(@RequestParam(defaultValue = "asc") String order, PageCriteria pageCriteria) {
-        return bookService.getBooksSorted(order,pageCriteria);
+        return bookService.getBooksSorted(order, pageCriteria);
     }
 
 

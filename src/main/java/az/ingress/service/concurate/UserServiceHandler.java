@@ -6,9 +6,11 @@ import az.ingress.dao.entity.UserEntity;
 import az.ingress.dao.repository.UserRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.mapper.BookMapper;
 import az.ingress.model.enums.UserStatus;
 import az.ingress.model.request.AuthRequest;
 import az.ingress.model.request.RegistrationRequest;
+import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.model.response.UserIdResponse;
 import az.ingress.model.response.UserResponse;
@@ -22,6 +24,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.awt.print.Pageable;
+import java.util.List;
+
+import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 import static az.ingress.mapper.UserMapper.USER_MAPPER;
 
 @RequiredArgsConstructor
@@ -92,6 +98,14 @@ public class UserServiceHandler implements UserService {
         return userRepository.findByFin(fin).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
+    }
+
+    @Override
+    public PageableResponse getAllBooksByFin(String fin, PageCriteria pageCriteria) {
+        var page = userRepository.findBooksByFin(
+                fin,PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+        );
+        return BOOK_MAPPER.pageableBookResponse(page);
     }
 
 

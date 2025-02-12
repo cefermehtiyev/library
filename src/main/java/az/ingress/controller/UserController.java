@@ -4,6 +4,7 @@ import az.ingress.criteria.PageCriteria;
 import az.ingress.criteria.UserCriteria;
 import az.ingress.model.request.RegistrationRequest;
 
+import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.model.response.UserResponse;
 import az.ingress.service.abstraction.AuthService;
@@ -17,8 +18,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -40,6 +44,11 @@ public class UserController {
     @GetMapping("{id}")
     public UserResponse getUser(@RequestHeader(AUTHORIZATION) String accessToken, @PathVariable Long id) {
         return userService.getUser(id);
+    }
+
+    @GetMapping("/by-fin")
+    public PageableResponse getAllBooksByFin(@RequestParam String fin, PageCriteria pageCriteria) {
+        return userService.getAllBooksByFin(fin, pageCriteria);
     }
 
 

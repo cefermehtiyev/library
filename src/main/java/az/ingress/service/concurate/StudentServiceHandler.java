@@ -29,29 +29,5 @@ public class StudentServiceHandler implements StudentService {
         studentRepository.save(student);
     }
 
-    @Override
-    public StudentEntity getStudentEntityByFin(String fin) {
-        return fetchEntityExist(fin);
-    }
-
-    @Override
-    public StudentEntity getStudentEntityById(Long id) {
-        return fetchEntityExist(id);
-    }
-
-
-    private StudentEntity fetchEntityExist(String fin) {
-//        return studentRepository.findByFin(fin).orElseThrow(
-//                () -> new NotFoundException(ErrorMessage.STUDENT_NOT_FOUND.getMessage())
-//        );
-        return null;
-    }
-
-    private StudentEntity fetchEntityExist(Long id) {
-        return studentRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.STUDENT_NOT_FOUND.getMessage())
-        );
-    }
-
 
 }

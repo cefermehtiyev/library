@@ -27,8 +27,6 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
 
 
 
-
-
 //
 //    @Query("SELECT b FROM BookEntity b " +
 //            "JOIN b.bookInventoryEntity bi " +

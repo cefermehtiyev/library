@@ -1,2 +1,32 @@
 server:
-  port: 8080
+  port: 7777
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:1010/library_db
+    username: postgres
+    password: j@vacefer2005
+  jpa:
+    open-in-view: true
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yaml
+
+redis:
+  server:
+    urls: redis://localhost:6379
+    password: myredispassword
+
+token:
+  expiration:
+    access-token: 50
+    refresh-token: 21600
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:

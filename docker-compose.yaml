@@ -1,0 +1,64 @@
+
+services:
+  postgres:
+    container_name: postgres_library2
+    image: "postgres:latest"
+    environment:
+      POSTGRES_DB: library_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: j@vacefer2005
+    ports:
+      - "1010:5432"
+    volumes:
+      - library_db:/var/lib/postgresql/data
+
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - '1257:8080'
+
+  redis:
+    image: redis:latest
+    environment:
+      REDIS_PASSWORD: myredispassword
+    command: ["redis-server", "--requirepass", "myredispassword"]
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+
+volumes:
+  library_db:
+  redis-data:
+
+#
+#services:
+#  postgres:
+#    container_name: postgres_lib
+#    image: "postgres:latest"
+#    environment:
+#      POSTGRES_DB: library_db
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: j@vacefer2005
+#    ports:
+#      - "2000:5432"
+#    volumes:
+#      - library_db:/var/lib/postgresql/data
+#
+#  adminer:
+#    container_name: adminer_library
+#    image: adminer:latest
+#    ports:
+#      - '6293:8080'
+#
+#
+#volumes:
+#  library-db:
+#
+#networks:
+#  default:
+#    name: library_network
+
+

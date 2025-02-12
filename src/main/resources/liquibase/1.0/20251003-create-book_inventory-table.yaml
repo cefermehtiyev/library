@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book_inventory-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: book_inventory
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: publication_year
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: borrowed_quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: available_quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reserved_quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: read_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

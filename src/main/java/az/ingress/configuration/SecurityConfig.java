@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Configuration
@@ -41,8 +42,8 @@ public class SecurityConfig {
                         .antMatchers("/v1/auth/**", "/v1/users/sign-in","/swagger-ui/**","swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
-                                "/webjars/**").permitAll() // Açıq endpointlər
-                        .anyRequest().authenticated() // Qalan bütün sorğular doğrulama tələb edir
+                                "/webjars/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Sessiya idarəetməsi deaktiv

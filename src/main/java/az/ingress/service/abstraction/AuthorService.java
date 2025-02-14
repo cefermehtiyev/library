@@ -1,13 +1,11 @@
 package az.ingress.service.abstraction;
 
+import az.ingress.criteria.AuthorCriteria;
+import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
-import az.ingress.model.request.AuthRequest;
 import az.ingress.model.request.AuthorRequest;
-import az.ingress.model.response.AuthResponse;
 import az.ingress.model.response.AuthorResponse;
-import az.ingress.model.response.BookResponse;
-
-import java.util.List;
+import az.ingress.model.response.PageableResponse;
 
 public interface AuthorService {
     void addAuthor(AuthorRequest authorRequest);
@@ -22,7 +20,9 @@ public interface AuthorService {
 
     void removeBookFromAuthor(Long bookId, Long authorId);
 
-    List<BookResponse> getBooksByAuthor(Long authorId);
+    PageableResponse getAuthorSorted(PageCriteria pageCriteria,AuthorCriteria authorCriteria );
+
+    PageableResponse getBooksByAuthor(Long authorId);
 
 
 }

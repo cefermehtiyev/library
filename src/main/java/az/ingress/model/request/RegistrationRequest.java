@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "userRole",visible = true) // JSON-dakı "userRole" əsasən modeli seçir
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "userRole",visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = StudentRequest.class, name = "STUDENT"),
         @JsonSubTypes.Type(value = EmployeeRequest.class, name = "EMPLOYEE"),

@@ -1,5 +1,7 @@
 package az.ingress.service.concurate;
 
+import az.ingress.criteria.AuthorCriteria;
+import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.AuthorEntity;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.repository.AuthorRepository;
@@ -10,8 +12,12 @@ import az.ingress.model.request.AuthorRequest;
 import az.ingress.model.response.AuthorResponse;
 import az.ingress.model.response.BookResponse;
 
+import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
+import az.ingress.service.specification.AuthorSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,8 +68,20 @@ public class AuthorServiceHandler implements AuthorService {
     }
 
     @Override
-    public List<BookResponse> getBooksByAuthor(Long authorId) {
-        return List.of();
+    public PageableResponse getAuthorSorted( PageCriteria pageCriteria, AuthorCriteria authorCriteria) {
+        var page = authorRepository.findAll(
+                new AuthorSpecification(authorCriteria),PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+
+        );
+        return AUTHOR_MAPPER.pageableAuthorResponse(page);
+
+    }
+
+
+
+    @Override
+    public PageableResponse getBooksByAuthor(Long authorId) {
+        return null;
     }
 
     private AuthorEntity fetchEntityExist(String name) {

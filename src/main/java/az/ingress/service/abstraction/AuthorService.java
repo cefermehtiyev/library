@@ -22,7 +22,7 @@ public interface AuthorService {
 
     PageableResponse getAuthorSorted(PageCriteria pageCriteria,AuthorCriteria authorCriteria );
 
-    PageableResponse getBooksByAuthor(Long authorId);
+    PageableResponse getBooksByAuthor(Long authorId, PageCriteria pageCriteria);
 
 
 }

@@ -1,9 +1,14 @@
 package az.ingress.mapper;
 
 import az.ingress.dao.entity.AuthorEntity;
+import az.ingress.dao.entity.UserEntity;
 import az.ingress.model.enums.AuthorStatus;
 import az.ingress.model.request.AuthorRequest;
 import az.ingress.model.response.AuthorResponse;
+import az.ingress.model.response.PageableResponse;
+import org.springframework.data.domain.Page;
+
+import java.util.Collections;
 
 import static az.ingress.model.enums.AuthorStatus.ACTIVE;
 
@@ -33,5 +38,16 @@ public enum AuthorMapper {
         authorEntity.setName(authorRequest.getName());
         authorEntity.setBiography(authorRequest.getBiography());
         authorEntity.setDateOfBirth(authorRequest.getDateOfBirth());
+    }
+
+    public PageableResponse pageableAuthorResponse(Page<AuthorEntity> userEntityPage){
+        return PageableResponse.builder()
+                .list(Collections.singletonList(userEntityPage.map(this::buildAuthorResponse).toList()))
+                .currentPageNumber(userEntityPage.getNumber())
+                .totalPages(userEntityPage.getTotalPages())
+                .totalElements(userEntityPage.getTotalElements())
+                .numberOfElements(userEntityPage.getNumberOfElements())
+                .hasNextPage(userEntityPage.hasNext())
+                .build();
     }
 }

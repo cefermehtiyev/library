@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-admins-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: admins
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: admin_role
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+
+        - addForeignKeyConstraint:
+            baseTableName: admins
+            baseColumnNames: id
+            constraintName: fk_admin_user_admins
+            referencedTableName: users
+            referencedColumnNames: id

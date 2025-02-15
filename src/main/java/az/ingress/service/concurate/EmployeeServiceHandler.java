@@ -26,17 +26,8 @@ public class EmployeeServiceHandler implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-    @Override
-    public EmployeeEntity getEmployeeEntity(String fin) {
-        return fetchEntityExist(fin);
-    }
 
-    private EmployeeEntity fetchEntityExist(String fin) {
-//        return employeeRepository.findByFin(fin).orElseThrow(
-//                () -> new NotFoundException(ErrorMessage.EMPLOYEE_NOT_FOUND.getMessage())
-//        );
-        return null;
-    }
+
 
 
 }

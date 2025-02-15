@@ -1,22 +1,30 @@
 package az.ingress.service.concurate;
 
+import az.ingress.criteria.AuthorCriteria;
+import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.AuthorEntity;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.repository.AuthorRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.mapper.BookMapper;
 import az.ingress.model.request.AuthorRequest;
 
 import az.ingress.model.response.AuthorResponse;
 import az.ingress.model.response.BookResponse;
 
+import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
+import az.ingress.service.specification.AuthorSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static az.ingress.mapper.AuthorMapper.AUTHOR_MAPPER;
+import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 import static az.ingress.model.enums.AuthorStatus.REMOVED;
 
 @RequiredArgsConstructor
@@ -62,8 +70,23 @@ public class AuthorServiceHandler implements AuthorService {
     }
 
     @Override
-    public List<BookResponse> getBooksByAuthor(Long authorId) {
-        return List.of();
+    public PageableResponse getAuthorSorted( PageCriteria pageCriteria, AuthorCriteria authorCriteria) {
+        var page = authorRepository.findAll(
+                new AuthorSpecification(authorCriteria),PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+
+        );
+        return AUTHOR_MAPPER.pageableAuthorResponse(page);
+
+    }
+
+
+
+    @Override
+    public PageableResponse getBooksByAuthor(Long authorId, PageCriteria pageCriteria) {
+        var page = authorRepository.findBooksByAuthor(authorId,
+                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+                );
+        return BOOK_MAPPER.pageableBookResponse(page);
     }
 
     private AuthorEntity fetchEntityExist(String name) {

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.Entity;
@@ -40,6 +41,7 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @ToString
 @Builder
+@Where(clause = "book_status <> 'DELETED'")
 @Entity
 public class BookEntity {
     @Id
@@ -97,14 +99,7 @@ public class BookEntity {
     )
     List<AuthorEntity> authorEntities;
 
-//    @ManyToMany(
-//            fetch = LAZY,
-//            cascade = {MERGE,PERSIST},
-//            mappedBy = "bookEntities"
-//    )
-//    @ToString.Exclude
-//    @JsonBackReference
-//    List<StudentEntity> studentEntities;
+
 
     @OneToMany(
             fetch = LAZY,
@@ -113,14 +108,6 @@ public class BookEntity {
     )
     List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
 
-    //    @ManyToMany(
-//            fetch = LAZY,
-//            cascade = {MERGE,PERSIST},
-//            mappedBy = "bookEntities"
-//    )
-//    @ToString.Exclude
-//    @JsonBackReference
-//    List<EmployeeEntity> employeeEntities;
     @ManyToMany(
             fetch = LAZY,
             cascade = {MERGE, PERSIST},

@@ -37,20 +37,6 @@ public class AuthServiceHandler implements AuthService {
     private final CacheProvider cacheProvider;
     private final SessionTokenRepository sessionTokenRepository;
 
-//    public AuthResponse signIn(AuthRequest authRequest) {
-//        var userIdResponse = userService.getUserIdByUserNameAndPassword(authRequest);
-//
-//        var sessionToken = (AuthCacheData)cacheProvider.getBucket(userIdResponse.id());
-//        Date currentDate = new Date();
-//        System.out.println(sessionToken);
-//
-//        if(sessionToken != null && currentDate.before(sessionToken.getAccessTokenClaimsSet().getExpirationTime())){
-//            throw new NotFoundException(ErrorMessage.TOKEN_EXPIRED.getMessage());
-//        }
-//
-//        return  tokenService.prepareToken(userIdResponse.id());
-//    }
-
 
     public AuthResponse signIn(AuthRequest authRequest) {
         var userIdResponse = userService.getUserIdByUserNameAndPassword(authRequest);

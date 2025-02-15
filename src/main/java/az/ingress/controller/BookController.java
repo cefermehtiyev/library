@@ -41,13 +41,13 @@ public class BookController {
     }
 
 
-    @GetMapping
+    @GetMapping("/sorted")
     public PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria) {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 
 
-    @GetMapping("/sorted")
+    @GetMapping("/sorted/page")
     public PageableResponse getBooksSorted(@RequestParam(defaultValue = "asc") String order, PageCriteria pageCriteria) {
         return bookService.getBooksSorted(order, pageCriteria);
     }

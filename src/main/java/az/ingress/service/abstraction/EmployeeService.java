@@ -7,5 +7,4 @@ import az.ingress.model.request.RegistrationRequest;
 
 public interface EmployeeService {
     void addEmployee(UserEntity userEntity, EmployeeRequest request);
-    EmployeeEntity getEmployeeEntity(String fin);
 }

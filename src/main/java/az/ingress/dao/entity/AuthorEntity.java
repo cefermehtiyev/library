@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -32,6 +33,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "book_status <> 'DELETED'")
 @Table(name = "authors")
 @Entity
 public class AuthorEntity {

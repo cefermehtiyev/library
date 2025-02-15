@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -36,6 +37,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@Where(clause = "book_status <> 'DELETED'")
 @Builder
 @Entity
 public class UserEntity {

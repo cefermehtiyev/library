@@ -15,23 +15,15 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
 
     @Query("SELECT b FROM BookEntity b " +
             "JOIN b.bookInventoryEntity bi " +
-            "WHERE b.id = (SELECT MIN(b2.id) FROM BookEntity b2 WHERE b2.title = b.title)"+
+            "WHERE b.id = (SELECT MIN(b2.id) FROM BookEntity b2 WHERE b2.title = b.title)" +
             "ORDER BY " +
-            "CASE WHEN :sortBy = 'createAt' AND :order = 'asc' THEN bi.createdAt END ASC,"+
-            "CASE WHEN :sortBy = 'createdAt' AND :order = 'desc'THEN bi.createdAt END DESC,"+
-            "CASE WHEN :sortBy = 'readCount' AND :order = 'asc' THEN bi.readCount END ASC ,"+
+            "CASE WHEN :sortBy = 'createAt' AND :order = 'asc' THEN bi.createdAt END ASC," +
+            "CASE WHEN :sortBy = 'createdAt' AND :order = 'desc'THEN bi.createdAt END DESC," +
+            "CASE WHEN :sortBy = 'readCount' AND :order = 'asc' THEN bi.readCount END ASC ," +
             "CASE WHEN :sortBy = 'readCount' AND :order = 'desc' THEN bi.readCount END DESC "
     )
-    Page<BookEntity> findDistinctBooks(@Param("sortBy")String sortBy, @Param("order") String order, Pageable pageable);
+    Page<BookEntity> findDistinctBooks(@Param("sortBy") String sortBy, @Param("order") String order, Pageable pageable);
 
 
-
-
-//
-//    @Query("SELECT b FROM BookEntity b " +
-//            "JOIN b.bookInventoryEntity bi " +
-//            "WHERE b.id = (SELECT MIN(b2.id) FROM BookEntity b2 WHERE b2.title = b.title) " +
-//            "ORDER BY bi.createdAt ASC ")
-//    Page<BookEntity> findDistinctBooksByAddedDateAsc(Pageable pageable);
 }
 

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "userRole",visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "userRole", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = StudentRequest.class, name = "STUDENT"),
         @JsonSubTypes.Type(value = EmployeeRequest.class, name = "EMPLOYEE"),
@@ -25,4 +25,6 @@ public class RegistrationRequest {
     private String lastName;
     private String fin;
     private UserRole userRole;
+
+
 }

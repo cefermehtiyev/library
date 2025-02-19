@@ -1,5 +1,6 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.criteria.BookCriteria;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
@@ -7,15 +8,14 @@ import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.repository.BookRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.model.enums.BookStatus;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
 import az.ingress.service.abstraction.BookService;
 import az.ingress.service.abstraction.CategoryService;
+import az.ingress.service.abstraction.CommonStatusService;
 import az.ingress.service.abstraction.FileService;
-import az.ingress.service.abstraction.UserService;
 import az.ingress.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -24,8 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
-import java.util.List;
 
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
 
@@ -36,26 +34,29 @@ public class BookServiceHandler implements BookService {
     private final CategoryService categoryService;
     private final AuthorService authorService;
     private final FileService fileService;
-    private final UserService userService;
-
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
                               @Lazy AuthorService authorService,
                               @Lazy FileService fileService,
-                              @Lazy UserService userService
+                              @Lazy CommonStatusService commonStatusService,
+                              @Lazy CommonStatusConfig commonStatusConfig
     ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
         this.fileService = fileService;
-        this.userService = userService;
+        this.commonStatusService = commonStatusService;
+        this.commonStatusConfig = commonStatusConfig;
     }
 
     @Override
     @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
-        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         addBookRelationships(bookRequest, bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
 
@@ -83,14 +84,12 @@ public class BookServiceHandler implements BookService {
         return fetchEntityExist(bookCode);
     }
 
-
     @Override
     public void updateBook(Long id, BookRequest bookRequest) {
         var bookEntity = fetchEntityExist(id);
         BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
         bookRepository.save(bookEntity);
     }
-
 
 
     public void updateBookCategory(Long bookId, Long categoryId) {
@@ -122,7 +121,8 @@ public class BookServiceHandler implements BookService {
     @Override
     public void deleteBook(Long id) {
         var bookEntity = fetchEntityExist(id);
-        bookEntity.setBookStatus(BookStatus.DELETED);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        bookEntity.setCommonStatusEntity(status);
         bookRepository.save(bookEntity);
     }
 

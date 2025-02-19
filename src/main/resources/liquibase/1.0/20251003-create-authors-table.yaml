@@ -24,8 +24,8 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: author_status
-                  type: VARCHAR(255)
+                  name: status_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -33,5 +33,17 @@ databaseChangeLog:
                   type: DATE
                   constraints:
                     nullable: true
+
+  - changeSet:
+      id: authors  set status
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: authors
+            baseColumnNames: status_id
+            constraintName: fk_authors_status
+            referencedTableName: common_statuses
+            referencedColumnNames: id
+
 
 

@@ -16,6 +16,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -27,6 +29,7 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
 
 @Table(name = "book_inventory")
 @Getter
@@ -46,19 +49,26 @@ public class BookInventoryEntity {
     private Integer borrowedQuantity;
     private Integer availableQuantity;
     private Long readCount;
-    @Enumerated(STRING)
-    private InventoryStatus status;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {MERGE,PERSIST,REMOVE},
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE},
             mappedBy = "bookInventoryEntity"
     )
     List<BookEntity> bookEntities;
+
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE}
+    )
+    @JoinColumn(name = "status_id")
+    @ToString.Exclude
+    InventoryStatusEntity inventoryStatus;
 
     @Override
     public boolean equals(Object o) {

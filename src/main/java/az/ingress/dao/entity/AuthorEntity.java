@@ -1,11 +1,11 @@
 package az.ingress.dao.entity;
 
-import az.ingress.model.enums.AuthorStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +34,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Where(clause = "book_status <> 'DELETED'")
 @Table(name = "authors")
 @Entity
 public class AuthorEntity {
@@ -42,8 +42,6 @@ public class AuthorEntity {
     private Long id;
     private String name;
     private String biography;
-    @Enumerated(STRING)
-    private AuthorStatus authorStatus;
     private LocalDate dateOfBirth;
 
     @ManyToMany(
@@ -56,6 +54,15 @@ public class AuthorEntity {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     List<BookEntity> bookEntities;
+
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE}
+    )
+    @JoinColumn(name = "status_id")
+    @ToString.Exclude
+    CommonStatusEntity commonStatusEntity;
+
 
     @Override
     public boolean equals(Object o) {

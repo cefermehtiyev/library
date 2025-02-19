@@ -1,5 +1,7 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.CommonStatusConfig;
+import az.ingress.configuration.InventoryStatusConfig;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.BookInventoryEntity;
@@ -12,6 +14,8 @@ import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
+import az.ingress.service.abstraction.CommonStatusService;
+import az.ingress.service.abstraction.InventoryStatusService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -28,12 +32,24 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private final BookInventoryRepository bookInventoryRepository;
     private final BookService bookService;
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
+    private final InventoryStatusService inventoryStatusService;
+    private final InventoryStatusConfig inventoryStatusConfig;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
-                                       @Lazy BookService bookService
+                                       @Lazy BookService bookService,
+                                       @Lazy CommonStatusService commonStatusService,
+                                       @Lazy CommonStatusConfig commonStatusConfig,
+                                       @Lazy InventoryStatusService inventoryStatusService,
+                                       @Lazy InventoryStatusConfig inventoryStatusConfig
     ) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
+        this.commonStatusService = commonStatusService;
+        this.commonStatusConfig = commonStatusConfig;
+        this.inventoryStatusService = inventoryStatusService;
+        this.inventoryStatusConfig = inventoryStatusConfig;
     }
 
     @Override
@@ -45,11 +61,25 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                     return BOOK_INVENTORY_MAPPER.updateBookInventoryEntity(existingInventory);
                 })
                 .orElseGet(() -> {
+                    var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
                     log.info("Inventory added");
-                    return BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear());
+                    return BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
                 });
+
+        determineInventoryStatus(bookInventoryEntity);
         bookInventoryRepository.save(bookInventoryEntity);
         bookService.addBook(bookRequest, bookInventoryEntity);
+    }
+
+    private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {
+        var quantity = bookInventoryEntity.getAvailableQuantity();
+
+        var statusId = quantity == 0 ? inventoryStatusConfig.getStockOut() :
+                quantity < 3 ? inventoryStatusConfig.getLowStock() :
+                        inventoryStatusConfig.getStockOut();
+
+        bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntity(statusId));
+
     }
 
 
@@ -57,6 +87,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
         var bookInventory = fetchEntityExist(title, publicationYear);
         BOOK_INVENTORY_MAPPER.updateInventoryOnReturn(bookInventory);
+        determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
     }
 
@@ -88,7 +119,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         }
 
         BOOK_INVENTORY_MAPPER.decreaseAvailableIncreaseBorrowed(bookInventoryEntity);
-
+        determineInventoryStatus(bookInventoryEntity);
         bookInventoryRepository.save(bookInventoryEntity);
 
     }

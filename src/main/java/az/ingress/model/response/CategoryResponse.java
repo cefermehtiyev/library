@@ -1,7 +1,7 @@
 package az.ingress.model.response;
 
 import az.ingress.model.enums.BookCategory;
-import az.ingress.model.enums.CategoryStatus;
+import az.ingress.model.enums.CommonStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class CategoryResponse {
     private Long id;
     private BookCategory bookCategory;
-    private CategoryStatus categoryStatus;
+    private CommonStatus status;
 }

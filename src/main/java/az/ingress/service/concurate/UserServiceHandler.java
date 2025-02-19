@@ -1,19 +1,19 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.criteria.UserCriteria;
 import az.ingress.dao.entity.UserEntity;
 import az.ingress.dao.repository.UserRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.mapper.BookMapper;
-import az.ingress.model.enums.UserStatus;
 import az.ingress.model.request.AuthRequest;
 import az.ingress.model.request.RegistrationRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.model.response.UserIdResponse;
 import az.ingress.model.response.UserResponse;
+import az.ingress.service.abstraction.CommonStatusService;
 import az.ingress.service.abstraction.UserService;
 import az.ingress.service.specification.UserSpecification;
 import az.ingress.service.strategy.RegistrationStrategy;
@@ -35,11 +35,14 @@ import static az.ingress.mapper.UserMapper.USER_MAPPER;
 public class UserServiceHandler implements UserService {
     private final UserRepository userRepository;
     private final RegistrationStrategy registrationStrategy;
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
 
     @Override
     @Transactional
     public void signIn(RegistrationRequest registrationRequest) {
-        var userEntity = USER_MAPPER.buildUserEntity(registrationRequest);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var userEntity = USER_MAPPER.buildUserEntity(registrationRequest, status);
         userRepository.save(userEntity);
         registrationStrategy.register(userEntity, registrationRequest);
     }
@@ -75,7 +78,8 @@ public class UserServiceHandler implements UserService {
     @Override
     public void deleteUser(Long userId) {
         var userEntity = fetchEntityExist(userId);
-        userEntity.setUserStatus(UserStatus.DELETED);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        userEntity.setCommonStatus(status);
         userRepository.save(userEntity);
     }
 
@@ -103,7 +107,7 @@ public class UserServiceHandler implements UserService {
     @Override
     public PageableResponse getAllBooksByFin(String fin, PageCriteria pageCriteria) {
         var page = userRepository.findBooksByFin(
-                fin,PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+                fin, PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
         );
         return BOOK_MAPPER.pageableBookResponse(page);
     }

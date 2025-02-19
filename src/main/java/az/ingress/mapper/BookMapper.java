@@ -1,7 +1,7 @@
 package az.ingress.mapper;
 
 import az.ingress.dao.entity.BookEntity;
-import az.ingress.model.enums.BookStatus;
+import az.ingress.dao.entity.CommonStatusEntity;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
@@ -12,12 +12,12 @@ import java.util.Collections;
 public enum BookMapper {
     BOOK_MAPPER;
 
-    public BookEntity buildBookEntity(BookRequest bookRequest){
+    public BookEntity buildBookEntity(BookRequest bookRequest, CommonStatusEntity commonStatusEntity){
         return az.ingress.dao.entity.BookEntity.builder()
                 .title(bookRequest.getTitle())
                 .bookCode(bookRequest.getBookCode())
                 .author(bookRequest.getAuthor())
-                .bookStatus(BookStatus.AVAILABLE)
+                .commonStatusEntity(commonStatusEntity)
                 .publisher(bookRequest.getPublisher())
                 .language(bookRequest.getLanguage())
                 .description(bookRequest.getDescription())
@@ -34,6 +34,7 @@ public enum BookMapper {
                 .publisher(bookEntity.getPublisher())
                 .publicationYear(bookEntity.getPublicationYear())
                 .language(bookEntity.getLanguage())
+                .status(bookEntity.getCommonStatusEntity().getStatusType())
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getFileEntity().getFilePath())

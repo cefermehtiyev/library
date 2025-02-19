@@ -1,6 +1,6 @@
 package az.ingress.model.response;
 
-import az.ingress.model.enums.BookCategory;
+import az.ingress.model.enums.CommonStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +22,7 @@ public class BookResponse {
     private String bookCode;
     private String language;
     private String description;
+    private CommonStatus status;
     private Integer pages;
     private String filePath;
     private Integer publicationYear;

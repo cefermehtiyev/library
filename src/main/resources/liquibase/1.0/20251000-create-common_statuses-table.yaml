@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-common_statuses-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: common_statuses
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true

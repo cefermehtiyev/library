@@ -1,5 +1,6 @@
 package az.ingress.mapper;
 
+import az.ingress.dao.entity.CommonStatusEntity;
 import az.ingress.dao.entity.UserEntity;
 import az.ingress.model.enums.UserRole;
 import az.ingress.model.request.RegistrationRequest;
@@ -10,12 +11,10 @@ import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 
-import static az.ingress.model.enums.UserStatus.ACTIVE;
-
 public enum UserMapper {
     USER_MAPPER;
 
-    public UserEntity buildUserEntity(RegistrationRequest registrationRequest) {
+    public UserEntity buildUserEntity(RegistrationRequest registrationRequest, CommonStatusEntity commonStatus) {
         return UserEntity.builder()
                 .userName(registrationRequest.getUserName())
                 .email(registrationRequest.getEmail())
@@ -24,7 +23,7 @@ public enum UserMapper {
                 .lastName(registrationRequest.getLastName())
                 .fin(registrationRequest.getFin())
                 .userRole(registrationRequest.getUserRole())
-                .userStatus(ACTIVE)
+                .commonStatus(commonStatus)
                 .build();
     }
 
@@ -33,7 +32,7 @@ public enum UserMapper {
                 .id(userEntity.getId())
                 .name(userEntity.getUserName())
                 .email(userEntity.getEmail())
-                .userStatus(userEntity.getUserStatus())
+                .status(userEntity.getCommonStatus().getStatusType())
                 .userRole(UserRole.STUDENT)
                 .createdAt(userEntity.getCreatedAt())
                 .build();

@@ -1,5 +1,6 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.criteria.AuthorCriteria;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.dao.entity.AuthorEntity;
@@ -15,27 +16,29 @@ import az.ingress.model.response.BookResponse;
 
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
+import az.ingress.service.abstraction.CommonStatusService;
 import az.ingress.service.specification.AuthorSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 import static az.ingress.mapper.AuthorMapper.AUTHOR_MAPPER;
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;
-import static az.ingress.model.enums.AuthorStatus.REMOVED;
 
 @RequiredArgsConstructor
 @Service
 public class AuthorServiceHandler implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
+
 
 
     @Override
     public void addAuthor(AuthorRequest authorRequest) {
-        authorRepository.save(AUTHOR_MAPPER.buildAuthorEntity(authorRequest));
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        authorRepository.save(AUTHOR_MAPPER.buildAuthorEntity(authorRequest,status));
     }
 
     @Override
@@ -54,7 +57,9 @@ public class AuthorServiceHandler implements AuthorService {
     @Override
     public void deleteAuthor(Long authorId) {
         var author = fetchEntityExist(authorId);
-        author.setAuthorStatus(REMOVED);
+        var status  = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        author.setCommonStatusEntity(status);
+        authorRepository.save(author);
     }
 
     @Override

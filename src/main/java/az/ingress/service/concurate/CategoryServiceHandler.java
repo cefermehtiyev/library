@@ -1,15 +1,16 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.CategoryEntity;
 import az.ingress.dao.repository.CategoryRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
-import az.ingress.model.enums.CategoryStatus;
 import az.ingress.model.request.CategoryRequest;
 import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.CategoryResponse;
 import az.ingress.service.abstraction.CategoryService;
+import az.ingress.service.abstraction.CommonStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,13 @@ import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;
 @Service
 public class CategoryServiceHandler implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
 
     @Override
     public void addCategory(CategoryRequest categoryRequest) {
-        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest));
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest,status));
     }
 
     @Override
@@ -45,7 +49,8 @@ public class CategoryServiceHandler implements CategoryService {
     @Override
     public void deleteCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
-        category.setCategoryStatus(CategoryStatus.DELETED);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        category.setCommonStatusEntity(status);
         categoryRepository.save(category);
     }
 

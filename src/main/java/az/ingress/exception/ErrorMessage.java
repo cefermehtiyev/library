@@ -25,7 +25,10 @@ public enum ErrorMessage {
     OUT_OF_STOCK("The book is out of stock"),
     BOOK_BORROW_NOT_FOUND("Book borrow not found"),
     BOOK_INVENTORY_NOT_FOUND("Book not Found in inventory"),
-    IMAGE_NOT_FOUND("Image not Found");
+    IMAGE_NOT_FOUND("Image not Found"),
+    COMMON_STATUS_NOT_FOUND("Common status not found"),
+    INVENTORY_STATUS_NOT_FOUND("Inventory status not found");
+
 
     private final String message;
 }

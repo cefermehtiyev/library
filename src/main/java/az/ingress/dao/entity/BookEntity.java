@@ -1,6 +1,5 @@
 package az.ingress.dao.entity;
 
-import az.ingress.model.enums.BookStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +40,6 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @ToString
 @Builder
-@Where(clause = "book_status <> 'DELETED'")
 @Entity
 public class BookEntity {
     @Id
@@ -54,11 +52,17 @@ public class BookEntity {
     private String language;
     private String description;
     private Integer pages;
-    @Enumerated(STRING)
-    private BookStatus bookStatus;
     private Integer publicationYear;
     @CreationTimestamp
     private LocalDate createdAt;
+
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE}
+    )
+    @JoinColumn(name = "status_id")
+    @ToString.Exclude
+    CommonStatusEntity commonStatusEntity;
 
     @OneToOne(
             mappedBy = "bookEntity",

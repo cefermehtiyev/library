@@ -1,7 +1,6 @@
 package az.ingress.dao.entity;
 
 import az.ingress.model.enums.UserRole;
-import az.ingress.model.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -19,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,6 +27,7 @@ import java.util.Objects;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -37,7 +37,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@Where(clause = "book_status <> 'DELETED'")
 @Builder
 @Entity
 public class UserEntity {
@@ -52,10 +51,17 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String fin;
-    @Enumerated(STRING)
-    private UserStatus userStatus;
     @CreationTimestamp
     private LocalDate createdAt;
+
+
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE}
+    )
+    @JoinColumn(name = "status_id")
+    @ToString.Exclude
+    CommonStatusEntity commonStatus;
 
     @OneToOne(
             mappedBy = "user",

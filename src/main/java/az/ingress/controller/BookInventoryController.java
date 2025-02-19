@@ -1,5 +1,6 @@
 package az.ingress.controller;
 
+import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.model.request.BookRequest;
 import az.ingress.model.response.PageableResponse;
@@ -22,10 +23,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("v1/bookInventory")
 public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
+    private final CommonStatusConfig commonStatusConfig;
 
     @PostMapping
     @ResponseStatus(CREATED)
     public void addBookToInventory(@RequestHeader(AUTHORIZATION) String accessToken, @ModelAttribute BookRequest bookRequest) {
+        System.out.println("Available Status ID: " + commonStatusConfig.getActive());
+
         bookInventoryService.addBookToInventory(bookRequest);
     }
 

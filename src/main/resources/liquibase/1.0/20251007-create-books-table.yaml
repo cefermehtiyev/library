@@ -52,8 +52,8 @@ databaseChangeLog:
                   name: pages
                   type: INTEGER
               - column:
-                  name: book_status
-                  type: VARCHAR(50)
+                  name: status_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -85,3 +85,4 @@ databaseChangeLog:
             constraintName: fk_books_category
             referencedTableName: categories
             referencedColumnNames: id
+

@@ -51,11 +51,23 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: user_status
-                  type: VARCHAR(50)
+                  name: status_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
                   name: created_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
+
+
+  - changeSet:
+      id: users  set status
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: status_id
+            constraintName: fk_users_status
+            referencedTableName: common_statuses
+            referencedColumnNames: id

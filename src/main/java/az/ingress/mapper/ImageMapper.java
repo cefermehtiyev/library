@@ -13,6 +13,7 @@ public enum ImageMapper {
                 .bookEntity(bookEntity)
                 .imagePath(imagePath)
                 .imageType(imageType)
-                .imageSize(imageSize).build();
+                .imageSize(imageSize)
+                .build();
     }
 }

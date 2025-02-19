@@ -45,8 +45,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: status
-                  type: VARCHAR(50)
+                  name: status_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
@@ -57,3 +57,14 @@ databaseChangeLog:
                   name: updated_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: inventory  set status
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book_inventory
+            baseColumnNames: status_id
+            constraintName: fk_inventory_status
+            referencedTableName: inventory_statuses
+            referencedColumnNames: id

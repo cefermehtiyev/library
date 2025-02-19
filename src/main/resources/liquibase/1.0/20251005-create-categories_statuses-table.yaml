@@ -20,9 +20,20 @@ databaseChangeLog:
                     nullable: false
                     unique: true
               - column:
-                  name: category_status
-                  type: VARCHAR(50)
+                  name: status_id
+                  type: BIGINT
                   constraints:
                     nullable: false
 
+
+  - changeSet:
+      id: category  set status
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: status_id
+            constraintName: fk_categories_status
+            referencedTableName: common_statuses
+            referencedColumnNames: id
 

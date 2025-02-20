@@ -20,6 +20,7 @@ import az.ingress.service.strategy.RegistrationStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,15 +38,25 @@ public class UserServiceHandler implements UserService {
     private final RegistrationStrategy registrationStrategy;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void signIn(RegistrationRequest registrationRequest) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var hashedPassword = setPasswordEncoder(registrationRequest.getPassword());
+        registrationRequest.setPassword(hashedPassword);
         var userEntity = USER_MAPPER.buildUserEntity(registrationRequest, status);
+
+
         userRepository.save(userEntity);
         registrationStrategy.register(userEntity, registrationRequest);
     }
+
+    private String setPasswordEncoder(String password){
+        return passwordEncoder.encode(password);
+    }
+
 
     @Override
     public UserResponse getUser(Long userId) {
@@ -64,7 +75,12 @@ public class UserServiceHandler implements UserService {
 
 
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
+
         var userEntity = fetchEntityExist(authRequest);
+        if (!passwordEncoder.matches(authRequest.getPassword(),userEntity.getPassword())){
+            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
+        }
+
         return USER_MAPPER.buildUserIdResponse(userEntity);
     }
 
@@ -114,7 +130,7 @@ public class UserServiceHandler implements UserService {
 
 
     private UserEntity fetchEntityExist(AuthRequest authRequest) {
-        return userRepository.findByUserNameAndPassword(authRequest.getUserName(), authRequest.getPassword()).orElseThrow(
+        return userRepository.findByUserName(authRequest.getUserName()).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
     }

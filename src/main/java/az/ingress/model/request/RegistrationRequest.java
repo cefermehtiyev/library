@@ -1,7 +1,6 @@
 package az.ingress.model.request;
 
-import az.ingress.model.enums.UserRole;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import az.ingress.model.enums.RoleName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class RegistrationRequest {
     private String firstName;
     private String lastName;
     private String fin;
-    private UserRole userRole;
+    private RoleName roleName;
 
 
 }

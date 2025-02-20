@@ -7,9 +7,9 @@ import az.ingress.model.request.CommonStatusRequest;
 public enum CommonStatusMapper {
     COMMON_STATUS_MAPPER;
 
-    public CommonStatusEntity buildCommonStatusEntity (CommonStatusRequest commonStatusRequest){
+    public CommonStatusEntity buildCommonStatusEntity (CommonStatus status){
         return CommonStatusEntity.builder()
-                .status(commonStatusRequest.getCommonStatus())
+                .status(status)
                 .build();
     }
 

@@ -5,6 +5,7 @@ import az.ingress.dao.repository.BorrowStatusRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.mapper.BorrowStatusMapper;
+import az.ingress.model.enums.BorrowStatus;
 import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.request.BorrowStatusRequest;
 import az.ingress.service.abstraction.BorrowStatusService;
@@ -19,8 +20,13 @@ public class BorrowStatusServiceHandler implements BorrowStatusService {
     private final BorrowStatusRepository borrowStatusRepository;
 
     @Override
-    public void addStatus(BorrowStatusRequest request) {
-        borrowStatusRepository.save(BORROW_STATUS_MAPPER.buildBorrowStatusEntity(request));
+    public void addStatus(BorrowStatus borrowStatus) {
+        borrowStatusRepository.save(BORROW_STATUS_MAPPER.buildBorrowStatusEntity(borrowStatus));
+    }
+
+    @Override
+    public Long getCount() {
+        return borrowStatusRepository.count();
     }
 
     @Override

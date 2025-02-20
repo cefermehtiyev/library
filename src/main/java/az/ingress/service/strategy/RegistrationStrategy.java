@@ -1,6 +1,5 @@
 package az.ingress.service.strategy;
 
-import az.ingress.dao.entity.StudentEntity;
 import az.ingress.dao.entity.UserEntity;
 import az.ingress.model.request.AdminRequest;
 import az.ingress.model.request.EmployeeRequest;
@@ -20,7 +19,7 @@ public class RegistrationStrategy {
     private final AdminService adminService;
 
     public void register(UserEntity userEntity, RegistrationRequest request) {
-        switch (request.getUserRole()) {
+        switch (request.getRoleName()) {
             case STUDENT -> studentService.addStudent(userEntity, (StudentRequest) request);
             case EMPLOYEE -> employeeService.addEmployee(userEntity, (EmployeeRequest) request);
             case ADMIN -> adminService.addAdmin(userEntity, (AdminRequest) request);

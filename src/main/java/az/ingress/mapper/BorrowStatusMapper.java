@@ -8,9 +8,9 @@ import az.ingress.model.request.BorrowStatusRequest;
 public enum BorrowStatusMapper {
     BORROW_STATUS_MAPPER;
 
-    public BorrowStatusEntity buildBorrowStatusEntity(BorrowStatusRequest request){
+    public BorrowStatusEntity buildBorrowStatusEntity(BorrowStatus status){
         return BorrowStatusEntity.builder()
-                .status(request.getBorrowStatus())
+                .status(status)
                 .build();
     }
 

@@ -8,8 +8,8 @@ import az.ingress.service.abstraction.InventoryStatusService;
 public enum InventoryStatusMapper {
     INVENTORY_STATUS_MAPPER;
 
-    public InventoryStatusEntity buildInventoryStatus(InventoryStatusRequest request){
-        return InventoryStatusEntity.builder().status(request.getInventoryStatus()).build();
+    public InventoryStatusEntity buildInventoryStatus(InventoryStatus status){
+        return InventoryStatusEntity.builder().status(status).build();
     }
 
     public InventoryStatusRequest buildInventoryRequest(InventoryStatus status){

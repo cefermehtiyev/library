@@ -1,6 +1,5 @@
 package az.ingress.dao.entity;
 
-import az.ingress.model.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,7 +26,6 @@ import java.util.Objects;
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -46,8 +43,6 @@ public class UserEntity {
     private String userName;
     private String email;
     private String password;
-    @Enumerated(STRING)
-    private UserRole userRole;
     private String firstName;
     private String lastName;
     private String fin;
@@ -105,6 +100,16 @@ public class UserEntity {
     @JsonBackReference
     List<BookEntity> bookEntities;
 
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST}
+    )
+    @JoinColumn(name = "role_id")
+    @ToString.Exclude
+    @JsonBackReference
+    UserRoleEntity roles;
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,6 +117,7 @@ public class UserEntity {
         UserEntity that = (UserEntity) o;
         return Objects.equals(id, that.id);
     }
+
 
     @Override
     public int hashCode() {

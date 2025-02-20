@@ -4,6 +4,7 @@ import az.ingress.dao.entity.CommonStatusEntity;
 import az.ingress.dao.repository.CommonStatusRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.model.enums.CommonStatus;
 import az.ingress.model.request.CommonStatusRequest;
 import az.ingress.service.abstraction.CommonStatusService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,13 @@ public class CommonStatusServiceHandler implements CommonStatusService {
     private final CommonStatusRepository commonStatusRepository;
 
     @Override
-    public void addStatus(CommonStatusRequest statusRequest) {
-        commonStatusRepository.save(COMMON_STATUS_MAPPER.buildCommonStatusEntity(statusRequest));
+    public void addStatus(CommonStatus status) {
+        commonStatusRepository.save(COMMON_STATUS_MAPPER.buildCommonStatusEntity(status));
+    }
+
+    @Override
+    public Long getCount() {
+        return commonStatusRepository.count();
     }
 
     @Override

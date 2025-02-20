@@ -5,6 +5,7 @@ import az.ingress.dao.repository.InventoryStatusRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.mapper.InventoryStatusMapper;
+import az.ingress.model.enums.InventoryStatus;
 import az.ingress.model.request.InventoryStatusRequest;
 import az.ingress.service.abstraction.InventoryStatusService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,13 @@ public class InventoryStatusServiceHandler implements InventoryStatusService {
 
 
     @Override
-    public void addStatus(InventoryStatusRequest request) {
-        inventoryStatusRepository.save(INVENTORY_STATUS_MAPPER.buildInventoryStatus(request));
+    public void addStatus(InventoryStatus status) {
+        inventoryStatusRepository.save(INVENTORY_STATUS_MAPPER.buildInventoryStatus(status));
+    }
+
+    @Override
+    public Long getCount() {
+        return inventoryStatusRepository.count();
     }
 
     @Override

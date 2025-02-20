@@ -1,7 +1,7 @@
 package az.ingress.model.response;
 
 import az.ingress.model.enums.CommonStatus;
-import az.ingress.model.enums.UserRole;
+import az.ingress.model.enums.RoleName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +18,6 @@ public class UserResponse {
     private String name;
     private String email;
     private CommonStatus status;
-    private UserRole userRole;
+    private RoleName roleName;
     private LocalDate createdAt;
 }

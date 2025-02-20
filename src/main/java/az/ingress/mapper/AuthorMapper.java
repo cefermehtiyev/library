@@ -2,7 +2,6 @@ package az.ingress.mapper;
 
 import az.ingress.dao.entity.AuthorEntity;
 import az.ingress.dao.entity.CommonStatusEntity;
-import az.ingress.dao.entity.UserEntity;
 import az.ingress.model.request.AuthorRequest;
 import az.ingress.model.response.AuthorResponse;
 import az.ingress.model.response.PageableResponse;
@@ -27,7 +26,7 @@ public enum AuthorMapper {
         return AuthorResponse.builder()
                 .id(authorEntity.getId())
                 .name(authorEntity.getName())
-                .status(authorEntity.getCommonStatusEntity().getStatusType())
+                .status(authorEntity.getCommonStatusEntity().getStatus())
                 .biography(authorEntity.getBiography())
                 .dateOfBirth(authorEntity.getDateOfBirth())
                 .build();

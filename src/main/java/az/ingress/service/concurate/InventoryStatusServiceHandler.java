@@ -4,10 +4,13 @@ import az.ingress.dao.entity.InventoryStatusEntity;
 import az.ingress.dao.repository.InventoryStatusRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
+import az.ingress.mapper.InventoryStatusMapper;
 import az.ingress.model.request.InventoryStatusRequest;
 import az.ingress.service.abstraction.InventoryStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static az.ingress.mapper.InventoryStatusMapper.INVENTORY_STATUS_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +19,8 @@ public class InventoryStatusServiceHandler implements InventoryStatusService {
 
 
     @Override
-    public void AddStatus(InventoryStatusRequest request) {
-
+    public void addStatus(InventoryStatusRequest request) {
+        inventoryStatusRepository.save(INVENTORY_STATUS_MAPPER.buildInventoryStatus(request));
     }
 
     @Override

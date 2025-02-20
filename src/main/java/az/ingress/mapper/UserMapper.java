@@ -32,7 +32,7 @@ public enum UserMapper {
                 .id(userEntity.getId())
                 .name(userEntity.getUserName())
                 .email(userEntity.getEmail())
-                .status(userEntity.getCommonStatus().getStatusType())
+                .status(userEntity.getCommonStatus().getStatus())
                 .userRole(UserRole.STUDENT)
                 .createdAt(userEntity.getCreatedAt())
                 .build();

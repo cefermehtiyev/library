@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import java.util.Objects;
+
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -29,6 +31,17 @@ public class CommonStatusEntity {
     Long id;
 
     @Enumerated(STRING)
-    CommonStatus statusType;
+    CommonStatus status;
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CommonStatusEntity that = (CommonStatusEntity) o;
+        return Objects.equals(id, that.id) && status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, status);
+    }
 }

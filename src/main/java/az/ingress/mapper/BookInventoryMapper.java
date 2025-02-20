@@ -2,11 +2,6 @@ package az.ingress.mapper;
 
 import az.ingress.dao.entity.BookInventoryEntity;
 import az.ingress.dao.entity.CommonStatusEntity;
-import az.ingress.model.enums.InventoryStatus;
-
-import static az.ingress.model.enums.InventoryStatus.IN_STOCK;
-import static az.ingress.model.enums.InventoryStatus.LOW_STOCK;
-import static az.ingress.model.enums.InventoryStatus.OUT_OF_STOCK;
 
 public enum BookInventoryMapper {
     BOOK_INVENTORY_MAPPER;

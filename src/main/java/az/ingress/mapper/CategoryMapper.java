@@ -19,7 +19,7 @@ public enum CategoryMapper {
         return CategoryResponse.builder()
                 .id(categoryEntity.getId())
                 .bookCategory(categoryEntity.getBookCategory())
-                .status(categoryEntity.getCommonStatusEntity().getStatusType())
+                .status(categoryEntity.getCommonStatusEntity().getStatus())
                 .build();
     }
 

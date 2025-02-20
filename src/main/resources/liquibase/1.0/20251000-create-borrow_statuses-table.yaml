@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-common_statuses-table
+      id: create-borrow_statuses-table
       author: Cefer Mehtiyev
       changes:
         - createTable:
-            tableName: common_statuses
+            tableName: borrow_statuses
             columns:
               - column:
                   name: id

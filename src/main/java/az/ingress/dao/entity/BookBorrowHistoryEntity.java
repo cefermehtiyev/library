@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
@@ -44,11 +45,27 @@ public class BookBorrowHistoryEntity {
     @JoinColumn(name = "book_id")
     private BookEntity book;
 
-    @Enumerated(STRING)
-    private BorrowStatus status;
 
     @CreationTimestamp
     private LocalDate borrowDate;
     private LocalDate returnDate;
 
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {PERSIST,MERGE}
+    )
+    @JoinColumn(name = "status_id")
+    BorrowStatusEntity borrowStatusEntity;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BookBorrowHistoryEntity that = (BookBorrowHistoryEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

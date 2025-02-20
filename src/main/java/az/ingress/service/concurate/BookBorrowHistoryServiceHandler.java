@@ -1,5 +1,6 @@
 package az.ingress.service.concurate;
 
+import az.ingress.configuration.BorrowStatusConfig;
 import az.ingress.dao.entity.BookBorrowHistoryEntity;
 import az.ingress.dao.entity.BookEntity;
 import az.ingress.dao.entity.UserEntity;
@@ -11,6 +12,7 @@ import az.ingress.model.response.BookBorrowHistoryResponse;
 import az.ingress.service.abstraction.BookBorrowHistoryService;
 import az.ingress.service.abstraction.BookInventoryService;
 import az.ingress.service.abstraction.BookService;
+import az.ingress.service.abstraction.BorrowStatusService;
 import az.ingress.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +29,14 @@ public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService
     private final UserService userService;
     private final BookInventoryService bookInventoryService;
     private final BookService bookService;
+    private final BorrowStatusService borrowStatusService;
+    private final BorrowStatusConfig borrowStatusConfig;
+
 
     @Override
     public  void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity) {
-        bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity));
+        var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getPending());
+        bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity,status));
     }
 
 
@@ -38,7 +44,8 @@ public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService
     @Override
     public void returnBookHistory(Long userId, Long bookId) {
         var bookBorrowHistory = fetchEntityExist(userId, bookId);
-        BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory);
+        var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getReturned());
+        BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory,status);
         bookBorrowHistoryRepository.save(bookBorrowHistory);
     }
 

@@ -19,6 +19,8 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import java.util.Objects;
+
 import static javax.persistence.EnumType.STRING;
 
 @Getter
@@ -40,4 +42,16 @@ public class AdminEntity {
     @JoinColumn(name = "id")
     @ToString.Exclude
     UserEntity user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AdminEntity that = (AdminEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

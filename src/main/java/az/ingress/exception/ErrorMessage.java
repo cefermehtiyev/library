@@ -27,7 +27,9 @@ public enum ErrorMessage {
     BOOK_INVENTORY_NOT_FOUND("Book not Found in inventory"),
     IMAGE_NOT_FOUND("Image not Found"),
     COMMON_STATUS_NOT_FOUND("Common status not found"),
-    INVENTORY_STATUS_NOT_FOUND("Inventory status not found");
+    INVENTORY_STATUS_NOT_FOUND("Inventory status not found"),
+    BORROW_STATUS_NOT_FOUND("Borrow status not found");
+
 
 
     private final String message;

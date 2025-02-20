@@ -33,7 +33,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @Table(name = "students")
 @Entity
-public class StudentEntity{
+public class StudentEntity {
     @Id
     private Long id;
     private String specialization;
@@ -45,22 +45,6 @@ public class StudentEntity{
     @JoinColumn(name = "id")
     @ToString.Exclude
     UserEntity user;
-
-
-//    @ManyToMany(
-//            fetch = LAZY,
-//            cascade = {MERGE, PERSIST}
-//    )
-//    @JoinTable(
-//            name = "student_books",
-//            joinColumns = @JoinColumn(name = "student_id"),
-//            inverseJoinColumns = @JoinColumn(name = "book_id")
-//    )
-//    @ToString.Exclude
-//    @JsonBackReference
-//    List<BookEntity> bookEntities;
-
-
 
 
     @Override
@@ -79,7 +63,6 @@ public class StudentEntity{
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-
 
 
 }

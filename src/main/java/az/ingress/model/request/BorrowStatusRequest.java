@@ -1,6 +1,7 @@
 package az.ingress.model.request;
 
-import az.ingress.model.enums.InventoryStatus;
+import az.ingress.model.enums.BorrowStatus;
+import liquibase.pro.packaged.A;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryStatusRequest {
-    private InventoryStatus inventoryStatus;
+public class BorrowStatusRequest {
+    private BorrowStatus borrowStatus;
 }

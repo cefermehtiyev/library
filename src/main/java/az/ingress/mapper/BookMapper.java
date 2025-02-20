@@ -34,7 +34,7 @@ public enum BookMapper {
                 .publisher(bookEntity.getPublisher())
                 .publicationYear(bookEntity.getPublicationYear())
                 .language(bookEntity.getLanguage())
-                .status(bookEntity.getCommonStatusEntity().getStatusType())
+                .status(bookEntity.getCommonStatusEntity().getStatus())
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getFileEntity().getFilePath())

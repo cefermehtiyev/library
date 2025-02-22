@@ -12,6 +12,8 @@ import java.util.List;
 public interface CategoryService {
     void addCategory(CategoryRequest categoryRequest);
 
+    Long getCount();
+
     void addBookToCategory(Long categoryId, BookEntity bookEntity);
 
     List<BookResponse> getBooksByCategory(Long categoryId);

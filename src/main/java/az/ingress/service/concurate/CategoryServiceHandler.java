@@ -34,6 +34,11 @@ public class CategoryServiceHandler implements CategoryService {
     }
 
     @Override
+    public Long getCount() {
+        return categoryRepository.count();
+    }
+
+    @Override
     public void addBookToCategory(Long categoryId, BookEntity bookEntity) {
         var category = fetchEntityExist(categoryId);
         bookEntity.setCategory(category);

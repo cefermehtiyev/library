@@ -5,14 +5,10 @@ import az.ingress.configuration.CommonStatusConfig;
 import az.ingress.configuration.UserRoleConfig;
 import az.ingress.dao.entity.UserEntity;
 import az.ingress.dao.repository.UserRepository;
-import az.ingress.model.enums.BorrowStatus;
-import az.ingress.model.enums.CommonStatus;
-import az.ingress.model.enums.InventoryStatus;
-import az.ingress.model.enums.RoleName;
-import az.ingress.service.abstraction.BorrowStatusService;
-import az.ingress.service.abstraction.CommonStatusService;
-import az.ingress.service.abstraction.InventoryStatusService;
-import az.ingress.service.abstraction.UserRoleService;
+import az.ingress.mapper.CategoryMapper;
+import az.ingress.model.enums.*;
+import az.ingress.model.request.CategoryRequest;
+import az.ingress.service.abstraction.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;
 import static az.ingress.model.enums.InventoryStatus.IN_STOCK;
 import static az.ingress.model.enums.InventoryStatus.LOW_STOCK;
 import static az.ingress.model.enums.InventoryStatus.OUT_OF_STOCK;
@@ -37,6 +34,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
     private final InventoryStatusService inventoryStatusService;
     private final UserRoleService userRoleService;
     private final UserRoleConfig userRoleConfig;
+    private final CategoryService categoryService;
 
     @Override
     @Transactional
@@ -47,6 +45,14 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
 
     private void initializeStatusesAndRoles() {
+        if(categoryService.getCount() == null){
+            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.HISTORY));
+            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.NOVEL));
+            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.SCIENCE));
+
+
+        }
+
         if (commonStatusService.getCount() == 0) {
             commonStatusService.addStatus(CommonStatus.ACTIVE);
             commonStatusService.addStatus(CommonStatus.INACTIVE);

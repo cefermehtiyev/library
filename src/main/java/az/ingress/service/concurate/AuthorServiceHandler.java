@@ -69,10 +69,7 @@ public class AuthorServiceHandler implements AuthorService {
 
     }
 
-    @Override
-    public void removeBookFromAuthor(Long bookId, Long authorId) {
 
-    }
 
     @Override
     public PageableResponse getAuthorSorted( PageCriteria pageCriteria, AuthorCriteria authorCriteria) {

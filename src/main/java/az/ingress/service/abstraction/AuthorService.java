@@ -18,8 +18,6 @@ public interface AuthorService {
 
     void addBookToAuthor(BookEntity bookEntity);
 
-    void removeBookFromAuthor(Long bookId, Long authorId);
-
     PageableResponse getAuthorSorted(PageCriteria pageCriteria,AuthorCriteria authorCriteria );
 
     PageableResponse getBooksByAuthor(Long authorId, PageCriteria pageCriteria);

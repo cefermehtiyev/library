@@ -3,9 +3,9 @@ package az.ingress.service.concurate;
 import az.ingress.service.abstraction.CookieService;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class CookieServiceHandler implements CookieService {

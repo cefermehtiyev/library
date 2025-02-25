@@ -6,7 +6,12 @@ plugins {
 }
 
 group = "az.ingress"
-sourceCompatibility = "17"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
 
 configurations {
     compileOnly {
@@ -19,53 +24,47 @@ repositories {
 }
 
 dependencies {
-    //spring
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-    //validation
+
+    // Spring Boot
+    implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
 
-    //lombok
-    compileOnly "org.projectlombok:lombok"
-    annotationProcessor "org.projectlombok:lombok"
+    compileOnly "org.projectlombok:lombok:$lombok"
+    annotationProcessor "org.projectlombok:lombok:$lombok"
 
-    //swagger
-    implementation "org.springdoc:springdoc-openapi-ui:$openApiVersion"
+    // Swagger (OpenAPI 2.3.x)
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion"
 
-    //testing
+    // Testing
     testImplementation "org.apache.groovy:groovy:$groovyVersion"
     testImplementation "org.spockframework:spock-spring:$spockSpringVersion"
     testImplementation "io.github.benas:random-beans:$randomBeansVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
+    // OpenFeign
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$openFeign"
 
-    //openfeign
-    implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${openFeign}"
-    //redisson
-    implementation "org.redisson:redisson:$redisson"
-    //shedlock
-    implementation "net.javacrumbs.shedlock:shedlock-spring:${shedlockVersion}"
-    implementation "net.javacrumbs.shedlock:shedlock-provider-jdbc-template:${shedlockVersion}"
-    //aws
-//    implementation 'com.google.cloud:google-cloud-storage:2.24.0'
+    // Redisson (Redis üçün optimallaşdırıldı)
+    implementation "org.redisson:redisson-spring-boot-starter:$redisson"
 
 
-    //jwt
-    implementation 'com.nimbusds:nimbus-jose-jwt:9.15.2'
-    //security
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.5'
-    //redis
-    implementation "org.redisson:redisson:${redisVersion}"
-    //jwt
-    implementation "com.nimbusds:nimbus-jose-jwt:${jwtVersion}"
+    // ShedLock (Task Scheduling üçün)
+    implementation "net.javacrumbs.shedlock:shedlock-spring:$shedlockVersion"
+    implementation "net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockVersion"
+
+    // JWT
+    implementation "com.nimbusds:nimbus-jose-jwt:$jwtVersion"
+
+    // Security
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
 
-    //db
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.liquibase:liquibase-core'
-    runtimeOnly 'org.postgresql:postgresql'
+    // Database
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.liquibase:liquibase-core"
+    runtimeOnly "org.postgresql:postgresql"
 }
 
 test {

@@ -1,6 +1,6 @@
 package az.ingress.util;
 
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;

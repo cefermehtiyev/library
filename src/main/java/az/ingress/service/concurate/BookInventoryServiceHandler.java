@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import static az.ingress.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
 import static az.ingress.mapper.BookMapper.BOOK_MAPPER;

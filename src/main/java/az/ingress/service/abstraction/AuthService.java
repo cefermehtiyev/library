@@ -3,7 +3,7 @@ package az.ingress.service.abstraction;
 import az.ingress.model.request.AuthRequest;
 import az.ingress.model.response.AuthResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 

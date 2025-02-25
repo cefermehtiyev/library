@@ -1,6 +1,5 @@
 package az.ingress.util;
 
-
 import az.ingress.exception.AuthException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +10,11 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64; // <-- Bunu əlavə et
 
 import static az.ingress.exception.ErrorMessage.USER_UNAUTHORIZED;
 import static az.ingress.model.constants.AuthConstants.KEY_SIZE;
 import static az.ingress.model.constants.AuthConstants.RSA;
-import static org.springframework.util.Base64Utils.decodeFromString;
 
 @Slf4j
 public enum CertificateKeyUtil {
@@ -35,7 +34,8 @@ public enum CertificateKeyUtil {
     @SneakyThrows
     public PublicKey getPublicKey(String publicKey) {
         var keyFactory = KeyFactory.getInstance(RSA);
-        var keySpec = new X509EncodedKeySpec(decodeFromString(publicKey));
+
+        var keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey));
         return keyFactory.generatePublic(keySpec);
     }
 }

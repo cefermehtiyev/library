@@ -37,6 +37,8 @@ dependencies {
     // Swagger (OpenAPI 2.3.x)
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion"
 
+
+
     // Testing
     testImplementation "org.apache.groovy:groovy:$groovyVersion"
     testImplementation "org.spockframework:spock-spring:$spockSpringVersion"

@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class UserEntity {
     private String lastName;
     private String fin;
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
 
     @ManyToOne(

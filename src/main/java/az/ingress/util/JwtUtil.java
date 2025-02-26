@@ -97,7 +97,7 @@ public enum JwtUtil {
     }
 
     @SneakyThrows
-    private SignedJWT parseSignedJwt(String token) {
+    public SignedJWT parseSignedJwt(String token) {
         return SignedJWT.parse(token);
     }
 }

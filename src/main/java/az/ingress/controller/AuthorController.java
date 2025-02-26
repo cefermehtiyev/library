@@ -5,6 +5,7 @@ import az.ingress.criteria.PageCriteria;
 import az.ingress.model.request.AuthorRequest;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.AuthorService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorController {
     private final AuthorService authorService;
 
+
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void addAuthor(@RequestBody AuthorRequest authorRequest) {
         authorService.addAuthor(authorRequest);
     }

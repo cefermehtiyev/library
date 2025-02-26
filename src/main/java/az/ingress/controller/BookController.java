@@ -7,6 +7,7 @@ import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.PageableResponse;
 import az.ingress.service.abstraction.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ public class BookController {
 
 
     @PutMapping("/update-category")
+    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void updateBookCategory(@RequestParam Long bookId, @RequestParam Long categoryId) {
         bookService.updateBookCategory(bookId, categoryId);
     }

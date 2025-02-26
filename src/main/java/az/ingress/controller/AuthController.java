@@ -1,6 +1,7 @@
 package az.ingress.controller;
 
 
+import az.ingress.model.request.AdminRequest;
 import az.ingress.model.request.AuthRequest;
 import az.ingress.model.request.RegistrationRequest;
 import az.ingress.model.response.AccessTokenResponse;
@@ -10,6 +11,7 @@ import az.ingress.service.abstraction.CookieService;
 import az.ingress.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,6 +40,13 @@ public class AuthController {
     @ResponseStatus(CREATED)
     public void singIn(@RequestBody RegistrationRequest registrationRequest) {
         userService.signIn(registrationRequest);
+    }
+
+    @PostMapping("/admin/sign-in")
+    @ResponseStatus(CREATED)
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public void adminSingIn(@RequestBody AdminRequest adminRequest) {
+        userService.signIn(adminRequest);
     }
 
     @PostMapping("/login")

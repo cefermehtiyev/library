@@ -1,9 +1,11 @@
 package az.ingress.service.concurate;
 
 import az.ingress.configuration.CommonStatusConfig;
+import az.ingress.configuration.UserRoleConfig;
 import az.ingress.criteria.PageCriteria;
 import az.ingress.criteria.UserCriteria;
 import az.ingress.dao.entity.UserEntity;
+import az.ingress.dao.entity.UserRoleEntity;
 import az.ingress.dao.repository.UserRepository;
 import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
@@ -14,10 +16,13 @@ import az.ingress.model.response.PageableResponse;
 import az.ingress.model.response.UserIdResponse;
 import az.ingress.model.response.UserResponse;
 import az.ingress.service.abstraction.CommonStatusService;
+import az.ingress.service.abstraction.TokenService;
+import az.ingress.service.abstraction.UserRoleService;
 import az.ingress.service.abstraction.UserService;
 import az.ingress.service.specification.UserSpecification;
 import az.ingress.service.strategy.RegistrationStrategy;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +44,10 @@ public class UserServiceHandler implements UserService {
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
     private final PasswordEncoder passwordEncoder;
+    private final UserRoleConfig userRoleConfig;
+    private final UserRoleService userRoleService;
+    private final TokenService tokenService;
+    private final UserRoleServiceHandler userRoleServiceHandler;
 
     @Override
     @Transactional
@@ -46,7 +55,8 @@ public class UserServiceHandler implements UserService {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var hashedPassword = setPasswordEncoder(registrationRequest.getPassword());
         registrationRequest.setPassword(hashedPassword);
-        var userEntity = USER_MAPPER.buildUserEntity(registrationRequest, status);
+        var userRole = userRoleService.getUserRole(registrationRequest.getRoleName());
+        var userEntity = USER_MAPPER.buildUserEntity(registrationRequest, status, userRole);
 
 
         userRepository.save(userEntity);
@@ -133,6 +143,13 @@ public class UserServiceHandler implements UserService {
         return userRepository.findByUserName(authRequest.getUserName()).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
+    }
+    @Override
+    @Transactional
+    public String getRolesFromToken(String userId) {
+        var user = fetchEntityExist(Long.valueOf(userId));
+
+        return user.getRoles().getRoleName().name();
     }
 
 

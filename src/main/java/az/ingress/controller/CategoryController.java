@@ -6,6 +6,7 @@ import az.ingress.model.response.BookResponse;
 import az.ingress.model.response.CategoryResponse;
 import az.ingress.service.abstraction.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void addCategory(@RequestBody CategoryRequest categoryRequest){
         categoryService.addCategory(categoryRequest);
     }

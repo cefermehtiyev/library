@@ -9,6 +9,13 @@ import az.ingress.exception.ErrorMessage;
 import az.ingress.exception.NotFoundException;
 import az.ingress.mapper.SessionTokenMapper;
 import az.ingress.model.cache.AuthCacheData;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import org.springframework.stereotype.Service;
+import java.text.ParseException;
+
 
 import az.ingress.model.jwt.AccessTokenClaimsSet;
 import az.ingress.model.jwt.RefreshTokenClaimsSet;
@@ -19,6 +26,7 @@ import az.ingress.util.CacheProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 
 import static az.ingress.exception.ErrorMessage.REFRESH_TOKEN_COUNT_EXPIRED;
 import static az.ingress.exception.ErrorMessage.TOKEN_EXPIRED;
@@ -43,6 +51,22 @@ public class TokenServiceHandler implements TokenService {
         final var refreshTokenExpirationCount = 50;
         return generateToken(userId, refreshTokenExpirationCount);
     }
+
+    public String getUserIdFromToken(String token) {
+        try {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7); // 'Bearer ' hissəsini silirik
+            }
+            var jwtClaimsSet = JWT_UTIL.parseSignedJwt(token);
+            var userId = jwtClaimsSet.getJWTClaimsSet().getClaim("userId").toString();
+            log.info("Token Parse {}",userId);
+            return userId;
+        } catch (Exception e) {
+            log.error("ActionLog.getUserIdFromAccessToken.error ", e);
+            throw new AuthException(USER_UNAUTHORIZED.getMessage(), 401);
+        }
+    }
+
 
     public AuthResponse refreshToken(String refreshToken) {
         var refreshTokenClaimsSet = JWT_UTIL.getClaimsFromToken(refreshToken, RefreshTokenClaimsSet.class);
@@ -139,6 +163,8 @@ public class TokenServiceHandler implements TokenService {
                 () -> new NotFoundException(ErrorMessage.ACCESS_TOKEN_NOT_FOUND.getMessage())
         );
     }
+
+
 
     private AuthCacheData fetchFromCache(String cacheKey) {
         return cacheProvider.getBucket(cacheKey);

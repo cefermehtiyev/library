@@ -6,5 +6,5 @@ import az.ingress.model.enums.RoleName;
 public interface UserRoleService {
     void addRole(RoleName roleName);
     Long getCount();
-    UserRoleEntity getUserRole(Long id);
+    UserRoleEntity getUserRole(RoleName roleName);
 }

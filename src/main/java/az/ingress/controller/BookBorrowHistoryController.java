@@ -4,6 +4,7 @@ import az.ingress.model.request.BorrowRequest;
 import az.ingress.model.response.BookBorrowHistoryResponse;
 import az.ingress.service.abstraction.BookBorrowHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,10 +25,12 @@ public class BookBorrowHistoryController {
 
     @PostMapping("/add")
     @ResponseStatus(NO_CONTENT)
+    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void borrowBook(@RequestBody BorrowRequest borrowRequest) {
         bookBorrowHistoryService.borrowBook(borrowRequest);
     }
     @PostMapping("/return")
+    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void processBookReturn(@RequestBody BorrowRequest borrowRequest) {
         bookBorrowHistoryService.processBookReturn(borrowRequest);
     }

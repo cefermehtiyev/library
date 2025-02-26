@@ -9,5 +9,7 @@ public interface TokenService {
 
     AuthResponse refreshToken(String refreshToken);
 
+    String getUserIdFromToken(String token);
+
     AuthPayloadDto verifyToken(String accessToken);
 }

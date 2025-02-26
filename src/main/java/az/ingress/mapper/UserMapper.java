@@ -2,6 +2,7 @@ package az.ingress.mapper;
 
 import az.ingress.dao.entity.CommonStatusEntity;
 import az.ingress.dao.entity.UserEntity;
+import az.ingress.dao.entity.UserRoleEntity;
 import az.ingress.model.enums.RoleName;
 import az.ingress.model.request.RegistrationRequest;
 import az.ingress.model.response.PageableResponse;
@@ -14,7 +15,7 @@ import java.util.Collections;
 public enum UserMapper {
     USER_MAPPER;
 
-    public UserEntity buildUserEntity(RegistrationRequest registrationRequest, CommonStatusEntity commonStatus) {
+    public UserEntity buildUserEntity(RegistrationRequest registrationRequest, CommonStatusEntity commonStatus, UserRoleEntity userRole) {
         return UserEntity.builder()
                 .userName(registrationRequest.getUserName())
                 .email(registrationRequest.getEmail())
@@ -22,6 +23,7 @@ public enum UserMapper {
                 .firstName(registrationRequest.getFirstName())
                 .lastName(registrationRequest.getLastName())
                 .fin(registrationRequest.getFin())
+                .roles(userRole)
                 .commonStatus(commonStatus)
                 .build();
     }

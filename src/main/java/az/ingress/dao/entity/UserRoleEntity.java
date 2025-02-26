@@ -35,7 +35,7 @@ public class UserRoleEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RoleName roleName;  // STUDENT, EMPLOYEE, ADMIN
+    private RoleName roleName;
 
     @OneToMany(
             fetch = LAZY,

@@ -20,6 +20,7 @@ import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;
 import static az.ingress.model.enums.InventoryStatus.IN_STOCK;
 import static az.ingress.model.enums.InventoryStatus.LOW_STOCK;
 import static az.ingress.model.enums.InventoryStatus.OUT_OF_STOCK;
+import static az.ingress.model.enums.RoleName.SUPER_ADMIN;
 
 @Slf4j
 @Component
@@ -78,7 +79,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
             userRoleService.addRole(RoleName.STUDENT);
             userRoleService.addRole(RoleName.EMPLOYEE);
             userRoleService.addRole(RoleName.ADMIN);
-            userRoleService.addRole(RoleName.SUPER_ADMIN);
+            userRoleService.addRole(SUPER_ADMIN);
             log.info("User roles added.");
         }
     }
@@ -89,7 +90,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
         if (userRepository.findByFin(superAdminFin).isEmpty()) {
             var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
-            var role = userRoleService.getUserRole(userRoleConfig.getSuperAdmin());
+            var role = userRoleService.getUserRole(SUPER_ADMIN);
 
             var superAdmin = new UserEntity();
             superAdmin.setUserName("superadmin");

@@ -86,7 +86,7 @@ public class UserEntity {
             mappedBy = "user"
     )
     @ToString.Exclude
-    List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
+    List<BookBorrowingEntity> bookBorrowingEntity;
 
     @ManyToMany(
             fetch = LAZY,

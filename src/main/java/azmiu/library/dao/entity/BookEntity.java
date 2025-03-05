@@ -107,7 +107,7 @@ public class BookEntity {
             cascade = {MERGE, PERSIST},
             mappedBy = "book"
     )
-    List<BookBorrowHistoryEntity> bookBorrowHistoryEntity;
+    List<BookBorrowingEntity> bookBorrowingEntity;
 
     @ManyToMany(
             fetch = LAZY,

@@ -42,7 +42,7 @@ public class BookController {
 
 
     @GetMapping("/sorted")
-    public PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria) {
+    public PageableResponse getAllBooks( PageCriteria pageCriteria,BookCriteria bookCriteria) {
         return bookService.getAllBooks(pageCriteria, bookCriteria);
     }
 

@@ -1,15 +1,16 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.configuration.BorrowStatusConfig;
-import azmiu.library.dao.entity.BookBorrowHistoryEntity;
+import azmiu.library.dao.entity.BookBorrowingEntity;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.BookBorrowHistoryRepository;
+import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
-import azmiu.library.service.abstraction.BookBorrowHistoryService;
+import azmiu.library.service.abstraction.BookBorrowingService;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.BorrowStatusService;
@@ -20,17 +21,18 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.util.List;
 
-import static azmiu.library.mapper.BookBorrowHistoryMapper.BOOK_LOAN_HISTORY_MAPPER;
+import static azmiu.library.mapper.BookBorrowingMapper.BOOK_LOAN_HISTORY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
-public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService {
+public class BookBorrowingServiceHandler implements BookBorrowingService {
     private final BookBorrowHistoryRepository bookBorrowHistoryRepository;
     private final UserService userService;
     private final BookInventoryService bookInventoryService;
     private final BookService bookService;
     private final BorrowStatusService borrowStatusService;
     private final BorrowStatusConfig borrowStatusConfig;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -72,7 +74,7 @@ public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService
     public List<BookBorrowHistoryResponse> getBorrowedBooksByStudent(Long userId) {
         var user = userService.getUserEntity(userId);
 
-        return user.getBookBorrowHistoryEntity().stream()
+        return user.getBookBorrowingEntity().stream()
                 .map(bookBorrowHistory -> {
                     var bookEntity = bookBorrowHistory.getBook();
                     return BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryResponse(bookBorrowHistory, bookEntity);
@@ -81,7 +83,7 @@ public class BookBorrowHistoryServiceHandler implements BookBorrowHistoryService
     }
 
 
-    private BookBorrowHistoryEntity fetchEntityExist(Long userId, Long bookId) {
+    private BookBorrowingEntity fetchEntityExist(Long userId, Long bookId) {
         return bookBorrowHistoryRepository.findByUserIdAndBookId(userId, bookId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_BORROW_NOT_FOUND.getMessage())

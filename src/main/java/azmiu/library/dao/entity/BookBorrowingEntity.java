@@ -28,7 +28,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Table(name = "book_borrow_history")
 @Entity
-public class BookBorrowHistoryEntity {
+public class BookBorrowingEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -57,7 +57,7 @@ public class BookBorrowHistoryEntity {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BookBorrowHistoryEntity that = (BookBorrowHistoryEntity) o;
+        BookBorrowingEntity that = (BookBorrowingEntity) o;
         return Objects.equals(id, that.id);
     }
 

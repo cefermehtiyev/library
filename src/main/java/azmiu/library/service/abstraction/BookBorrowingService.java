@@ -7,7 +7,7 @@ import azmiu.library.model.response.BookBorrowHistoryResponse;
 
 import java.util.List;
 
-public interface BookBorrowHistoryService {
+public interface BookBorrowingService {
     void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity);
 
     void returnBookHistory(Long userId, Long bookId);

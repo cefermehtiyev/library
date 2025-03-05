@@ -1,4 +1,4 @@
-package library.controller
+package azmiu.library.controller
 
 import azmiu.library.controller.HealthController
 import azmiu.library.exception.ErrorHandler

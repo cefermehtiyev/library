@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create book borrow history
+      id: create book borrow
       author: Cefer Mehtiyev
       changes:
         - createTable:
-            tableName: book_borrow_history
+            tableName: book_borrowing
             columns:
               - column:
                   name: id
@@ -41,21 +41,21 @@ databaseChangeLog:
 
 
         - addForeignKeyConstraint:
-            baseTableName: book_borrow_history
+            baseTableName: book_borrowing
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
             constraintName: fk_book_borrow_users
 
         - addForeignKeyConstraint:
-            baseTableName: book_borrow_history
+            baseTableName: book_borrowing
             baseColumnNames: book_id
             referencedTableName: books
             referencedColumnNames: id
             constraintName: fk_book_borrow_book
 
         - addForeignKeyConstraint:
-            baseTableName: book_borrow_history
+            baseTableName: book_borrowing
             baseColumnNames: status_id
             referencedTableName: borrow_statuses
             referencedColumnNames: id

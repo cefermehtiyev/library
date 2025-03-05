@@ -2,7 +2,7 @@ package azmiu.library.controller;
 
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
-import azmiu.library.service.abstraction.BookBorrowHistoryService;
+import azmiu.library.service.abstraction.BookBorrowingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,24 +20,24 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/borrow/history")
-public class BookBorrowHistoryController {
-    private final BookBorrowHistoryService bookBorrowHistoryService;
+public class BookBorrowingController {
+    private final BookBorrowingService bookBorrowingService;
 
     @PostMapping("/add")
     @ResponseStatus(NO_CONTENT)
     @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void borrowBook(@RequestBody BorrowRequest borrowRequest) {
-        bookBorrowHistoryService.borrowBook(borrowRequest);
+        bookBorrowingService.borrowBook(borrowRequest);
     }
     @PostMapping("/return")
     @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void processBookReturn(@RequestBody BorrowRequest borrowRequest) {
-        bookBorrowHistoryService.processBookReturn(borrowRequest);
+        bookBorrowingService.processBookReturn(borrowRequest);
     }
 
     @GetMapping("/{userId}")
     public List<BookBorrowHistoryResponse> getBooksHistoryByStudent(@PathVariable Long userId) {
-        return bookBorrowHistoryService.getBorrowedBooksByStudent(userId);
+        return bookBorrowingService.getBorrowedBooksByStudent(userId);
     }
 
 

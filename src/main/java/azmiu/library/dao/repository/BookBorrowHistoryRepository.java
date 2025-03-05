@@ -1,10 +1,10 @@
 package azmiu.library.dao.repository;
 
-import azmiu.library.dao.entity.BookBorrowHistoryEntity;
+import azmiu.library.dao.entity.BookBorrowingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface BookBorrowHistoryRepository extends JpaRepository<BookBorrowHistoryEntity,Long> {
-    Optional<BookBorrowHistoryEntity> findByUserIdAndBookId(Long userId, Long bookiD);
+public interface BookBorrowHistoryRepository extends JpaRepository<BookBorrowingEntity,Long> {
+    Optional<BookBorrowingEntity> findByUserIdAndBookId(Long userId, Long bookiD);
 }

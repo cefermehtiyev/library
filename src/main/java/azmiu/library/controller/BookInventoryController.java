@@ -22,14 +22,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("v1/bookInventory")
 public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
-    private final FileRepository fileRepository;
 
 
     @PostMapping
     @ResponseStatus(CREATED)
     @PreAuthorize("hasRole('SUPER_ADMIN') || hasRole('ADMIN')")
-    public void addBookToInventory(@RequestBody BookRequest bookRequest) {
-        bookInventoryService.addBookToInventory(bookRequest);
+    public Long addBookToInventory(@RequestBody BookRequest bookRequest) {
+        return bookInventoryService.addBookToInventory(bookRequest);
     }
 
     @GetMapping("/sorted")

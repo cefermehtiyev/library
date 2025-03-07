@@ -32,7 +32,6 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     private final BookService bookService;
     private final BorrowStatusService borrowStatusService;
     private final BorrowStatusConfig borrowStatusConfig;
-    private final UserRepository userRepository;
 
 
     @Override

@@ -54,14 +54,21 @@ public class BookServiceHandler implements BookService {
 
     @Override
     @Transactional
-    public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
+    public Long addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         addBookRelationships(bookRequest, bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
 
         bookRepository.save(bookEntity);
+        return getBookId(bookEntity.getBookCode()).getId();
 
+    }
+
+    private BookEntity getBookId(String bookCode) {
+        return bookRepository.findByBookCode(bookCode).orElseThrow(
+                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
+        );
     }
 
 
@@ -90,6 +97,7 @@ public class BookServiceHandler implements BookService {
     }
 
 
+    @Override
     public void updateBookCategory(Long bookId, Long categoryId) {
         var book = fetchEntityExist(bookId);
         categoryService.addBookToCategory(categoryId, book);
@@ -135,4 +143,5 @@ public class BookServiceHandler implements BookService {
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );
     }
+
 }

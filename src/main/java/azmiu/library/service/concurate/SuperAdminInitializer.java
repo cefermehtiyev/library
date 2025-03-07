@@ -1,18 +1,14 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.configuration.CommonStatusConfig;
-import azmiu.library.configuration.UserRoleConfig;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.model.enums.BookCategory;
 import azmiu.library.model.enums.BorrowStatus;
 import azmiu.library.model.enums.CommonStatus;
+import azmiu.library.model.enums.InventoryStatus;
 import azmiu.library.model.enums.RoleName;
-import azmiu.library.service.abstraction.BorrowStatusService;
-import azmiu.library.service.abstraction.CategoryService;
-import azmiu.library.service.abstraction.CommonStatusService;
-import azmiu.library.service.abstraction.InventoryStatusService;
-import azmiu.library.service.abstraction.UserRoleService;
+import azmiu.library.service.abstraction.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -21,9 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static azmiu.library.mapper.CategoryMapper.CATEGORY_MAPPER;
-import static azmiu.library.model.enums.InventoryStatus.IN_STOCK;
-import static azmiu.library.model.enums.InventoryStatus.LOW_STOCK;
-import static azmiu.library.model.enums.InventoryStatus.OUT_OF_STOCK;
 import static azmiu.library.model.enums.RoleName.SUPER_ADMIN;
 
 @Slf4j
@@ -38,7 +31,6 @@ public class SuperAdminInitializer implements CommandLineRunner {
     private final BorrowStatusService borrowStatusService;
     private final InventoryStatusService inventoryStatusService;
     private final UserRoleService userRoleService;
-    private final UserRoleConfig userRoleConfig;
     private final CategoryService categoryService;
 
     @Override
@@ -48,44 +40,52 @@ public class SuperAdminInitializer implements CommandLineRunner {
         initializeSuperAdmin();
     }
 
-
     private void initializeStatusesAndRoles() {
-        if (categoryService.getCount() == 0) {
-            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.HISTORY));
-            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.NOVEL));
-            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.SCIENCE));
+        addCommonStatuses();
+        addCategories();
+        addInventoryStatuses();
+        addBorrowStatuses();
+        addUserRoles();
+    }
 
-
+    private void addCommonStatuses() {
+        if (commonStatusService.getCount() > 0) return;
+        for (CommonStatus commonStatus : CommonStatus.values()) {
+            commonStatusService.addStatus(commonStatus);
         }
+        log.info("Common statuses added.");
+    }
 
-        if (commonStatusService.getCount() == 0) {
-            commonStatusService.addStatus(CommonStatus.ACTIVE);
-            commonStatusService.addStatus(CommonStatus.INACTIVE);
-            commonStatusService.addStatus(CommonStatus.REMOVED);
-            log.info("Common statuses added.");
+    private void addCategories() {
+        if (categoryService.getCount() > 0) return;
+        for (BookCategory category : BookCategory.values()) {
+            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(category));
         }
+        log.info("Book categories added.");
+    }
 
-        if (inventoryStatusService.getCount() == 0) {
-            inventoryStatusService.addStatus(IN_STOCK);
-            inventoryStatusService.addStatus(LOW_STOCK);
-            inventoryStatusService.addStatus(OUT_OF_STOCK);
-            log.info("Inventory statuses added.");
+    private void addInventoryStatuses() {
+        if (inventoryStatusService.getCount() > 0) return;
+        for (InventoryStatus inventoryStatus : InventoryStatus.values()) {
+            inventoryStatusService.addStatus(inventoryStatus);
         }
+        log.info("Inventory statuses added.");
+    }
 
-        if (borrowStatusService.getCount() == 0) {
-            borrowStatusService.addStatus(BorrowStatus.RETURNED);
-            borrowStatusService.addStatus(BorrowStatus.PENDING);
-            borrowStatusService.addStatus(BorrowStatus.DELAYED);
-            log.info("Borrow statuses added.");
+    private void addBorrowStatuses() {
+        if (borrowStatusService.getCount() > 0) return;
+        for(BorrowStatus borrowStatus : BorrowStatus.values()){
+            borrowStatusService.addStatus(borrowStatus);
         }
+        log.info("Borrow statuses added.");
+    }
 
-        if (userRoleService.getCount() == 0) {
-            userRoleService.addRole(RoleName.STUDENT);
-            userRoleService.addRole(RoleName.EMPLOYEE);
-            userRoleService.addRole(RoleName.ADMIN);
-            userRoleService.addRole(SUPER_ADMIN);
-            log.info("User roles added.");
+    private void addUserRoles() {
+        if (userRoleService.getCount() > 0) return;
+        for (RoleName role : RoleName.values()) {
+            userRoleService.addRole(role);
         }
+        log.info("User roles added.");
     }
 
 
@@ -96,15 +96,16 @@ public class SuperAdminInitializer implements CommandLineRunner {
             var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
             var role = userRoleService.getUserRole(SUPER_ADMIN);
 
-            var superAdmin = new UserEntity();
-            superAdmin.setUserName("superadmin");
-            superAdmin.setFirstName("Super");
-            superAdmin.setLastName("Admin");
-            superAdmin.setEmail("azmiusuperadmin@gmail.com");
-            superAdmin.setFin(superAdminFin);
-            superAdmin.setPassword(passwordEncoder.encode("azmiu123"));
-            superAdmin.setRoles(role);
-            superAdmin.setCommonStatus(status);
+            var superAdmin = UserEntity.builder()
+                    .userName("superadmin")
+                    .firstName("Super")
+                    .lastName("Admin")
+                    .email("azmiusuperadmin@gmail.com")
+                    .fin(superAdminFin)
+                    .password(passwordEncoder.encode("azmiu123"))
+                    .roles(role)
+                    .commonStatus(status)
+                    .build();
 
             userRepository.save(superAdmin);
             log.info("Super Admin created successfully.");

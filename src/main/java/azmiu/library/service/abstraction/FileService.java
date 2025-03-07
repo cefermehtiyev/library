@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
-    void uploadFile(MultipartFile file, BookEntity bookEntity);
+    void uploadFile(Long bookId ,MultipartFile file);
     ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id);
     ResponseEntity<InputStreamResource> downloadImage(@RequestParam Long id);
 

@@ -39,7 +39,8 @@ public class FileServiceHandler implements FileService {
     private final ImageRepository imageRepository;
 
     @Override
-    public void uploadFile(MultipartFile file, BookEntity bookEntity) {
+    public void uploadFile(Long bookId,MultipartFile file) {
+        var book = bookService.fetchEntityExist(bookId);
 
         try {
             String fileName = file.getOriginalFilename();
@@ -49,11 +50,11 @@ public class FileServiceHandler implements FileService {
 
             if (Objects.requireNonNull(fileType).startsWith("image")) {
                 FileStorageUtil.saveFile(fileName, fileData, true);
-                var imageEntity = IMAGE_MAPPER.buildImageEntity(bookEntity, fileName, fileType, fileSize);
+                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, fileName, fileType, fileSize);
                 imageRepository.save(imageEntity);
             } else {
                 var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
-                var fileEntity = FILE_MAPPER.buildFileEntity(bookEntity, filePath, fileSize);
+                var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
                 fIleRepository.save(fileEntity);
             }
 

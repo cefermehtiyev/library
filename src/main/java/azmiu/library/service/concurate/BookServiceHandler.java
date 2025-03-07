@@ -36,36 +36,31 @@ public class BookServiceHandler implements BookService {
     private final BookRepository bookRepository;
     private final CategoryService categoryService;
     private final AuthorService authorService;
-    private final FileService fileService;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
                               @Lazy AuthorService authorService,
-                              @Lazy FileService fileService,
                               @Lazy CommonStatusService commonStatusService,
                               @Lazy CommonStatusConfig commonStatusConfig
     ) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
-        this.fileService = fileService;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
     }
 
     @Override
     @Transactional
-    public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity, MultipartFile file, MultipartFile image) {
+    public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         addBookRelationships(bookRequest, bookEntity);
         bookEntity.setBookInventoryEntity(bookInventoryEntity);
 
         bookRepository.save(bookEntity);
-        fileService.uploadFile(file, bookEntity);
-        fileService.uploadFile(image, bookEntity);
 
     }
 

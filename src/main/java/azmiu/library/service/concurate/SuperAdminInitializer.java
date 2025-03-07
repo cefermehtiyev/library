@@ -50,7 +50,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
 
     private void initializeStatusesAndRoles() {
-        if(categoryService.getCount() == null){
+        if (categoryService.getCount() == 0) {
             categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.HISTORY));
             categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.NOVEL));
             categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(BookCategory.SCIENCE));

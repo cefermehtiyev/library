@@ -55,7 +55,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     @Override
     @Transactional
-    public void addBookToInventory(BookRequest bookRequest, MultipartFile file,MultipartFile image) {
+    public void addBookToInventory(BookRequest bookRequest) {
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");
@@ -69,7 +69,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
         determineInventoryStatus(bookInventoryEntity);
         bookInventoryRepository.save(bookInventoryEntity);
-        bookService.addBook(bookRequest, bookInventoryEntity, file, image);
+        bookService.addBook(bookRequest, bookInventoryEntity);
     }
 
     private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {

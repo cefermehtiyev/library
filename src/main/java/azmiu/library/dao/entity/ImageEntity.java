@@ -34,6 +34,6 @@ public class ImageEntity {
     @MapsId
     @JoinColumn(name = "id")
     @ToString.Exclude
-    BookEntity bookEntity;
+    BookInventoryEntity bookInventory;
 
 }

@@ -7,7 +7,7 @@ import azmiu.library.model.response.PageableResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface BookInventoryService {
-    Long addBookToInventory(BookRequest bookRequest);
+    void addBookToInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
     void updateBookInventoryOnReturn(String title, Integer publicationYear);
 

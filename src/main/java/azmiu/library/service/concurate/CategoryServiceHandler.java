@@ -47,7 +47,7 @@ public class CategoryServiceHandler implements CategoryService {
     @Override
     public List<BookResponse> getBooksByCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
-        return category.getBookEntities().stream().map(BOOK_MAPPER::buildBookResponse).distinct().toList();
+        return category.getBooks().stream().map(BOOK_MAPPER::buildBookResponse).distinct().toList();
     }
 
 
@@ -55,7 +55,7 @@ public class CategoryServiceHandler implements CategoryService {
     public void deleteCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        category.setCommonStatusEntity(status);
+        category.setCommonStatus(status);
         categoryRepository.save(category);
     }
 

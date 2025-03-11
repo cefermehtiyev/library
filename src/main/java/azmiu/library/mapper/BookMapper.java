@@ -17,7 +17,7 @@ public enum BookMapper {
                 .title(bookRequest.getTitle())
                 .bookCode(bookRequest.getBookCode())
                 .author(bookRequest.getAuthor())
-                .commonStatusEntity(commonStatusEntity)
+                .commonStatus(commonStatusEntity)
                 .publisher(bookRequest.getPublisher())
                 .language(bookRequest.getLanguage())
                 .description(bookRequest.getDescription())
@@ -34,10 +34,10 @@ public enum BookMapper {
                 .publisher(bookEntity.getPublisher())
                 .publicationYear(bookEntity.getPublicationYear())
                 .language(bookEntity.getLanguage())
-                .status(bookEntity.getCommonStatusEntity().getStatus())
+                .status(bookEntity.getCommonStatus().getStatus())
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
-                .filePath(bookEntity.getFileEntity().getFilePath())
+                .filePath(bookEntity.getBookInventory().getFile().getFilePath())
                 .createdAt(bookEntity.getCreatedAt())
                 .build();
     }

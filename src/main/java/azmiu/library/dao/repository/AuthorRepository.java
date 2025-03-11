@@ -14,7 +14,7 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity ,Long>, Jpa
     Optional<AuthorEntity> findByName(String name);
 
     @Query("SELECT b FROM BookEntity b" +
-            " JOIN b.authorEntities a WHERE a.id = :authorId")
+            " JOIN b.authors a WHERE a.id = :authorId")
     Page<BookEntity> findBooksByAuthor(Long authorId, Pageable pageable);
 
 

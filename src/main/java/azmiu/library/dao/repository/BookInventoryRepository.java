@@ -14,7 +14,7 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
     Optional<BookInventoryEntity> findByTitleAndPublicationYear(String title, Integer publicationYear);
 
     @Query("SELECT b FROM BookEntity b " +
-            "JOIN b.bookInventoryEntity bi " +
+            "JOIN b.bookInventory bi " +
             "WHERE b.id = (SELECT MIN(b2.id) FROM BookEntity b2 WHERE b2.title = b.title)" +
             "ORDER BY " +
             "CASE WHEN :sortBy = 'createAt' AND :order = 'asc' THEN bi.createdAt END ASC," +

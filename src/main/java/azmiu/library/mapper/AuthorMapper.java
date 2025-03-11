@@ -16,7 +16,7 @@ public enum AuthorMapper {
     public AuthorEntity buildAuthorEntity(AuthorRequest authorRequest, CommonStatusEntity commonStatus ) {
         return AuthorEntity.builder()
                 .name(authorRequest.getName())
-                .commonStatusEntity(commonStatus)
+                .commonStatus(commonStatus)
                 .biography(authorRequest.getBiography())
                 .dateOfBirth(authorRequest.getDateOfBirth())
                 .build();
@@ -26,7 +26,7 @@ public enum AuthorMapper {
         return AuthorResponse.builder()
                 .id(authorEntity.getId())
                 .name(authorEntity.getName())
-                .status(authorEntity.getCommonStatusEntity().getStatus())
+                .status(authorEntity.getCommonStatus().getStatus())
                 .biography(authorEntity.getBiography())
                 .dateOfBirth(authorEntity.getDateOfBirth())
                 .build();

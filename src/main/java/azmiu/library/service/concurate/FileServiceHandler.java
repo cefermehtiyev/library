@@ -1,6 +1,7 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.dao.entity.BookEntity;
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.FileRepository;
 import azmiu.library.dao.repository.ImageRepository;
 import azmiu.library.exception.ErrorMessage;
@@ -39,24 +40,30 @@ public class FileServiceHandler implements FileService {
     private final ImageRepository imageRepository;
 
     @Override
-    public void uploadFile(Long bookId,MultipartFile file) {
-        var book = bookService.fetchEntityExist(bookId);
+    public void uploadFile(BookInventoryEntity book, MultipartFile file) {
+
 
         try {
-            String fileName = file.getOriginalFilename();
-            byte[] fileData = file.getBytes();
-            var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-            var fileType = file.getContentType();
-
-            if (Objects.requireNonNull(fileType).startsWith("image")) {
-                FileStorageUtil.saveFile(fileName, fileData, true);
-                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, fileName, fileType, fileSize);
-                imageRepository.save(imageEntity);
-            } else {
-                var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
-                var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
-                fIleRepository.save(fileEntity);
+            System.out.println("Sdhsaijdhkjsadlhsdghfidsadbnsakdfjsfd");
+            if ( file.isEmpty()) {
+                return;
             }
+                String fileName = file.getOriginalFilename();
+                byte[] fileData = file.getBytes();
+                var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+                var fileType = file.getContentType();
+
+                if (Objects.requireNonNull(fileType).startsWith("image")) {
+                    FileStorageUtil.saveFile(fileName, fileData, true);
+                    var imageEntity = IMAGE_MAPPER.buildImageEntity(book, fileName, fileType, fileSize);
+                    imageRepository.save(imageEntity);
+                } else {
+                    var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
+                    var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
+                    fIleRepository.save(fileEntity);
+                }
+
+
 
 
         } catch (IOException e) {
@@ -66,14 +73,14 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public ResponseEntity<InputStreamResource> downloadFile(Long id) {
-        var filePath = bookService.fetchEntityExist(id).getFileEntity().getFilePath();
-        return getFile(filePath);
+//        var filePath = bookService.fetchEntityExist(id).getFileEntity().getFilePath();
+        return null;
     }
 
     @Override
     public ResponseEntity<InputStreamResource> downloadImage(Long id) {
-        var imagePath = bookService.fetchEntityExist(id).getFileEntity().getFilePath();
-        return getFile(imagePath);
+//        var imagePath = bookService.fetchEntityExist(id).().getFilePath();
+        return null;
     }
 
     private ResponseEntity<InputStreamResource> getFile(String filePath) {

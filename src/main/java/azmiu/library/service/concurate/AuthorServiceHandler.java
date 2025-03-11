@@ -58,14 +58,14 @@ public class AuthorServiceHandler implements AuthorService {
     public void deleteAuthor(Long authorId) {
         var author = fetchEntityExist(authorId);
         var status  = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        author.setCommonStatusEntity(status);
+        author.setCommonStatus(status);
         authorRepository.save(author);
     }
 
     @Override
     public void addBookToAuthor(BookEntity bookEntity) {
         var authorEntity = fetchEntityExist(bookEntity.getAuthor());
-        authorEntity.getBookEntities().add(bookEntity);
+        authorEntity.getBooks().add(bookEntity);
 
     }
 

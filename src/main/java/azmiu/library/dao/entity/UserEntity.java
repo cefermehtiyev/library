@@ -86,7 +86,7 @@ public class UserEntity {
             mappedBy = "user"
     )
     @ToString.Exclude
-    List<BookBorrowingEntity> bookBorrowingEntity;
+    List<BookBorrowingEntity> bookBorrowing;
 
     @ManyToMany(
             fetch = LAZY,
@@ -99,7 +99,7 @@ public class UserEntity {
     )
     @ToString.Exclude
     @JsonBackReference
-    List<BookEntity> bookEntities;
+    List<BookEntity> books;
 
     @ManyToOne(
             fetch = LAZY,
@@ -108,7 +108,7 @@ public class UserEntity {
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     @JsonBackReference
-    UserRoleEntity roles;
+    UserRoleEntity userRole;
 
 
     @Override

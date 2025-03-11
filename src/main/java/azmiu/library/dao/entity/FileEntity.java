@@ -35,6 +35,6 @@ public class FileEntity {
     @MapsId
     @JoinColumn(name = "id")
     @ToString.Exclude
-    BookEntity bookEntity;
+    BookInventoryEntity bookInventory;
 
 }

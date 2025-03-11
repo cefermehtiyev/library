@@ -1,6 +1,6 @@
 package azmiu.library.mapper;
 
-import azmiu.library.dao.entity.BookEntity;
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.FileEntity;
 import azmiu.library.model.response.BookFileResponse;
 
@@ -16,9 +16,9 @@ public enum BookFileMapper {
                 .build();
     }
 
-    public FileEntity buildFileEntity(BookEntity bookEntity,String filePath, BigDecimal size){
+    public FileEntity buildFileEntity(BookInventoryEntity bookInventoryEntity, String filePath, BigDecimal size){
         return FileEntity.builder()
-                .bookEntity(bookEntity)
+                .bookInventory(bookInventoryEntity)
                 .filePath(filePath)
                 .fileSize(size)
                 .build();

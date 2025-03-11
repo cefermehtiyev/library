@@ -27,7 +27,7 @@ databaseChangeLog:
             baseTableName: book_files
             baseColumnNames: id
             constraintName: fk_book_file_book_files
-            referencedTableName: books
+            referencedTableName: book_inventory
             referencedColumnNames: id
 
 

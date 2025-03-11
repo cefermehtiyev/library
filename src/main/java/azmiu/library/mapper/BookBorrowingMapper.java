@@ -17,14 +17,14 @@ public enum BookBorrowingMapper {
         return BookBorrowingEntity.builder()
                 .book(book)
                 .user(user)
-                .borrowStatusEntity(status)
+                .borrowStatus(status)
                 .build();
     }
 
     public BookBorrowHistoryResponse buildBookBorrowHistoryResponse(BookBorrowingEntity bookBorrowHistory, BookEntity bookEntity){
         return BookBorrowHistoryResponse.builder()
                 .bookResponse(BOOK_MAPPER.buildBookResponse(bookEntity))
-                .borrowStatus(bookBorrowHistory.getBorrowStatusEntity().getStatus())
+                .borrowStatus(bookBorrowHistory.getBorrowStatus().getStatus())
                 .borrowDate(bookBorrowHistory.getBorrowDate())
                 .returnedDate(bookBorrowHistory.getReturnDate())
                 .build();
@@ -32,7 +32,7 @@ public enum BookBorrowingMapper {
     }
 
     public void updateReturnBookBorrowHistory(BookBorrowingEntity bookBorrowHistory, BorrowStatusEntity status){
-        bookBorrowHistory.setBorrowStatusEntity(status);
+        bookBorrowHistory.setBorrowStatus(status);
         bookBorrowHistory.setReturnDate(LocalDate.now());
     }
 }

@@ -24,9 +24,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
 @Log
@@ -43,8 +40,7 @@ public class BookServiceHandler implements BookService {
                               @Lazy CategoryService categoryService,
                               @Lazy AuthorService authorService,
                               @Lazy CommonStatusService commonStatusService,
-                              @Lazy CommonStatusConfig commonStatusConfig
-    ) {
+                              @Lazy CommonStatusConfig commonStatusConfig) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
         this.authorService = authorService;
@@ -53,15 +49,13 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    @Transactional
-    public Long addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
+    public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         addBookRelationships(bookRequest, bookEntity);
-        bookEntity.setBookInventoryEntity(bookInventoryEntity);
+        bookEntity.setBookInventory(bookInventoryEntity);
 
         bookRepository.save(bookEntity);
-        return getBookId(bookEntity.getBookCode()).getId();
 
     }
 
@@ -128,7 +122,7 @@ public class BookServiceHandler implements BookService {
     public void deleteBook(Long id) {
         var bookEntity = fetchEntityExist(id);
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        bookEntity.setCommonStatusEntity(status);
+        bookEntity.setCommonStatus(status);
         bookRepository.save(bookEntity);
     }
 

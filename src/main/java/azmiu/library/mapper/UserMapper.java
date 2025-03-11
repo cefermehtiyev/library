@@ -3,7 +3,6 @@ package azmiu.library.mapper;
 import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.entity.UserRoleEntity;
-import azmiu.library.model.enums.RoleName;
 import azmiu.library.model.request.RegistrationRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
@@ -23,7 +22,7 @@ public enum UserMapper {
                 .firstName(registrationRequest.getFirstName())
                 .lastName(registrationRequest.getLastName())
                 .fin(registrationRequest.getFin())
-                .roles(userRole)
+                .userRole(userRole)
                 .commonStatus(commonStatus)
                 .build();
     }
@@ -34,7 +33,7 @@ public enum UserMapper {
                 .name(userEntity.getUserName())
                 .email(userEntity.getEmail())
                 .status(userEntity.getCommonStatus().getStatus())
-                .roleName(userEntity.getRoles().getRoleName())
+                .roleName(userEntity.getUserRole().getRoleName())
                 .createdAt(userEntity.getCreatedAt())
                 .build();
     }

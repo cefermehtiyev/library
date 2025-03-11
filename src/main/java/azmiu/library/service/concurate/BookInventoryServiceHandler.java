@@ -14,6 +14,7 @@ import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CommonStatusService;
+import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -37,40 +38,49 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final CommonStatusConfig commonStatusConfig;
     private final InventoryStatusService inventoryStatusService;
     private final InventoryStatusConfig inventoryStatusConfig;
+    private final FileService fileService;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
                                        @Lazy CommonStatusService commonStatusService,
                                        @Lazy CommonStatusConfig commonStatusConfig,
                                        @Lazy InventoryStatusService inventoryStatusService,
-                                       @Lazy InventoryStatusConfig inventoryStatusConfig
-    ) {
+                                       @Lazy InventoryStatusConfig inventoryStatusConfig,
+                                       @Lazy FileService fileService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
+        this.fileService = fileService;
     }
 
     @Override
     @Transactional
-    public Long addBookToInventory(BookRequest bookRequest) {
+    public void addBookToInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");
+
                     return BOOK_INVENTORY_MAPPER.updateBookInventoryEntity(existingInventory);
                 })
                 .orElseGet(() -> {
-                    var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+                    var status = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
                     log.info("Inventory added");
-                    return BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
+                    var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
+                    bookInventoryRepository.save(newInventory);
+
+                    fileService.uploadFile(newInventory, file);
+                    fileService.uploadFile(newInventory, image);
+                    return newInventory;
                 });
 
         determineInventoryStatus(bookInventoryEntity);
-        bookInventoryRepository.save(bookInventoryEntity);
-        return bookService.addBook(bookRequest, bookInventoryEntity);
+
+        bookService.addBook(bookRequest, bookInventoryEntity);
     }
+
 
     private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {
         var quantity = bookInventoryEntity.getAvailableQuantity();
@@ -79,7 +89,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 quantity < 3 ? inventoryStatusConfig.getLowStock() :
                         inventoryStatusConfig.getStockOut();
 
-        bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntity(statusId));
+        bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntityStatus(statusId));
 
     }
 
@@ -113,7 +123,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     @Override
     public void decreaseBookQuantity(BookEntity bookEntity) {
-        var bookInventoryEntity = bookEntity.getBookInventoryEntity();
+        var bookInventoryEntity = bookEntity.getBookInventory();
 
         if (bookInventoryEntity.getAvailableQuantity() <= 0) {
             throw new NotFoundException(ErrorMessage.OUT_OF_STOCK.getMessage());

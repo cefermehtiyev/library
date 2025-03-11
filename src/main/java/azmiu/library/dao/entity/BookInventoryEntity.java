@@ -1,5 +1,6 @@
 package azmiu.library.dao.entity;
 
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,9 +54,9 @@ public class BookInventoryEntity {
     @OneToMany(
             fetch = LAZY,
             cascade = {MERGE, PERSIST, REMOVE},
-            mappedBy = "bookInventoryEntity"
+            mappedBy = "bookInventory"
     )
-    List<BookEntity> bookEntities;
+    List<BookEntity> books;
 
     @ManyToOne(
             fetch = LAZY,
@@ -64,6 +65,21 @@ public class BookInventoryEntity {
     @JoinColumn(name = "status_id")
     @ToString.Exclude
     InventoryStatusEntity inventoryStatus;
+
+
+    @OneToOne(
+            mappedBy = "bookInventory",
+            cascade = {MERGE, PERSIST}
+    )
+    @ToString.Exclude
+    ImageEntity image;
+
+    @OneToOne(
+            mappedBy = "bookInventory",
+            cascade = {MERGE, PERSIST}
+    )
+    @ToString.Exclude
+    FileEntity file;
 
     @Override
     public boolean equals(Object o) {

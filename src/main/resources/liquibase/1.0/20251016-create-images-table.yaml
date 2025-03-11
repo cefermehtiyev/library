@@ -32,7 +32,7 @@ databaseChangeLog:
             baseTableName: images
             baseColumnNames: id
             constraintName: fk_image_book_images
-            referencedTableName: books
+            referencedTableName: book_inventory
             referencedColumnNames: id
 
 

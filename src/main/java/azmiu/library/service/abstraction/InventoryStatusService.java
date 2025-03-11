@@ -6,5 +6,5 @@ import azmiu.library.model.enums.InventoryStatus;
 public interface InventoryStatusService {
     void addStatus(InventoryStatus status);
     Long getCount();
-    InventoryStatusEntity getInventoryEntity(Long id);
+    InventoryStatusEntity getInventoryEntityStatus(Long id);
 }

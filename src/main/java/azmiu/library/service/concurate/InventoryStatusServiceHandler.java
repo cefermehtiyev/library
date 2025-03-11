@@ -28,7 +28,7 @@ public class InventoryStatusServiceHandler implements InventoryStatusService {
     }
 
     @Override
-    public InventoryStatusEntity getInventoryEntity(Long id) {
+    public InventoryStatusEntity getInventoryEntityStatus(Long id) {
         return fetchByExist(id);
     }
 

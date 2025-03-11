@@ -49,7 +49,7 @@ public class AuthorEntity {
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
-    List<BookEntity> bookEntities;
+    List<BookEntity> books;
 
     @ManyToOne(
             fetch = LAZY,
@@ -57,7 +57,7 @@ public class AuthorEntity {
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude
-    CommonStatusEntity commonStatusEntity;
+    CommonStatusEntity commonStatus;
 
 
     @Override

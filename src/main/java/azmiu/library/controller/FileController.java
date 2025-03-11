@@ -23,18 +23,6 @@ public class FileController {
     private final FileService fileService;
 
 
-
-    @PostMapping(value = "/upload-files/{bookId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('SUPER_ADMIN') || hasRole('ADMIN')")
-    public void uploadFiles(@PathVariable Long bookId,
-                            @RequestParam(value = "file", required = false) MultipartFile file,
-                            @RequestParam(value = "image", required = false) MultipartFile image) {
-        fileService.uploadFile(bookId,file);
-        fileService.uploadFile(bookId,image);
-    }
-
-
     @GetMapping("/dowload-file")
     @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id) {

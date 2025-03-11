@@ -1,7 +1,6 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.configuration.CommonStatusConfig;
-import azmiu.library.configuration.UserRoleConfig;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.criteria.UserCriteria;
 import azmiu.library.dao.entity.UserEntity;
@@ -14,7 +13,6 @@ import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
 import azmiu.library.model.response.UserResponse;
 import azmiu.library.service.abstraction.CommonStatusService;
-import azmiu.library.service.abstraction.TokenService;
 import azmiu.library.service.abstraction.UserRoleService;
 import azmiu.library.service.abstraction.UserService;
 import azmiu.library.service.specification.UserSpecification;
@@ -138,7 +136,7 @@ public class UserServiceHandler implements UserService {
     @Transactional
     public String getRolesFromToken(String userId) {
         var user = fetchEntityExist(Long.valueOf(userId));
-        return user.getRoles().getRoleName().name();
+        return user.getUserRole().getRoleName().name();
     }
 
 

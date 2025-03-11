@@ -47,7 +47,7 @@ public class CategoryEntity {
             cascade = {MERGE, PERSIST, REMOVE},
             mappedBy = "category"
     )
-    List<BookEntity> bookEntities;
+    List<BookEntity> books;
 
     @ManyToOne(
             fetch = LAZY,
@@ -55,7 +55,7 @@ public class CategoryEntity {
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude
-    CommonStatusEntity commonStatusEntity;
+    CommonStatusEntity commonStatus;
 
 
     @Override

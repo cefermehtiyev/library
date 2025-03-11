@@ -19,7 +19,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -59,21 +58,9 @@ public class BookEntity {
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude
-    CommonStatusEntity commonStatusEntity;
+    CommonStatusEntity commonStatus;
 
-    @OneToOne(
-            mappedBy = "bookEntity",
-            cascade = {MERGE, PERSIST}
-    )
-    @ToString.Exclude
-    ImageEntity imageEntity;
 
-    @OneToOne(
-            mappedBy = "bookEntity",
-            cascade = {MERGE, PERSIST}
-    )
-    @ToString.Exclude
-    FileEntity fileEntity;
 
     @ManyToOne(
             fetch = LAZY,
@@ -84,10 +71,11 @@ public class BookEntity {
     CategoryEntity category;
 
     @ManyToOne(fetch = LAZY,
-            cascade = {MERGE, PERSIST})
+            cascade = {MERGE, PERSIST}
+            )
     @JoinColumn(name = "inventory_id")
     @ToString.Exclude
-    BookInventoryEntity bookInventoryEntity;
+    BookInventoryEntity bookInventory;
 
     @ManyToMany(
             fetch = LAZY,
@@ -98,7 +86,7 @@ public class BookEntity {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    List<AuthorEntity> authorEntities;
+    List<AuthorEntity> authors;
 
 
 
@@ -107,16 +95,16 @@ public class BookEntity {
             cascade = {MERGE, PERSIST},
             mappedBy = "book"
     )
-    List<BookBorrowingEntity> bookBorrowingEntity;
+    List<BookBorrowingEntity> bookBorrowing;
 
     @ManyToMany(
             fetch = LAZY,
             cascade = {MERGE, PERSIST},
-            mappedBy = "bookEntities"
+            mappedBy = "books"
     )
     @ToString.Exclude
     @JsonBackReference
-    List<UserEntity> userEntities;
+    List<UserEntity> users;
 
 
     @Override

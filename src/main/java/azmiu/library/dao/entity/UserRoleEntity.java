@@ -40,7 +40,7 @@ public class UserRoleEntity {
     @OneToMany(
             fetch = LAZY,
             cascade = {MERGE,PERSIST},
-            mappedBy = "roles")
+            mappedBy = "userRole")
     @ToString.Exclude
     private Set<UserEntity> users;
 }

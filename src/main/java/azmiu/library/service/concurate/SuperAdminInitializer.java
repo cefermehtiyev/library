@@ -103,7 +103,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
                     .email("azmiusuperadmin@gmail.com")
                     .fin(superAdminFin)
                     .password(passwordEncoder.encode("azmiu123"))
-                    .roles(role)
+                    .userRole(role)
                     .commonStatus(status)
                     .build();
 

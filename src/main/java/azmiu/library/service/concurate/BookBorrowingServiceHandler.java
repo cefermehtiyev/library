@@ -5,7 +5,6 @@ import azmiu.library.dao.entity.BookBorrowingEntity;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.BookBorrowHistoryRepository;
-import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BorrowRequest;
@@ -42,20 +41,19 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
 
 
 
-    @Override
-    public void returnBookHistory(Long userId, Long bookId) {
+    private void updateBookHistory(Long userId, Long bookId) {
         var bookBorrowHistory = fetchEntityExist(userId, bookId);
         var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getReturned());
         BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory,status);
         bookBorrowHistoryRepository.save(bookBorrowHistory);
+        bookInventoryService.updateBookInventoryOnReturn(bookBorrowHistory.getBook().getTitle(),bookBorrowHistory.getBook().getPublicationYear());
     }
 
     @Override
     public void processBookReturn(BorrowRequest borrowRequest) {
         var book = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
         var user = userService.getUserEntityByFin(borrowRequest.getFin());
-        System.out.println(bookBorrowHistoryRepository.findByUserIdAndBookId(user.getId(),book.getId()).get());
-        returnBookHistory(user.getId(), book.getId());
+        updateBookHistory(user.getId(), book.getId());
     }
 
     @Override
@@ -66,14 +64,14 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
         addBookToBorrowHistory(user, book);
 
         bookInventoryService.decreaseBookQuantity(book);
-        bookInventoryService.increaseReadCount(book.getBookInventoryEntity().getId());
+        bookInventoryService.increaseReadCount(book.getBookInventory().getId());
     }
 
 
     public List<BookBorrowHistoryResponse> getBorrowedBooksByStudent(Long userId) {
         var user = userService.getUserEntity(userId);
 
-        return user.getBookBorrowingEntity().stream()
+        return user.getBookBorrowing().stream()
                 .map(bookBorrowHistory -> {
                     var bookEntity = bookBorrowHistory.getBook();
                     return BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryResponse(bookBorrowHistory, bookEntity);

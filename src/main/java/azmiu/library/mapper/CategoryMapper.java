@@ -12,7 +12,7 @@ public enum CategoryMapper {
     public CategoryEntity buildCategoryEntity(CategoryRequest categoryRequest, CommonStatusEntity commonStatus){
         return CategoryEntity.builder()
                 .bookCategory(categoryRequest.getBookCategory())
-                .commonStatusEntity(commonStatus)
+                .commonStatus(commonStatus)
                 .build();
     }
 
@@ -20,7 +20,7 @@ public enum CategoryMapper {
         return CategoryResponse.builder()
                 .id(categoryEntity.getId())
                 .bookCategory(categoryEntity.getBookCategory())
-                .status(categoryEntity.getCommonStatusEntity().getStatus())
+                .status(categoryEntity.getCommonStatus().getStatus())
                 .build();
     }
 

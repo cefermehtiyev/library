@@ -10,7 +10,7 @@ import azmiu.library.model.response.PageableResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
-    Long addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity);
+    void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity);
 
     BookResponse getBook(Long id);
 

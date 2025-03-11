@@ -26,7 +26,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "book_borrow_history")
+@Table(name = "book_borrowing")
 @Entity
 public class BookBorrowingEntity {
     @Id
@@ -38,7 +38,10 @@ public class BookBorrowingEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(
+            fetch = LAZY,
+            cascade = {PERSIST,MERGE}
+    )
     @JoinColumn(name = "book_id")
     private BookEntity book;
 
@@ -52,7 +55,7 @@ public class BookBorrowingEntity {
             cascade = {PERSIST,MERGE}
     )
     @JoinColumn(name = "status_id")
-    BorrowStatusEntity borrowStatusEntity;
+    BorrowStatusEntity borrowStatus;
 
     @Override
     public boolean equals(Object o) {

@@ -85,4 +85,3 @@ databaseChangeLog:
             constraintName: fk_books_category
             referencedTableName: categories
             referencedColumnNames: id
-

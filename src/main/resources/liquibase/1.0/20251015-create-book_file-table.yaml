@@ -16,7 +16,7 @@ databaseChangeLog:
                   name: file_path
                   type: VARCHAR
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: file_size
                   type: NUMERIC

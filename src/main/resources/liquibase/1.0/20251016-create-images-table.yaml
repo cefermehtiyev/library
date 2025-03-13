@@ -16,12 +16,12 @@ databaseChangeLog:
                   name: image_path
                   type: VARCHAR(255)
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: image_type
                   type: VARCHAR(255)
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: image_size
                   type: NUMERIC(10,2)

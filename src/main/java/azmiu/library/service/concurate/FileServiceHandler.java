@@ -41,34 +41,53 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public void uploadFile(BookInventoryEntity book, MultipartFile file) {
-
-
         try {
-            System.out.println("Sdhsaijdhkjsadlhsdghfidsadbnsakdfjsfd");
-            if ( file.isEmpty()) {
-                return;
-            }
+            if (file.isEmpty()) {
+                var fileEntity = FILE_MAPPER.buildFileEntity(book, null, null);
+                fIleRepository.save(fileEntity);
+            } else {
                 String fileName = file.getOriginalFilename();
                 byte[] fileData = file.getBytes();
                 var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-                var fileType = file.getContentType();
-
-                if (Objects.requireNonNull(fileType).startsWith("image")) {
-                    FileStorageUtil.saveFile(fileName, fileData, true);
-                    var imageEntity = IMAGE_MAPPER.buildImageEntity(book, fileName, fileType, fileSize);
-                    imageRepository.save(imageEntity);
-                } else {
-                    var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
-                    var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
-                    fIleRepository.save(fileEntity);
-                }
 
 
+                var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
+                var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
+                fIleRepository.save(fileEntity);
+            }
 
 
         } catch (IOException e) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
         }
+
+
+    }
+
+    @Override
+    public void uploadImage(BookInventoryEntity book, MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, null, null, null);
+                imageRepository.save(imageEntity);
+
+            } else {
+                String fileName = file.getOriginalFilename();
+                byte[] fileData = file.getBytes();
+                var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+                var fileType = file.getContentType();
+
+                FileStorageUtil.saveFile(fileName, fileData, true);
+                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, fileName, fileType, fileSize);
+                imageRepository.save(imageEntity);
+            }
+
+
+        } catch (IOException e) {
+            throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
+        }
+
+
     }
 
     @Override

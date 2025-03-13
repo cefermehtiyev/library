@@ -18,6 +18,7 @@ import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.specification.BookSpecification;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +50,7 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
+    @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);

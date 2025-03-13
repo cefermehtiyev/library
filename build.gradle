@@ -57,6 +57,9 @@ dependencies {
     // Spring Boot Test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
+
     // OpenFeign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$openFeign"
 

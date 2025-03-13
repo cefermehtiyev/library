@@ -6,6 +6,7 @@ import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/bookInventory")
@@ -29,12 +31,13 @@ public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
 
 
-    @PostMapping(name = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(CREATED)
     @PreAuthorize("hasRole('SUPER_ADMIN') || hasRole('ADMIN')")
     public void addBookToInventory(@ModelAttribute BookRequest bookRequest,
                                    @RequestParam(value = "file", required = false) MultipartFile file,
                                    @RequestParam(value = "image", required = false) MultipartFile image) {
+
         bookInventoryService.addBookToInventory(bookRequest, file, image);
     }
 

@@ -27,30 +27,26 @@ import org.springframework.web.multipart.MultipartFile;
 import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
-@Log
 @Slf4j
 @Service
 public class BookInventoryServiceHandler implements BookInventoryService {
 
     private final BookInventoryRepository bookInventoryRepository;
     private final BookService bookService;
-    private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
+
     private final InventoryStatusService inventoryStatusService;
     private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
-                                       @Lazy CommonStatusService commonStatusService,
-                                       @Lazy CommonStatusConfig commonStatusConfig,
+
                                        @Lazy InventoryStatusService inventoryStatusService,
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
-        this.commonStatusService = commonStatusService;
-        this.commonStatusConfig = commonStatusConfig;
+
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
@@ -72,7 +68,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                     bookInventoryRepository.save(newInventory);
 
                     fileService.uploadFile(newInventory, file);
-                    fileService.uploadFile(newInventory, image);
+                    fileService.uploadImage(newInventory, image);
                     return newInventory;
                 });
 

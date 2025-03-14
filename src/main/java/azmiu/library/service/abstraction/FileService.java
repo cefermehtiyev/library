@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileService {
     void uploadFile(BookInventoryEntity book, MultipartFile file);
     void uploadImage(BookInventoryEntity book, MultipartFile file);
-    ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id);
-    ResponseEntity<InputStreamResource> downloadImage(@RequestParam Long id);
+    ResponseEntity<InputStreamResource> downloadFile( Long id);
+    ResponseEntity<InputStreamResource> downloadImage( Long id);
 
 
 

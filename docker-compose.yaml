@@ -2,7 +2,7 @@
 services:
   postgres:
     container_name: postgres_library
-    image: "postgres:latest"
+    image: "postgres:17.4"
     environment:
       POSTGRES_DB: library_db
       POSTGRES_USER: postgres

@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -33,6 +34,10 @@ public class BookBorrowingEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @CreationTimestamp
+    private LocalDate borrowDate;
+    private LocalDate returnDate;
+
     @ManyToOne(fetch = LAZY,
             cascade = {MERGE, PERSIST})
     @JoinColumn(name = "user_id")
@@ -40,19 +45,15 @@ public class BookBorrowingEntity {
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {PERSIST,MERGE}
+            cascade = {PERSIST, MERGE}
     )
     @JoinColumn(name = "book_id")
     private BookEntity book;
 
 
-    @CreationTimestamp
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
-
     @ManyToOne(
             fetch = LAZY,
-            cascade = {PERSIST,MERGE}
+            cascade = {PERSIST, MERGE}
     )
     @JoinColumn(name = "status_id")
     BorrowStatusEntity borrowStatus;

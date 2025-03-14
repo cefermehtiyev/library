@@ -1,7 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.annotation.Log;
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.configuration.InventoryStatusConfig;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
@@ -10,10 +8,10 @@ import azmiu.library.dao.repository.BookInventoryRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BookRequest;
+import azmiu.library.model.response.BookInventoryResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
-import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +75,12 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         bookService.addBook(bookRequest, bookInventoryEntity);
     }
 
+    @Override
+    public BookInventoryResponse getBookInventory(Long inventoryId) {
+        var bookInventoryEntity = getBookInventoryEntity(inventoryId);
+        return BOOK_INVENTORY_MAPPER.buildBookInventoryResponse(bookInventoryEntity);
+    }
+
 
     private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {
         var quantity = bookInventoryEntity.getAvailableQuantity();
@@ -92,14 +96,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     @Override
     public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
-        var bookInventory = fetchEntityExist(title, publicationYear);
+        var bookInventory = getBookInventoryEntity(title, publicationYear);
         BOOK_INVENTORY_MAPPER.updateInventoryOnReturn(bookInventory);
         determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
     }
 
     public void increaseReadCount(Long inventoryId) {
-        var bookInventory = fetchEntityExist(inventoryId);
+        var bookInventory = getBookInventoryEntity(inventoryId);
         BOOK_INVENTORY_MAPPER.increaseReadCount(bookInventory);
         bookInventoryRepository.save(bookInventory);
     }
@@ -132,14 +136,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-    private BookInventoryEntity fetchEntityExist(String title, Integer publicationYear) {
+    private BookInventoryEntity getBookInventoryEntity(String title, Integer publicationYear) {
         return bookInventoryRepository.findByTitleAndPublicationYear(title, publicationYear)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
                 );
     }
 
-    private BookInventoryEntity fetchEntityExist(Long inventoryId) {
+    public BookInventoryEntity getBookInventoryEntity(Long inventoryId) {
         return bookInventoryRepository.findById(inventoryId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())

@@ -32,6 +32,6 @@ public class FileController {
     @GetMapping("/dowload-image")
     @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public ResponseEntity<InputStreamResource> downloadImage(@RequestParam Long id) {
-        return fileService.downloadFile(id);
+        return fileService.downloadImage(id);
     }
 }

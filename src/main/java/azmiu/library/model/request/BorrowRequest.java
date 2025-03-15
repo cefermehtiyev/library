@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BorrowRequest {
-    String fin;
+    String userName;
     String bookCode;
 }
+

@@ -1,5 +1,6 @@
 package azmiu.library.model.response;
 
+import azmiu.library.model.enums.InventoryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class BookInventoryResponse {
     private Integer reservedQuantity;
     private Integer borrowedQuantity;
     private Integer availableQuantity;
+    private InventoryStatus inventoryStatus;
     private Long readCount;
 }

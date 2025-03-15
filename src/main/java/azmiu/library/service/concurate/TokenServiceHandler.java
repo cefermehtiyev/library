@@ -48,7 +48,7 @@ public class TokenServiceHandler implements TokenService {
     public String getUserIdFromToken(String token) {
         try {
             if (token.startsWith("Bearer ")) {
-                token = token.substring(7); // 'Bearer ' hissəsini silirik
+                token = token.substring(7);
             }
             var jwtClaimsSet = JWT_UTIL.parseSignedJwt(token);
             var userId = jwtClaimsSet.getJWTClaimsSet().getClaim("userId").toString();
@@ -99,7 +99,6 @@ public class TokenServiceHandler implements TokenService {
 
             if (authCacheData == null || isTokenInvalid ) throw new AuthException(TOKEN_EXPIRED.getMessage(), 406);
             var publicKey = CERTIFICATE_KEY_UTIL.getPublicKey(authCacheData.getPublicKey());
-            log.info("Public Key: {}", authCacheData.getPublicKey());
 
 
             JWT_UTIL.verifySignature(accessToken, publicKey);

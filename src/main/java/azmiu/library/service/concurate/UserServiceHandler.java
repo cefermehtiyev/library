@@ -67,8 +67,8 @@ public class UserServiceHandler implements UserService {
     }
 
     @Override
-    public UserEntity getUserEntityByFin(String fin) {
-        return fetchEntityExist(fin);
+    public UserEntity getUserEntityByUserName(String userName) {
+        return fetchEntityExist(userName);
     }
 
 
@@ -112,8 +112,8 @@ public class UserServiceHandler implements UserService {
         );
     }
 
-    private UserEntity fetchEntityExist(String fin) {
-        return userRepository.findByFin(fin).orElseThrow(
+    private UserEntity fetchEntityExist(String userName) {
+        return userRepository.findByUserName(userName).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
     }

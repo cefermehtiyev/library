@@ -90,9 +90,9 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
 
     private void initializeSuperAdmin() {
-        var superAdminFin = "7BNOR3C";
+        var superAdminUserName = "superadmin";
 
-        if (userRepository.findByFin(superAdminFin).isEmpty()) {
+        if (userRepository.findByUserName(superAdminUserName).isEmpty()) {
             var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
             var role = userRoleService.getUserRole(SUPER_ADMIN);
 
@@ -101,7 +101,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
                     .firstName("Super")
                     .lastName("Admin")
                     .email("azmiusuperadmin@gmail.com")
-                    .fin(superAdminFin)
+                    .fin(superAdminUserName)
                     .password(passwordEncoder.encode("azmiu123"))
                     .userRole(role)
                     .commonStatus(status)

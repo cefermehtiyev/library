@@ -44,7 +44,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: status_id
+                  name: inventory_status
                   type: BIGINT
                   constraints:
                     nullable: false
@@ -63,7 +63,7 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseTableName: book_inventory
-            baseColumnNames: status_id
+            baseColumnNames: inventory_status
             constraintName: fk_inventory_status
             referencedTableName: inventory_statuses
             referencedColumnNames: id

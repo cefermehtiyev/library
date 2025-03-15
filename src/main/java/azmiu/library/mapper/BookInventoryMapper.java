@@ -27,6 +27,7 @@ public enum BookInventoryMapper {
                 .availableQuantity(bookInventoryEntity.getAvailableQuantity())
                 .borrowedQuantity(bookInventoryEntity.getBorrowedQuantity())
                 .publicationYear(bookInventoryEntity.getPublicationYear())
+                .inventoryStatus(bookInventoryEntity.getInventoryStatus().getStatus())
                 .readCount(bookInventoryEntity.getReadCount())
                 .build();
     }

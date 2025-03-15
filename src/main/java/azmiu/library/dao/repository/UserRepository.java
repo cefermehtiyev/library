@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> , JpaSpec
     Optional<UserEntity> findByEmail(String email);
 
 
-    Optional<UserEntity> findByFin(String fin);
 
     @Query(value = "SELECT b from BookEntity b JOIN b.users u WHERE u.fin = :fin ")
     Page<BookEntity> findBooksByFin(String fin, Pageable pageable);

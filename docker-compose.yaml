@@ -14,12 +14,12 @@ services:
 
 
   adminer:
-    image: adminer:latest
+    image: adminer:4.8.1
     ports:
       - '1257:8080'
 
   redis:
-    image: redis:latest
+    image: redis:7.2
     environment:
       REDIS_PASSWORD: myredispassword
     command: ["redis-server", "--requirepass", "myredispassword"]

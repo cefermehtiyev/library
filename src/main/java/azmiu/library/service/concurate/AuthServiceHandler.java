@@ -79,7 +79,6 @@ public class AuthServiceHandler implements AuthService {
 
 
     public boolean verifyToken(String accessToken) {
-        log.info("AccessToken:{} ", accessToken);
         try {
             tokenService.verifyToken(accessToken);
             return true;

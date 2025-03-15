@@ -24,7 +24,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: status_id
+                  name: borrow_status
                   type: BIGINT
                   constraints:
                     nullable: true
@@ -56,7 +56,7 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: book_borrowing
-            baseColumnNames: status_id
+            baseColumnNames: borrow_status
             referencedTableName: borrow_statuses
             referencedColumnNames: id
             constraintName: fk_status_borrow

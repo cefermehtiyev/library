@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+
 import java.util.List;
 
 import static azmiu.library.mapper.BookBorrowingMapper.BOOK_LOAN_HISTORY_MAPPER;
@@ -34,33 +35,32 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
 
 
     @Override
-    public  void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity) {
+    public void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity) {
         var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getPending());
-        bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity,status));
+        bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity, status));
     }
 
 
-
-    private void updateBookHistory(Long userId, Long bookId) {
-        var bookBorrowHistory = fetchEntityExist(userId, bookId);
+    private void updateBookHistory(Long userId, BookEntity bookEntity) {
+        var bookBorrowHistory = fetchEntityExist(userId, bookEntity.getId());
         var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getReturned());
-        BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory,status);
+        BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory, status);
         bookBorrowHistoryRepository.save(bookBorrowHistory);
-        bookInventoryService.updateBookInventoryOnReturn(bookBorrowHistory.getBook().getTitle(),bookBorrowHistory.getBook().getPublicationYear());
+        bookInventoryService.updateBookInventoryOnReturn(bookEntity);
     }
 
     @Override
     public void processBookReturn(BorrowRequest borrowRequest) {
-        var book = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
-        var user = userService.getUserEntityByFin(borrowRequest.getFin());
-        updateBookHistory(user.getId(), book.getId());
+        var bookEntity = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
+        var userEntity = userService.getUserEntityByUserName(borrowRequest.getUserName());
+        updateBookHistory(userEntity.getId(), bookEntity);
     }
 
     @Override
     @Transactional
     public void borrowBook(BorrowRequest borrowRequest) {
         var book = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
-        var user = userService.getUserEntityByFin(borrowRequest.getFin());
+        var user = userService.getUserEntityByUserName(borrowRequest.getUserName());
         addBookToBorrowHistory(user, book);
 
         bookInventoryService.decreaseBookQuantity(book);

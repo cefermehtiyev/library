@@ -62,7 +62,7 @@ public class BookInventoryEntity {
             fetch = LAZY,
             cascade = {MERGE, PERSIST, REMOVE}
     )
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "inventory_status")
     @ToString.Exclude
     InventoryStatusEntity inventoryStatus;
 

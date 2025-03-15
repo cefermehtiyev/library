@@ -16,7 +16,7 @@ public interface UserService {
 
     UserEntity getUserEntity(Long userId);
 
-    UserEntity getUserEntityByFin(String fin);
+    UserEntity getUserEntityByUserName(String userName);
 
     UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest);
 

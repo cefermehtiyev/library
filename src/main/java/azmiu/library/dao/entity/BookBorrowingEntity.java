@@ -55,7 +55,7 @@ public class BookBorrowingEntity {
             fetch = LAZY,
             cascade = {PERSIST, MERGE}
     )
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "borrow_status")
     BorrowStatusEntity borrowStatus;
 
     @Override

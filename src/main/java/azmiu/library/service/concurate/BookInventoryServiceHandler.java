@@ -84,10 +84,11 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {
         var quantity = bookInventoryEntity.getAvailableQuantity();
+        log.info("Available quantity {}",quantity);
 
         var statusId = quantity == 0 ? inventoryStatusConfig.getStockOut() :
                 quantity < 3 ? inventoryStatusConfig.getLowStock() :
-                        inventoryStatusConfig.getStockOut();
+                        inventoryStatusConfig.getInStock();
 
         bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntityStatus(statusId));
 
@@ -95,8 +96,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
 
     @Override
-    public void updateBookInventoryOnReturn(String title, Integer publicationYear) {
-        var bookInventory = getBookInventoryEntity(title, publicationYear);
+    public void updateBookInventoryOnReturn(BookEntity bookEntity) {
+        var bookInventory = bookEntity.getBookInventory();
         BOOK_INVENTORY_MAPPER.updateInventoryOnReturn(bookInventory);
         determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
@@ -135,13 +136,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     }
 
-
-    private BookInventoryEntity getBookInventoryEntity(String title, Integer publicationYear) {
-        return bookInventoryRepository.findByTitleAndPublicationYear(title, publicationYear)
-                .orElseThrow(
-                        () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
-                );
-    }
 
     public BookInventoryEntity getBookInventoryEntity(Long inventoryId) {
         return bookInventoryRepository.findById(inventoryId)

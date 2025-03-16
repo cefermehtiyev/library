@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CategoryResponse {
-    private Long id;
     private BookCategory bookCategory;
     private CommonStatus status;
 }

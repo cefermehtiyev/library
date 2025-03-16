@@ -28,13 +28,14 @@ public enum BookMapper {
 
     public BookResponse buildBookResponse(BookEntity bookEntity){
         return BookResponse.builder()
-                .id(bookEntity.getId()).bookCode(bookEntity.getBookCode())
                 .title(bookEntity.getTitle())
                 .author(bookEntity.getAuthor())
                 .publisher(bookEntity.getPublisher())
                 .publicationYear(bookEntity.getPublicationYear())
+                .bookCode(bookEntity.getBookCode())
                 .language(bookEntity.getLanguage())
                 .status(bookEntity.getCommonStatus().getStatus())
+                .inventoryStatus(bookEntity.getBookInventory().getInventoryStatus().getStatus())
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getBookInventory().getFile().getFilePath())

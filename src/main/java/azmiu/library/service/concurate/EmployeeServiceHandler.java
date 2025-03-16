@@ -3,6 +3,7 @@ package azmiu.library.service.concurate;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.EmployeeRepository;
 import azmiu.library.model.request.EmployeeRequest;
+import azmiu.library.model.response.EmployeeResponse;
 import azmiu.library.service.abstraction.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,10 @@ public class EmployeeServiceHandler implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-
-
+    @Override
+    public EmployeeResponse getEmployee(UserEntity userEntity) {
+        return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity);
+    }
 
 
 }

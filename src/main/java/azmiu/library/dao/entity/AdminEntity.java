@@ -29,7 +29,7 @@ import static jakarta.persistence.EnumType.STRING;
 @Builder
 @Table(name = "admins")
 @Entity
-public class AdminEntity {
+public class  AdminEntity {
 
     @Id
     private Long id;

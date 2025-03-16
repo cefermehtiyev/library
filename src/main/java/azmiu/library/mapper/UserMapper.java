@@ -3,15 +3,24 @@ package azmiu.library.mapper;
 import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.entity.UserRoleEntity;
+import azmiu.library.exception.ErrorMessage;
+import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.RoleName;
 import azmiu.library.model.request.RegistrationRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
 import azmiu.library.model.response.UserResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 
+import static azmiu.library.mapper.EmployeeMapper.EMPLOYEE_MAPPER;
+import static azmiu.library.mapper.StudentMapper.STUDENT_MAPPER;
+
+@RequiredArgsConstructor
 public enum UserMapper {
+
     USER_MAPPER;
 
     public UserEntity buildUserEntity(RegistrationRequest registrationRequest, CommonStatusEntity commonStatus, UserRoleEntity userRole) {
@@ -27,16 +36,18 @@ public enum UserMapper {
                 .build();
     }
 
+
     public UserResponse buildUserResponse(UserEntity userEntity) {
-        return UserResponse.builder()
-                .id(userEntity.getId())
-                .name(userEntity.getUserName())
-                .email(userEntity.getEmail())
-                .status(userEntity.getCommonStatus().getStatus())
-                .roleName(userEntity.getUserRole().getRoleName())
-                .createdAt(userEntity.getCreatedAt())
-                .build();
-    }
+
+        switch (userEntity.getUserRole().getRoleName()){
+            case  STUDENT ->{
+                return STUDENT_MAPPER.buildStudentResponse(userEntity);
+            }
+            case RoleName.EMPLOYEE -> {
+                return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity);
+            }
+            default -> throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
+        }    }
 
     public UserIdResponse buildUserIdResponse(UserEntity userEntity){
         return UserIdResponse.builder().id(Long.toString(userEntity.getId())).build();

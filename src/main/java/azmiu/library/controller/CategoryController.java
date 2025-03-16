@@ -22,19 +22,14 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void addCategory(@RequestBody CategoryRequest categoryRequest){
-        categoryService.addCategory(categoryRequest);
-    }
 
     @GetMapping("/{categoryId}")
     public List<BookResponse> getBooksByCategory(@PathVariable Long categoryId){
         return categoryService.getBooksByCategory(categoryId);
     }
 
-    @GetMapping
-    private List<CategoryResponse> getAllCategories(){
+    @GetMapping("/all")
+    public List<CategoryResponse> getAllCategories(){
         return categoryService.getAllCategory();
     }
 

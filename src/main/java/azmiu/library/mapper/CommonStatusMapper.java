@@ -13,7 +13,4 @@ public enum CommonStatusMapper {
                 .build();
     }
 
-    public CommonStatusRequest buildCommonStatusRequest(CommonStatus status){
-        return CommonStatusRequest.builder().commonStatus(status).build();
-    }
 }

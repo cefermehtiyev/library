@@ -1,6 +1,7 @@
 package azmiu.library.model.response;
 
 import azmiu.library.model.enums.CommonStatus;
+import azmiu.library.model.enums.InventoryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 public class BookResponse {
-    private Long id;
     private String title;
     private String author;
     private String publisher;
@@ -25,6 +25,7 @@ public class BookResponse {
     private CommonStatus status;
     private Integer pages;
     private String filePath;
+    private InventoryStatus inventoryStatus;
     private Integer publicationYear;
     private LocalDate createdAt;
 

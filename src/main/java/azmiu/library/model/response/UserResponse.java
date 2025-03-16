@@ -6,16 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class UserResponse {
     private Long id;
-    private String name;
+    private String userName;
+    private String firstName;
+    private String lastName;
     private String email;
     private CommonStatus status;
     private RoleName roleName;

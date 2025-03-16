@@ -42,10 +42,10 @@ public class AuthServiceHandler implements AuthService {
         Date currentDate = new Date();
 
 
-        if (sessionToken.isPresent() && currentDate.before(sessionToken.get().getExpirationTime())) {
+        if (sessionToken.isPresent() && currentDate.after(sessionToken.get().getExpirationTime())) {
             throw new AuthException(ErrorMessage.TOKEN_EXPIRED.getMessage(), 406);
 
-        } else if (sessionToken.isPresent() && currentDate.after(sessionToken.get().getExpirationTime())) {
+        } else if (sessionToken.isPresent() && currentDate.before(sessionToken.get().getExpirationTime())) {
             log.info("update access Token");
             var authResponse = tokenService.prepareToken(userIdResponse.id());
             var authCacheData = (AuthCacheData) cacheProvider.getBucket(userIdResponse.id());

@@ -6,7 +6,6 @@ import azmiu.library.model.request.AuthorRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.AuthorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,7 @@ public class AuthorController {
 
 
     @PostMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void addAuthor(@RequestBody AuthorRequest authorRequest) {
         authorService.addAuthor(authorRequest);
     }

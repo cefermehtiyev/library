@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class StudentResponse extends UserResponse{
-    private String fin;
     private String specialization;
     private Integer course;
     private String groupName;

@@ -19,6 +19,7 @@ public class UserResponse {
     private String userName;
     private String firstName;
     private String lastName;
+    private String fin;
     private String email;
     private CommonStatus status;
     private RoleName roleName;

@@ -22,7 +22,7 @@ redis:
 
 token:
   expiration:
-    access-token: 10
+    access-token: 100
     refresh-token: 21600
 
 logging:

@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +33,7 @@ public class BookInventoryController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(CREATED)
-    @PreAuthorize("hasRole('SUPER_ADMIN') || hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN') || hasRole('ADMIN')")
     public void addBookToInventory(@ModelAttribute BookRequest bookRequest,
                                    @RequestParam(value = "file", required = false) MultipartFile file,
                                    @RequestParam(value = "image", required = false) MultipartFile image) {

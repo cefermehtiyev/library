@@ -35,7 +35,6 @@ public class UserRoleServiceHandler implements UserRoleService {
             case STUDENT -> fetchEntityExist(userRoleConfig.getStudent());
             case EMPLOYEE -> fetchEntityExist(userRoleConfig.getEmployee());
             case SUPER_ADMIN -> fetchEntityExist(userRoleConfig.getSuperAdmin());
-            default -> throw new NotFoundException(USER_ROLE_NOT_FUND.getMessage());
         };
     }
 

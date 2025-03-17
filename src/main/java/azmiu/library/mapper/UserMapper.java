@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 
+import static azmiu.library.mapper.AdminMapper.ADMIN_MAPPER;
 import static azmiu.library.mapper.EmployeeMapper.EMPLOYEE_MAPPER;
 import static azmiu.library.mapper.StudentMapper.STUDENT_MAPPER;
 
@@ -39,15 +40,21 @@ public enum UserMapper {
 
     public UserResponse buildUserResponse(UserEntity userEntity) {
 
-        switch (userEntity.getUserRole().getRoleName()){
+         switch (userEntity.getUserRole().getRoleName()){
             case  STUDENT ->{
                 return STUDENT_MAPPER.buildStudentResponse(userEntity);
             }
-            case RoleName.EMPLOYEE -> {
+            case EMPLOYEE -> {
                 return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity);
             }
+            case ADMIN -> {
+                return
+                ADMIN_MAPPER.buildAdminResponse(userEntity);
+            }
             default -> throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
-        }    }
+        }
+    }
+
 
     public UserIdResponse buildUserIdResponse(UserEntity userEntity){
         return UserIdResponse.builder().id(Long.toString(userEntity.getId())).build();

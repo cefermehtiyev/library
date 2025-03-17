@@ -9,7 +9,6 @@ import azmiu.library.model.response.UserResponse;
 import azmiu.library.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,13 +33,13 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void UpdateUser(@RequestHeader(AUTHORIZATION) String accessToken, @PathVariable Long id, @RequestBody RegistrationRequest registrationRequest) {
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+    public void UpdateUser(@PathVariable Long id, @RequestBody RegistrationRequest registrationRequest) {
         userService.updateUser(id, registrationRequest);
     }
 
     @GetMapping("{id}")
-    public UserResponse getUser(@RequestHeader(AUTHORIZATION) String accessToken, @PathVariable Long id) {
+    public UserResponse getUser( @PathVariable Long id) {
         return userService.getUser(id);
     }
 
@@ -51,15 +50,20 @@ public class UserController {
 
 
     @GetMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
         return userService.getAllUsers(pageCriteria, userCriteria);
     }
 
+    @GetMapping("/all-admins")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+    public PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
+        return userService.getAllAdmins(pageCriteria, userCriteria);
+    }
 
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }

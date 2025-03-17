@@ -24,6 +24,8 @@ public interface UserService {
 
     PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria);
 
+    PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria);
+
     String getRolesFromToken(String userId);
 
     void updateUser(Long userId, RegistrationRequest registrationRequest);

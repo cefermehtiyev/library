@@ -75,7 +75,6 @@ dependencies {
     implementation "com.nimbusds:nimbus-jose-jwt:$jwtVersion"
 
     // Security
-    implementation "org.springframework.boot:spring-boot-starter-security"
 
 
     // Database

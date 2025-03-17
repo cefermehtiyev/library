@@ -98,9 +98,19 @@ public class UserServiceHandler implements UserService {
     }
 
     public PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
-        var userPage = userRepository.findAll(
+        var userPage = userRepository.findAllNonAdminUsers(
                 new UserSpecification(userCriteria), PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").descending())
         );
+        return USER_MAPPER.pageableUserResponse(userPage);
+
+    }
+
+    @Override
+    public PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
+        var userPage = userRepository.findAllAdmins(
+                new UserSpecification(userCriteria), PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").descending())
+        );
+
         return USER_MAPPER.pageableUserResponse(userPage);
 
     }

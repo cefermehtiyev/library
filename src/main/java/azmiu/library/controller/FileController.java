@@ -6,7 +6,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,13 +23,13 @@ public class FileController {
 
 
     @GetMapping("/dowload-file")
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id) {
         return fileService.downloadFile(id);
     }
 
     @GetMapping("/dowload-image")
-    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
     public ResponseEntity<InputStreamResource> downloadImage(@RequestParam Long id) {
         return fileService.downloadImage(id);
     }

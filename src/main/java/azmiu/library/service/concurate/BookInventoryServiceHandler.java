@@ -38,7 +38,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
-
                                        @Lazy InventoryStatusService inventoryStatusService,
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService) {

@@ -74,7 +74,7 @@ public class UserServiceHandler implements UserService {
 
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
 
-        var userEntity = fetchEntityExist(authRequest);
+        var userEntity = fetchEntityExist(authRequest.getUserName());
         if (!passwordEncoder.matches(authRequest.getPassword(),userEntity.getPassword())){
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
@@ -137,11 +137,7 @@ public class UserServiceHandler implements UserService {
     }
 
 
-    private UserEntity fetchEntityExist(AuthRequest authRequest) {
-        return userRepository.findByUserName(authRequest.getUserName()).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
-        );
-    }
+
     @Override
     @Transactional
     public String getRolesFromToken(String userId) {

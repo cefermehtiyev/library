@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.FileRepository;
 import azmiu.library.dao.repository.ImageRepository;
@@ -8,7 +7,6 @@ import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.FileStorageFailureException;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.service.abstraction.BookInventoryService;
-import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.util.FileStorageUtil;
 
@@ -39,7 +37,6 @@ import static azmiu.library.mapper.ImageMapper.IMAGE_MAPPER;
 @RequiredArgsConstructor
 @Service
 public class FileServiceHandler implements FileService {
-    private final BookService bookService;
     private final BookInventoryService bookInventoryService;
     private final FileRepository fIleRepository;
     private final ImageRepository imageRepository;

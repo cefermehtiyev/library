@@ -93,7 +93,7 @@ public class UserEntity {
             cascade = {MERGE, PERSIST}
     )
     @JoinTable(
-            name = "book_borrow_history",
+            name = "book_borrowing",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )

@@ -15,8 +15,8 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity,Long> , JpaSpecificationExecutor<UserEntity> {
     Optional<UserEntity> findByUserName(String userName);
-    Optional<UserEntity> findByEmail(String email);
 
+    Optional<UserEntity> findByUserNameAndPassword(String userName, String password);
 
 
     @Query(value = "SELECT b from BookEntity b JOIN b.users u WHERE u.fin = :fin ")
@@ -27,16 +27,5 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> , JpaSpec
 
     @Query("SELECT u FROM UserEntity u WHERE u.userRole.roleName  IN ('ADMIN')")
     Page<UserEntity> findAllAdmins(Specification<UserEntity> spec, Pageable pageable);
-
-    @Query("SELECT b FROM BookEntity b " +
-            "JOIN b.bookInventory bi " +
-            "WHERE b.id = (SELECT MIN(b2.id) FROM BookEntity b2 WHERE b2.title = b.title)"+
-            "ORDER BY " +
-            "CASE WHEN :sortBy = 'createAt' AND :order = 'asc' THEN bi.createdAt END ASC,"+
-            "CASE WHEN :sortBy = 'createdAt' AND :order = 'desc'THEN bi.createdAt END DESC,"+
-            "CASE WHEN :sortBy = 'readCount' AND :order = 'asc' THEN bi.readCount END ASC ,"+
-            "CASE WHEN :sortBy = 'readCount' AND :order = 'desc' THEN bi.readCount END DESC "
-    )
-    Page<BookEntity> findDistinctBooks(@Param("sortBy")String sortBy, @Param("order") String order, org.springframework.data.domain.Pageable pageable);
 
 }

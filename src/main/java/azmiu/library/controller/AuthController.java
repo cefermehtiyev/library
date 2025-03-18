@@ -9,6 +9,7 @@ import azmiu.library.model.response.AuthResponse;
 import azmiu.library.service.abstraction.AuthService;
 import azmiu.library.service.abstraction.CookieService;
 import azmiu.library.service.abstraction.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,14 +38,14 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     @ResponseStatus(CREATED)
-    public void singIn(@RequestBody RegistrationRequest registrationRequest) {
+    public void singIn(@RequestBody @Valid RegistrationRequest registrationRequest) {
         userService.signIn(registrationRequest);
     }
 
     @PostMapping("/admin/sign-in")
     @ResponseStatus(CREATED)
 //    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public void adminSingIn(@RequestBody AdminRequest adminRequest) {
+    public void adminSingIn(@RequestBody @Valid AdminRequest adminRequest) {
         userService.signIn(adminRequest);
     }
 

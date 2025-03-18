@@ -5,6 +5,7 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.model.request.AuthorRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ public class AuthorController {
 
     @PostMapping
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void addAuthor(@RequestBody AuthorRequest authorRequest) {
+    public void addAuthor(@RequestBody @Valid AuthorRequest authorRequest) {
         authorService.addAuthor(authorRequest);
     }
 

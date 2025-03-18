@@ -5,6 +5,9 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 import static azmiu.library.model.constants.CacheConstants.CACHE_PREFIX;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -20,7 +23,8 @@ public class CacheProvider {
 
     public <T> void updateToCache(T value, String key, Long expireTime) {
         var bucket = getRBucket(key);
-        bucket.set(value, expireTime, MINUTES);
+        bucket.set(value, Duration.ofMinutes(expireTime));
+
     }
 
     private <T> RBucket<T> getRBucket(String cacheKey) {

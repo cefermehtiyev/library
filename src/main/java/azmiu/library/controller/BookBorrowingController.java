@@ -3,7 +3,9 @@ package azmiu.library.controller;
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +27,13 @@ public class BookBorrowingController {
     @PostMapping("/add")
     @ResponseStatus(NO_CONTENT)
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void borrowBook(@RequestBody BorrowRequest borrowRequest) {
+    public void borrowBook(@RequestBody @Valid BorrowRequest borrowRequest) {
         bookBorrowingService.borrowBook(borrowRequest);
     }
 
     @PostMapping("/return")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void processBookReturn(@RequestBody BorrowRequest borrowRequest) {
+    public void processBookReturn(@RequestBody @Valid BorrowRequest borrowRequest) {
         bookBorrowingService.processBookReturn(borrowRequest);
     }
 

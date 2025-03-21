@@ -11,7 +11,7 @@ spring:
     username: postgres
     password: j@vacefer2005
   jpa:
-    open-in-view: false
+    open-in-view: true
   liquibase:
     change-log: classpath:liquibase/changelog-master.yaml
 

@@ -12,11 +12,9 @@ import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
-import azmiu.library.service.abstraction.AuthorService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
-import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -33,18 +31,15 @@ import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 public class BookServiceHandler implements BookService {
     private final BookRepository bookRepository;
     private final CategoryService categoryService;
-    private final AuthorService authorService;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CategoryService categoryService,
-                              @Lazy AuthorService authorService,
                               @Lazy CommonStatusService commonStatusService,
                               @Lazy CommonStatusConfig commonStatusConfig) {
         this.bookRepository = bookRepository;
         this.categoryService = categoryService;
-        this.authorService = authorService;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
     }
@@ -69,7 +64,6 @@ public class BookServiceHandler implements BookService {
 
 
     private void addBookRelationships(BookRequest bookRequest, BookEntity bookEntity) {
-        authorService.addBookToAuthor(bookEntity);
         categoryService.addBookToCategory(bookRequest.getCategoryId(), bookEntity);
 
     }
@@ -93,6 +87,7 @@ public class BookServiceHandler implements BookService {
     @Override
     public void updateBook(Long id, BookRequest bookRequest) {
         var bookEntity = fetchEntityExist(id);
+        updateBookCategory(id,bookRequest.getCategoryId());
         BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
         bookRepository.save(bookEntity);
     }

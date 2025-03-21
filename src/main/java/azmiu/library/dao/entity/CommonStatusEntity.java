@@ -43,13 +43,6 @@ public class CommonStatusEntity {
     @Enumerated(STRING)
     CommonStatus status;
 
-    @OneToMany(
-            cascade = {MERGE,PERSIST,REMOVE},
-            fetch = EAGER,
-            mappedBy = "commonStatus"
-    )
-    @ToString.Exclude
-    List<AuthorEntity> authors;
 
 
     @Override

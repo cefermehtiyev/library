@@ -33,12 +33,6 @@ public class BookController {
     }
 
 
-    @PutMapping("/update-category")
-//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void updateBookCategory(@RequestParam Long bookId, @RequestParam Long categoryId) {
-        bookService.updateBookCategory(bookId, categoryId);
-    }
-
 
     @GetMapping("/sorted")
     public PageableResponse getAllBooks( PageCriteria pageCriteria,BookCriteria bookCriteria) {

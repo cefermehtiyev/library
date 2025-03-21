@@ -84,16 +84,7 @@ public class BookEntity {
     @ToString.Exclude
     BookInventoryEntity bookInventory;
 
-    @ManyToMany(
-            fetch = LAZY,
-            cascade = {MERGE, PERSIST}
-    )
-    @JoinTable(
-            name = "author_book",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id")
-    )
-    List<AuthorEntity> authors;
+
 
 
     @OneToMany(

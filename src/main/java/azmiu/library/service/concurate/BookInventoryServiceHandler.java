@@ -14,12 +14,13 @@ import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
+import azmiu.library.util.CacheProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
@@ -43,7 +44,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy FileService fileService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
-
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
@@ -83,7 +83,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private void determineInventoryStatus(BookInventoryEntity bookInventoryEntity) {
         var quantity = bookInventoryEntity.getAvailableQuantity();
-        log.info("Available quantity {}",quantity);
+        log.info("Available quantity {}", quantity);
 
         var statusId = quantity == 0 ? inventoryStatusConfig.getStockOut() :
                 quantity < 3 ? inventoryStatusConfig.getLowStock() :

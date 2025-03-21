@@ -23,7 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 import static azmiu.library.mapper.UserMapper.USER_MAPPER;

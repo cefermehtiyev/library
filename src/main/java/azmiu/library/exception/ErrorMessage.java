@@ -18,6 +18,9 @@ public enum ErrorMessage {
     AUTHOR_NOT_FOUND("Author not found"),
     REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
     ACCESS_TOKEN_NOT_FOUND("Access token not found"),
+    RATING_NOT_FOUND("Rating not found"),
+    RATING_DETAILS_NOT_FOUND("Rating details not found"),
+
     FILE_NOT_FOUND("File not found"),
     INVALID_FILE_URL("File url is invalid"),
     FILE_STORAGE_FAILURE("File storage operation failed"),

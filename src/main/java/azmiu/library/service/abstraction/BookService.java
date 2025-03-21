@@ -14,6 +14,8 @@ public interface BookService {
 
     BookResponse getBook(Long id);
 
+    BookEntity getBookEntity(Long id);
+
     BookEntity getBookEntityByBookCode(String bookCode);
 
     void updateBookCategory(Long bookId, Long categoryId);

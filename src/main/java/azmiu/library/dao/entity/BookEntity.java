@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
 import jakarta.persistence.Entity;
@@ -21,7 +22,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +55,10 @@ public class BookEntity {
     private Integer pages;
     private Integer publicationYear;
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 
     @ManyToOne(
             fetch = LAZY,
@@ -61,7 +67,6 @@ public class BookEntity {
     @JoinColumn(name = "status_id")
     @ToString.Exclude
     CommonStatusEntity commonStatus;
-
 
 
     @ManyToOne(
@@ -74,7 +79,7 @@ public class BookEntity {
 
     @ManyToOne(fetch = LAZY,
             cascade = {MERGE, PERSIST}
-            )
+    )
     @JoinColumn(name = "inventory_id")
     @ToString.Exclude
     BookInventoryEntity bookInventory;
@@ -89,7 +94,6 @@ public class BookEntity {
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     List<AuthorEntity> authors;
-
 
 
     @OneToMany(

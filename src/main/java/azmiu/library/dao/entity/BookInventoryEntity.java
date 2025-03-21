@@ -56,6 +56,13 @@ public class BookInventoryEntity {
             cascade = {MERGE, PERSIST, REMOVE},
             mappedBy = "bookInventory"
     )
+    List<RatingEntity> ratings;
+
+    @OneToMany(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE},
+            mappedBy = "bookInventory"
+    )
     List<BookEntity> books;
 
     @ManyToOne(

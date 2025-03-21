@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-table
+      id: create-ratings-table
       author: Cefer Mehtiyev
       changes:
         - createTable:
-            tableName: users
+            tableName: ratings
             columns:
               - column:
                   name: id
@@ -14,40 +14,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: email
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: password
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: first_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: last_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: role_id
+                  name: book_inventory_id
                   type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: fin
-                  type: VARCHAR(255)
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: score
+                  type: INTEGER
                   constraints:
                     nullable: false
               - column:
@@ -60,30 +38,48 @@ databaseChangeLog:
                   type: TIMESTAMP
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
               - column:
                   name: updated_at
                   type: TIMESTAMP
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+
+
+
+
 
 
   - changeSet:
-      id: users  set status
+      id: ratings set status
       author: Cefer Mehtiyev
       changes:
         - addForeignKeyConstraint:
-            baseTableName: users
+            baseTableName: ratings
             baseColumnNames: status_id
-            constraintName: fk_users_status
+            constraintName: fk_ratings_status
             referencedTableName: common_statuses
             referencedColumnNames: id
   - changeSet:
-      id: users  set role
+      id: ratings set user
       author: Cefer Mehtiyev
       changes:
         - addForeignKeyConstraint:
-            baseTableName: users
-            baseColumnNames: role_id
-            constraintName: fk_users_role
-            referencedTableName: user_roles
+            baseTableName: ratings
+            baseColumnNames: user_id
+            constraintName: fk_users_rating
+            referencedTableName: users
+            referencedColumnNames: id
+
+  - changeSet:
+      id: ratings set book
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: ratings
+            baseColumnNames: book_inventory_id
+            constraintName: fk_ratings_books
+            referencedTableName: book_inventory
             referencedColumnNames: id

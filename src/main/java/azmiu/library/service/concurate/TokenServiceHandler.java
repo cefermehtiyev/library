@@ -8,6 +8,7 @@ import azmiu.library.exception.AuthException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.cache.AuthCacheData;
+import azmiu.library.model.constants.CacheConstants;
 import org.springframework.stereotype.Service;
 
 
@@ -21,12 +22,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
+import java.time.temporal.ChronoUnit;
+
 import static azmiu.library.exception.ErrorMessage.REFRESH_TOKEN_COUNT_EXPIRED;
 import static azmiu.library.exception.ErrorMessage.TOKEN_EXPIRED;
 import static azmiu.library.exception.ErrorMessage.UNEXPECTED_ERROR;
 import static azmiu.library.exception.ErrorMessage.USER_UNAUTHORIZED;
 import static azmiu.library.mapper.TokenMapper.TOKEN_MAPPER;
 import static azmiu.library.model.constants.CacheConstants.CACHE_EXPIRE_SECONDS;
+import static azmiu.library.model.constants.CacheConstants.CACHE_PREFIX;
 import static azmiu.library.util.CertificateKeyUtil.CERTIFICATE_KEY_UTIL;
 import static azmiu.library.util.JwtUtil.JWT_UTIL;
 import static jodd.util.Base64.encodeToString;
@@ -115,13 +119,14 @@ public class TokenServiceHandler implements TokenService {
     }
 
     private AuthResponse generateToken(String userId, int refreshTokenExpirationCount) {
+        var userCacheKey = CACHE_PREFIX + userId;
         var accessTokenClaimsSet = TOKEN_MAPPER.buildAccessTokenClaimsSet(
-                userId,
+                userCacheKey,
                 JWT_UTIL.generateSessionExpirationTime(tokenExpirationProperties.getAccessToken())
         );
 
         var refreshTokenClaimsSet = TOKEN_MAPPER.buildRefreshTokenClaimsSet(
-                userId,
+                userCacheKey,
                 refreshTokenExpirationCount,
                 JWT_UTIL.generateSessionExpirationTime(tokenExpirationProperties.getRefreshToken())
         );
@@ -133,7 +138,7 @@ public class TokenServiceHandler implements TokenService {
                 encodeToString(keyPair.getPublic().getEncoded())
         );
 
-        cacheProvider.updateToCache(authCacheData, userId, CACHE_EXPIRE_SECONDS);
+        cacheProvider.saveToCache(userCacheKey,authCacheData, CACHE_EXPIRE_SECONDS, ChronoUnit.DAYS);
 
         var privateKey = keyPair.getPrivate();
         var accessToken = JWT_UTIL.generateToken(accessTokenClaimsSet, privateKey);

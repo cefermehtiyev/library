@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -27,7 +28,9 @@ public class BookResponse {
     private String filePath;
     private InventoryStatus inventoryStatus;
     private Integer publicationYear;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     @Override
     public boolean equals(Object o) {

@@ -40,6 +40,7 @@ public enum BookMapper {
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getBookInventory().getFile().getFilePath())
                 .createdAt(bookEntity.getCreatedAt())
+                .updatedAt(bookEntity.getUpdatedAt())
                 .build();
     }
     public PageableResponse pageableBookResponse(Page<BookEntity> bookEntityPage) {

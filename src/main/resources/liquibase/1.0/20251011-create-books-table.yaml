@@ -61,8 +61,14 @@ databaseChangeLog:
                   type: INTEGER
               - column:
                   name: created_at
-                  type: DATE
-
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
 
   - changeSet:
       id: book  set inventory

@@ -7,6 +7,7 @@ import azmiu.library.exception.AuthException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.cache.AuthCacheData;
+import azmiu.library.model.constants.CacheConstants;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.response.AuthResponse;
 import azmiu.library.service.abstraction.AuthService;
@@ -37,6 +38,7 @@ public class AuthServiceHandler implements AuthService {
 
     public AuthResponse signIn(AuthRequest authRequest) {
         var userIdResponse = userService.getUserIdByUserNameAndPassword(authRequest);
+        var userCacheKey = CacheConstants.CACHE_PREFIX + userIdResponse.id();
 
         var sessionToken = sessionTokenRepository.findByUserId(userIdResponse.id());
         Date currentDate = new Date();
@@ -48,7 +50,7 @@ public class AuthServiceHandler implements AuthService {
         } else if (sessionToken.isPresent() && currentDate.before(sessionToken.get().getExpirationTime())) {
             log.info("update access Token");
             var authResponse = tokenService.prepareToken(userIdResponse.id());
-            var authCacheData = (AuthCacheData) cacheProvider.getBucket(userIdResponse.id());
+            var authCacheData = (AuthCacheData) cacheProvider.getBucket(userCacheKey);
 
 
             SESSION_TOKEN_MAPPER.updateSessionTokenEntity(sessionToken.get(), authResponse, authCacheData);
@@ -58,7 +60,7 @@ public class AuthServiceHandler implements AuthService {
         } else {
             log.info("create access token");
             var authResponse = tokenService.prepareToken(userIdResponse.id());
-            var authCacheData = (AuthCacheData) cacheProvider.getBucket(userIdResponse.id());
+            var authCacheData = (AuthCacheData) cacheProvider.getBucket(userCacheKey);
             var sessionTokenEntity = SESSION_TOKEN_MAPPER.buildSessionTokenEntity(authResponse, authCacheData);
             sessionTokenRepository.save(sessionTokenEntity);
             return authResponse;

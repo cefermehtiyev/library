@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: created rating details
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: rating_details
+            columns:
+              - column:
+                  name: book_inventory_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vote_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: average_rating
+                  type: NUMERIC(3,2)
+                  constraints:
+                    nullable: false
+

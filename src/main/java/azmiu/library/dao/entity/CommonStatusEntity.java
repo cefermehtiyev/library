@@ -1,6 +1,9 @@
 package azmiu.library.dao.entity;
 
 import azmiu.library.model.enums.CommonStatus;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +15,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.Objects;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
@@ -33,6 +43,13 @@ public class CommonStatusEntity {
     @Enumerated(STRING)
     CommonStatus status;
 
+    @OneToMany(
+            cascade = {MERGE,PERSIST,REMOVE},
+            fetch = EAGER,
+            mappedBy = "commonStatus"
+    )
+    @ToString.Exclude
+    List<AuthorEntity> authors;
 
 
     @Override

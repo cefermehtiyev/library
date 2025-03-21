@@ -74,7 +74,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
     private void addBorrowStatuses() {
         if (borrowStatusService.getCount() > 0) return;
-        for(BorrowStatus borrowStatus : BorrowStatus.values()){
+        for (BorrowStatus borrowStatus : BorrowStatus.values()) {
             borrowStatusService.addStatus(borrowStatus);
         }
         log.info("Borrow statuses added.");

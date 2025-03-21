@@ -18,12 +18,12 @@ import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.specification.BookSpecification;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
@@ -78,6 +78,11 @@ public class BookServiceHandler implements BookService {
     @Override
     public BookResponse getBook(Long id) {
         return BOOK_MAPPER.buildBookResponse(fetchEntityExist(id));
+    }
+
+    @Override
+    public BookEntity getBookEntity(Long id) {
+        return fetchEntityExist(id);
     }
 
     @Override

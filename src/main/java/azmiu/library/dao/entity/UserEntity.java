@@ -19,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +50,16 @@ public class UserEntity {
     private String fin;
     @CreationTimestamp
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
+
+    @OneToMany(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST, REMOVE},
+            mappedBy = "user"
+    )
+    List<RatingEntity> ratings;
 
     @ManyToOne(
             fetch = LAZY,

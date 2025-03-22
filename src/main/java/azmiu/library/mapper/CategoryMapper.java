@@ -23,7 +23,7 @@ public enum CategoryMapper {
                 .build();
     }
 
-    public CategoryRequest buildCategoryRequest(BookCategory bookCategory){
+    public CategoryRequest buildCategoryRequest(String bookCategory){
         return CategoryRequest.builder()
                 .bookCategory(bookCategory)
                 .build();

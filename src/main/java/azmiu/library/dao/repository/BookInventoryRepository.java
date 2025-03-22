@@ -24,6 +24,5 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
     )
     Page<BookEntity> findDistinctBooks(@Param("sortBy") String sortBy, @Param("order") String order, Pageable pageable);
 
-
 }
 

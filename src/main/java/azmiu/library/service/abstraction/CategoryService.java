@@ -1,6 +1,7 @@
 package azmiu.library.service.abstraction;
 
 import azmiu.library.dao.entity.BookEntity;
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.BookResponse;
@@ -13,7 +14,7 @@ public interface CategoryService {
 
     Long getCount();
 
-    void addBookToCategory(Long categoryId, BookEntity bookEntity);
+    void addBookToCategory(Long categoryId, BookInventoryEntity bookInventoryEntity);
 
     List<BookResponse> getBooksByCategory(Long categoryId);
 

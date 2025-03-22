@@ -1,5 +1,7 @@
 package azmiu.library.dao.entity;
 
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -87,6 +90,17 @@ public class BookInventoryEntity {
     )
     @ToString.Exclude
     FileEntity file;
+
+    @ManyToOne
+            (
+                    fetch = LAZY,
+                    cascade = {MERGE, PERSIST}
+            )
+    @JoinColumn(name = "category_id")
+    @ToString.Exclude
+    CategoryEntity category;
+
+
 
     @Override
     public boolean equals(Object o) {

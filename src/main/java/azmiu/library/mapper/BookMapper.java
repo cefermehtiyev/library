@@ -39,6 +39,7 @@ public enum BookMapper {
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getBookInventory().getFile().getFilePath())
+                .categoryId(bookEntity.getBookInventory().getCategory().getId())
                 .createdAt(bookEntity.getCreatedAt())
                 .updatedAt(bookEntity.getUpdatedAt())
                 .build();

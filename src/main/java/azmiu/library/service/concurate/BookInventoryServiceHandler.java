@@ -12,6 +12,7 @@ import azmiu.library.model.response.BookInventoryResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
+import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import azmiu.library.util.CacheProvider;
@@ -36,17 +37,19 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final InventoryStatusService inventoryStatusService;
     private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
+    private final CategoryService categoryService;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
                                        @Lazy InventoryStatusService inventoryStatusService,
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
-                                       @Lazy FileService fileService) {
+                                       @Lazy FileService fileService, CategoryService categoryService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -62,6 +65,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                     var status = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
                     log.info("Inventory added");
                     var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
+                    categoryService.addBookToCategory(bookRequest.getCategoryId(),newInventory);
                     bookInventoryRepository.save(newInventory);
 
                     fileService.uploadFile(newInventory, file);
@@ -70,7 +74,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 });
 
         determineInventoryStatus(bookInventoryEntity);
-
         bookService.addBook(bookRequest, bookInventoryEntity);
     }
 

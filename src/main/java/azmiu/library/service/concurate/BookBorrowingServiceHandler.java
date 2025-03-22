@@ -41,8 +41,8 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     }
 
 
-    private void updateBookHistory(Long userId, BookEntity bookEntity) {
-        var bookBorrowHistory = fetchEntityExist(userId, bookEntity.getId());
+    private void updateBookHistory( BookEntity bookEntity) {
+        var bookBorrowHistory = findByBookIdAndStatusPending( bookEntity.getId());
         var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getReturned());
         BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory, status);
         bookBorrowHistoryRepository.save(bookBorrowHistory);
@@ -52,8 +52,7 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     @Override
     public void processBookReturn(BorrowRequest borrowRequest) {
         var bookEntity = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
-        var userEntity = userService.getUserEntityByUserName(borrowRequest.getUserName());
-        updateBookHistory(userEntity.getId(), bookEntity);
+        updateBookHistory(bookEntity);
     }
 
     @Override
@@ -80,12 +79,18 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     }
 
 
-    private BookBorrowingEntity fetchEntityExist(Long userId, Long bookId) {
+    private BookBorrowingEntity findByUserIdAndBookId(Long userId, Long bookId) {
         return bookBorrowHistoryRepository.findByUserIdAndBookId(userId, bookId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_BORROW_NOT_FOUND.getMessage())
                 );
     }
 
+    private BookBorrowingEntity findByBookIdAndStatusPending( Long bookId) {
+        return bookBorrowHistoryRepository.findByBookIdAndStatusPending(bookId)
+                .orElseThrow(
+                        () -> new NotFoundException(ErrorMessage.BOOK_BORROW_NOT_FOUND.getMessage())
+                );
+    }
 
 }

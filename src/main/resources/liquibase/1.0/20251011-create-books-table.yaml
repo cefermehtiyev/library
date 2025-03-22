@@ -19,11 +19,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: category_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
                   name: title
                   type: VARCHAR(255)
                   constraints:
@@ -81,13 +76,3 @@ databaseChangeLog:
             referencedTableName: book_inventory
             referencedColumnNames: id
 
-  - changeSet:
-      id: book  set category
-      author: Cefer Mehtiyev
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: books
-            baseColumnNames: category_id
-            constraintName: fk_books_category
-            referencedTableName: categories
-            referencedColumnNames: id

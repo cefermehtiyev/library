@@ -28,6 +28,7 @@ public class BookResponse {
     private String filePath;
     private InventoryStatus inventoryStatus;
     private Integer publicationYear;
+    private Long categoryId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

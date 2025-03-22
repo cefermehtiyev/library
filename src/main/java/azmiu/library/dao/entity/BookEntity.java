@@ -69,14 +69,6 @@ public class BookEntity {
     CommonStatusEntity commonStatus;
 
 
-    @ManyToOne(
-            fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE}
-    )
-    @JoinColumn(name = "category_id")
-    @ToString.Exclude
-    CategoryEntity category;
-
     @ManyToOne(fetch = LAZY,
             cascade = {MERGE, PERSIST}
     )

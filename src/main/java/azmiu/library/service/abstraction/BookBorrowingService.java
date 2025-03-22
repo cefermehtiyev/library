@@ -10,7 +10,6 @@ import java.util.List;
 public interface BookBorrowingService {
     void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity);
 
-
     void processBookReturn(BorrowRequest borrowRequest);
 
     void borrowBook(BorrowRequest borrowRequest);

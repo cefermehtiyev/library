@@ -1,6 +1,6 @@
 package azmiu.library.dao.entity;
 
-import azmiu.library.model.enums.BookCategory;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -39,15 +40,15 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Enumerated(STRING)
-    private BookCategory bookCategory;
+    private String bookCategory;
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            cascade = {MERGE, PERSIST, REMOVE},
+            cascade = {MERGE, PERSIST},
             mappedBy = "category"
     )
-    List<BookEntity> books;
+    @ToString.Exclude
+    Set<BookInventoryEntity> books;
 
     @ManyToOne(
             fetch = LAZY,

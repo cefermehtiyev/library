@@ -108,7 +108,6 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     @ToString.Exclude
-    @JsonBackReference
     List<BookEntity> books;
 
     @ManyToOne(
@@ -117,7 +116,6 @@ public class UserEntity {
     )
     @JoinColumn(name = "role_id")
     @ToString.Exclude
-    @JsonBackReference
     UserRoleEntity userRole;
 
 

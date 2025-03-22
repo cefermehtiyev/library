@@ -2,6 +2,7 @@ package azmiu.library.service.concurate;
 
 import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.dao.entity.BookEntity;
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.repository.CategoryRepository;
 import azmiu.library.exception.ErrorMessage;
@@ -39,15 +40,15 @@ public class CategoryServiceHandler implements CategoryService {
     }
 
     @Override
-    public void addBookToCategory(Long categoryId, BookEntity bookEntity) {
+    public void addBookToCategory(Long categoryId, BookInventoryEntity bookInventoryEntity) {
         var category = fetchEntityExist(categoryId);
-        bookEntity.setCategory(category);
+        bookInventoryEntity.setCategory(category);
     }
 
     @Override
     public List<BookResponse> getBooksByCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
-        return category.getBooks().stream().map(BOOK_MAPPER::buildBookResponse).distinct().toList();
+        return category.getBooks().stream().map(existingEntity -> BOOK_MAPPER.buildBookResponse(existingEntity.getBooks().getFirst())).toList();
     }
 
 

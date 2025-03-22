@@ -44,6 +44,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
                   name: inventory_status
                   type: BIGINT
                   constraints:
@@ -66,4 +71,14 @@ databaseChangeLog:
             baseColumnNames: inventory_status
             constraintName: fk_inventory_status
             referencedTableName: inventory_statuses
+            referencedColumnNames: id
+  - changeSet:
+      id: inventory set category
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book_inventory
+            baseColumnNames: category_id
+            constraintName: fk_inventory_category
+            referencedTableName: categories
             referencedColumnNames: id

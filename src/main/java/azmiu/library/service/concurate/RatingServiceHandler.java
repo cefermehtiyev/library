@@ -75,7 +75,7 @@ public class RatingServiceHandler implements RatingService {
     }
 
     @Override
-    public RatingResponse getRating(Long bookInventoryId, Long userId) {
+    public RatingResponse getUserRating(Long bookInventoryId, Long userId) {
         return RATING_MAPPER.buildRatingResponse(findByBookInventoryIdAndUserId(bookInventoryId,userId));
     }
 

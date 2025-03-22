@@ -1,7 +1,9 @@
 package azmiu.library.controller;
 
 import azmiu.library.model.request.RatingRequest;
+import azmiu.library.model.response.RatingDetailsResponse;
 import azmiu.library.model.response.RatingResponse;
+import azmiu.library.service.abstraction.RatingDetailsService;
 import azmiu.library.service.abstraction.RatingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/ratings")
 public class RatingController {
     private final RatingService ratingService;
+    private final RatingDetailsService ratingDetailsService;
 
     @PostMapping
     public void insertOrUpdateRating(@Valid @RequestBody RatingRequest ratingRequest){
@@ -30,8 +33,9 @@ public class RatingController {
     }
 
     @GetMapping
-    public RatingResponse getRating(@RequestParam Long bookInventoryId, @RequestParam Long userId){
-        return ratingService.getRating(bookInventoryId,userId);
+    public RatingResponse getUserRating(@RequestParam Long bookInventoryId, @RequestParam Long userId){
+        return ratingService.getUserRating(bookInventoryId,userId);
     }
+
 
 }

@@ -13,11 +13,11 @@ public interface BookService {
 
     BookResponse getBook(Long id);
 
-    BookEntity getBookEntity(Long id);
-
     BookEntity getInActiveBookByCode(String bookCode);
 
     BookEntity getActiveBookByCode(String bookCode);
+
+    boolean existsByBookCode(String bookCode);
 
     void updateBookCategory(Long bookId, Long categoryId);
 

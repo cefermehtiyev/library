@@ -22,10 +22,7 @@ public class EmployeeServiceHandler implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-    @Override
-    public EmployeeResponse getEmployee(UserEntity userEntity) {
-        return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity);
-    }
+
 
 
 }

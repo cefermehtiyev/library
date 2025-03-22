@@ -31,14 +31,14 @@ public class UserRoleServiceHandler implements UserRoleService {
     @Override
     public UserRoleEntity getUserRole(RoleName roleName) {
         return switch (roleName) {
-            case ADMIN -> fetchEntityExist(userRoleConfig.getAdmin());
-            case STUDENT -> fetchEntityExist(userRoleConfig.getStudent());
-            case EMPLOYEE -> fetchEntityExist(userRoleConfig.getEmployee());
-            case SUPER_ADMIN -> fetchEntityExist(userRoleConfig.getSuperAdmin());
+            case ADMIN -> findById(userRoleConfig.getAdmin());
+            case STUDENT -> findById(userRoleConfig.getStudent());
+            case EMPLOYEE -> findById(userRoleConfig.getEmployee());
+            case SUPER_ADMIN -> findById(userRoleConfig.getSuperAdmin());
         };
     }
 
-    private UserRoleEntity fetchEntityExist(Long id){
+    private UserRoleEntity findById(Long id){
         return userRoleRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(USER_ROLE_NOT_FUND.getMessage())
         );

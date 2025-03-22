@@ -6,7 +6,7 @@ import azmiu.library.model.response.RatingResponse;
 public interface RatingService {
     void insertOrUpdateRating(RatingRequest ratingRequest);
 
-    void deleteRating(Long bookId, Long userId);
+    void removeRating(Long bookInventoryId, Long userId);
 
     RatingResponse getUserRating(Long bookId, Long userId);
 }

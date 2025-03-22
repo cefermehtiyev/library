@@ -58,23 +58,23 @@ public class UserServiceHandler implements UserService {
 
     @Override
     public UserResponse getUser(Long userId) {
-        return USER_MAPPER.buildUserResponse(fetchEntityExist(userId));
+        return USER_MAPPER.buildUserResponse(findById(userId));
     }
 
     @Override
     public UserEntity getUserEntity(Long userId) {
-        return fetchEntityExist(userId);
+        return findById(userId);
     }
 
     @Override
     public UserEntity getUserEntityByUserName(String userName) {
-        return fetchEntityExist(userName);
+        return findByUserName(userName);
     }
 
 
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
 
-        var userEntity = fetchEntityExist(authRequest.getUserName());
+        var userEntity = findByUserName(authRequest.getUserName());
         if (!passwordEncoder.matches(authRequest.getPassword(),userEntity.getPassword())){
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
@@ -84,14 +84,14 @@ public class UserServiceHandler implements UserService {
 
     @Override
     public void updateUser(Long userId, RegistrationRequest registrationRequest) {
-        var userEntity = fetchEntityExist(userId);
+        var userEntity = findById(userId);
         USER_MAPPER.updateUser(userEntity, registrationRequest);
         userRepository.save(userEntity);
     }
 
     @Override
     public void deleteUser(Long userId) {
-        var userEntity = fetchEntityExist(userId);
+        var userEntity = findById(userId);
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         userEntity.setCommonStatus(status);
         userRepository.save(userEntity);
@@ -116,13 +116,13 @@ public class UserServiceHandler implements UserService {
     }
 
 
-    private UserEntity fetchEntityExist(Long userId) {
+    private UserEntity findById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
     }
 
-    private UserEntity fetchEntityExist(String userName) {
+    private UserEntity findByUserName(String userName) {
         return userRepository.findByUserName(userName).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
@@ -141,7 +141,7 @@ public class UserServiceHandler implements UserService {
     @Override
     @Transactional
     public String getRolesFromToken(String userId) {
-        var user = fetchEntityExist(Long.valueOf(userId));
+        var user = findById(Long.valueOf(userId));
         return user.getUserRole().getRoleName().name();
     }
 

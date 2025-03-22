@@ -28,10 +28,10 @@ public class BorrowStatusServiceHandler implements BorrowStatusService {
 
     @Override
     public BorrowStatusEntity getBorrowStatus(Long id) {
-        return fetchEntityExist(id);
+        return findById(id);
     }
 
-    private BorrowStatusEntity fetchEntityExist(Long id){
+    private BorrowStatusEntity findById(Long id){
         return borrowStatusRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BORROW_STATUS_NOT_FOUND.getMessage())
         );

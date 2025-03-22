@@ -20,8 +20,9 @@ public enum ErrorMessage {
     ACCESS_TOKEN_NOT_FOUND("Access token not found"),
     RATING_NOT_FOUND("Rating not found"),
     RATING_DETAILS_NOT_FOUND("Rating details not found"),
-
     FILE_NOT_FOUND("File not found"),
+    CATEGORY_ALREADY_EXISTS("Category Already Exists"),
+    BOOK_ALREADY_EXISTS("Book Already Exists"),
     INVALID_FILE_URL("File url is invalid"),
     FILE_STORAGE_FAILURE("File storage operation failed"),
     STUDENT_NOT_FOUND("Student not found"),

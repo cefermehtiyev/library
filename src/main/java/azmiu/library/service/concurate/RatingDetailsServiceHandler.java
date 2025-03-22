@@ -89,10 +89,10 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
 
     @Override
     public RatingDetailsResponse getRatingDetails(Long bookInventoryId) {
-        return RATING_DETAILS_MAPPER.buildRatingDetailsResponse(fetchEntityExist(bookInventoryId));
+        return RATING_DETAILS_MAPPER.buildRatingDetailsResponse(findByBookInventoryId(bookInventoryId));
     }
 
-    private RatingDetailsEntity fetchEntityExist(Long bookInventoryId){
+    private RatingDetailsEntity findByBookInventoryId(Long bookInventoryId){
         return ratingDetailsRepository.findByBookInventoryId( bookInventoryId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.RATING_DETAILS_NOT_FOUND.getMessage())

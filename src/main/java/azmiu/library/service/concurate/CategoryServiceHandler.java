@@ -5,6 +5,7 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.repository.CategoryRepository;
+import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.CategoryRequest;
@@ -30,8 +31,12 @@ public class CategoryServiceHandler implements CategoryService {
 
     @Override
     public void addCategory(CategoryRequest categoryRequest) {
+        if (categoryRepository.existsByBookCategory(categoryRequest.getBookCategory())) {
+            throw new AlreadyExistsException(ErrorMessage.CATEGORY_ALREADY_EXISTS.getMessage());
+        }
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
-        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest,status));
+        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest, status));
+
     }
 
     @Override
@@ -63,11 +68,6 @@ public class CategoryServiceHandler implements CategoryService {
     @Override
     public List<CategoryResponse> getAllCategory() {
         return categoryRepository.findAll().stream().map(CATEGORY_MAPPER::buildCategoryResponse).toList();
-    }
-
-    @Override
-    public CategoryEntity getCategoryById(Long categoryId) {
-        return fetchEntityExist(categoryId);
     }
 
 

@@ -90,11 +90,6 @@ public class AuthServiceHandler implements AuthService {
         }
     }
 
-    public SessionTokenEntity fetchEntityExist(String userId) {
-        return sessionTokenRepository.findByUserId(userId).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.ACCESS_TOKEN_NOT_FOUND.getMessage())
-        );
-    }
 
 
 }

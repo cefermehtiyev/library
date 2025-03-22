@@ -4,8 +4,11 @@ import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.RatingEntity;
 import azmiu.library.dao.repository.RatingRepository;
+import azmiu.library.exception.ErrorMessage;
+import azmiu.library.exception.NotFoundException;
 import azmiu.library.mapper.RatingDetailsMapper;
 import azmiu.library.mapper.RatingMapper;
+import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.request.RatingRequest;
 import azmiu.library.model.response.RatingResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
@@ -41,16 +44,17 @@ public class RatingServiceHandler implements RatingService {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var ratingEntityOptional = ratingRepository.findByBookInventoryIdAndUserId(ratingRequest.getBookInventoryId(), ratingRequest.getUserId());
         var ratingEntity = ratingEntityOptional
-                .map(existingRating ->{
-                    ratingDetailsService.updateRatingDetails(RATING_MAPPER.buildRatingDto(existingRating,ratingRequest));
+                .map(existingRating -> {
+                    ratingDetailsService.updateRatingDetails(RATING_MAPPER.buildRatingDto(existingRating, ratingRequest));
                     updateExistingRating(existingRating, ratingRequest);
+                    existingRating.setCommonStatus(status);
                     return existingRating;
                 })
-                .orElseGet(() ->{
+                .orElseGet(() -> {
                     var entity = RATING_MAPPER.buildRatingEntity(bookEntity, userEntity, ratingRequest, status);
                     ratingDetailsService.insertRatingDetails(RATING_MAPPER.buildRatingDto(entity));
                     return entity;
-                } );
+                });
         ratingRepository.save(ratingEntity);
 
     }
@@ -61,12 +65,22 @@ public class RatingServiceHandler implements RatingService {
     }
 
     @Override
-    public void deleteRating(Long bookId, Long userId) {
-
+    @Transactional
+    public void removeRating(Long bookInventoryId, Long userId) {
+        var rating = findByBookInventoryIdAndUserId(bookInventoryId, userId);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        rating.setCommonStatus(status);
+        ratingDetailsService.updateRatingDetails(RATING_MAPPER.buildRatingDto(rating));
+        ratingRepository.save(rating);
     }
 
     @Override
     public RatingResponse getUserRating(Long bookId, Long userId) {
         return null;
+    }
+
+    private RatingEntity findByBookInventoryIdAndUserId(Long bookInventoryId, Long userId) {
+        return ratingRepository.findByBookInventoryIdAndUserId(bookInventoryId, userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.RATING_NOT_FOUND.getMessage()));
     }
 }

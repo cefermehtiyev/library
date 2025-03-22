@@ -6,5 +6,4 @@ import azmiu.library.model.response.EmployeeResponse;
 
 public interface EmployeeService {
     void addEmployee(UserEntity userEntity, EmployeeRequest request);
-    EmployeeResponse getEmployee(UserEntity userEntity);
 }

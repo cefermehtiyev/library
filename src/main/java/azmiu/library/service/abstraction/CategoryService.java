@@ -22,6 +22,5 @@ public interface CategoryService {
 
     List<CategoryResponse> getAllCategory();
 
-    CategoryEntity getCategoryById(Long categoryId);
 
 }

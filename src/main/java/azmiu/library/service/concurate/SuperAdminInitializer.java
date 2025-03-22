@@ -42,7 +42,6 @@ public class SuperAdminInitializer implements CommandLineRunner {
 
     private void initializeStatusesAndRoles() {
         addCommonStatuses();
-//        addCategories();
         addInventoryStatuses();
         addBorrowStatuses();
         addUserRoles();
@@ -56,13 +55,6 @@ public class SuperAdminInitializer implements CommandLineRunner {
         log.info("Common statuses added.");
     }
 
-//    private void addCategories() {
-//        if (categoryService.getCount() > 0) return;
-//        for (String category : BookCategory.values()) {
-//            categoryService.addCategory(CATEGORY_MAPPER.buildCategoryRequest(category));
-//        }
-//        log.info("Book categories added.");
-//    }
 
     private void addInventoryStatuses() {
         if (inventoryStatusService.getCount() > 0) return;

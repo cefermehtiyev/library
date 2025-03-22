@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static azmiu.library.exception.ErrorMessage.UNEXPECTED_ERROR;
+import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -27,6 +29,13 @@ public class ErrorHandler {
     @ResponseStatus(METHOD_NOT_ALLOWED)
     public ErrorResponse handle(HttpRequestMethodNotSupportedException ex) {
         log.error("HttpRequestMethodNotSupportedException: ", ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    @ResponseStatus(CONFLICT)
+    public ErrorResponse handle(AlreadyExistsException ex){
+        log.error("AlreadyExistsException: ",ex);
         return new ErrorResponse(ex.getMessage());
     }
 

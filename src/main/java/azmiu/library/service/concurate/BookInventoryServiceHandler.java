@@ -5,6 +5,7 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.BookInventoryRepository;
+import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BookRequest;
@@ -33,7 +34,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private final BookInventoryRepository bookInventoryRepository;
     private final BookService bookService;
-
     private final InventoryStatusService inventoryStatusService;
     private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
@@ -55,6 +55,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     @Override
     @Transactional
     public void addBookToInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        if (bookService.existsByBookCode(bookRequest.getBookCode())){
+            throw new AlreadyExistsException(ErrorMessage.BOOK_ALREADY_EXISTS.getMessage());
+        }
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");

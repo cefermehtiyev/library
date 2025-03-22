@@ -43,12 +43,10 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    @Transactional
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         bookEntity.setBookInventory(bookInventoryEntity);
-
         bookRepository.save(bookEntity);
 
     }
@@ -60,18 +58,18 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public BookEntity getBookEntity(Long id) {
-        return findById(id);
-    }
-
-    @Override
     public BookEntity getInActiveBookByCode(String bookCode) {
         return findByBookCodeStatusInActive(bookCode);
     }
 
     @Override
-    public BookEntity getActiveBookByCode(String bookCode){
+    public BookEntity getActiveBookByCode(String bookCode) {
         return findByBookCodeStatusActive(bookCode);
+    }
+
+    @Override
+    public boolean existsByBookCode(String bookCode) {
+        return bookRepository.existsByBookCode(bookCode);
     }
 
     @Override
@@ -91,16 +89,16 @@ public class BookServiceHandler implements BookService {
     @Override
     public void setBookStatusToInactive(String bookCode) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getInActive());
-        updateBookStatus(bookCode,status);
+        updateBookStatus(bookCode, status);
     }
 
     @Override
     public void setBookStatusToActive(String bookCode) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
-        updateBookStatus(bookCode,status);
+        updateBookStatus(bookCode, status);
     }
 
-    private void updateBookStatus(String bookCode, CommonStatusEntity status){
+    private void updateBookStatus(String bookCode, CommonStatusEntity status) {
         var book = findByBookCode(bookCode);
         BOOK_MAPPER.updateBookStatus(book, status);
         bookRepository.save(book);
@@ -157,8 +155,6 @@ public class BookServiceHandler implements BookService {
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );
     }
-
-
 
 
 }

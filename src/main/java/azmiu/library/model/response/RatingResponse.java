@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RatingResponse {
     private Long id;
-    private Long bookId;
+    private Long bookInventoryId;
     private Long userId;
     private Integer score;
     private CommonStatus status;

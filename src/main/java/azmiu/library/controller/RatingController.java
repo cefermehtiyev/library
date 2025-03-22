@@ -1,10 +1,12 @@
 package azmiu.library.controller;
 
 import azmiu.library.model.request.RatingRequest;
+import azmiu.library.model.response.RatingResponse;
 import azmiu.library.service.abstraction.RatingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,11 @@ public class RatingController {
     @DeleteMapping
     public void removeRating(@RequestParam Long bookInventoryId, @RequestParam Long userId){
         ratingService.removeRating(bookInventoryId,userId);
+    }
+
+    @GetMapping
+    public RatingResponse getRating(@RequestParam Long bookInventoryId, @RequestParam Long userId){
+        return ratingService.getRating(bookInventoryId,userId);
     }
 
 }

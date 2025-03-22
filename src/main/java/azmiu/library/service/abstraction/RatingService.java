@@ -8,5 +8,5 @@ public interface RatingService {
 
     void removeRating(Long bookInventoryId, Long userId);
 
-    RatingResponse getUserRating(Long bookId, Long userId);
+    RatingResponse getRating(Long bookInventoryId, Long userId);
 }

@@ -66,5 +66,9 @@ public enum BookMapper {
         bookEntity.setPublicationYear(bookRequest.getPublicationYear());
     }
 
+    public void updateBookStatus(BookEntity book, CommonStatusEntity status){
+        book.setCommonStatus(status);
+    }
+
 
 }

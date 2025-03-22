@@ -8,6 +8,7 @@ import azmiu.library.dao.repository.BookBorrowHistoryRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BorrowRequest;
+import azmiu.library.model.request.ReturnRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
 import azmiu.library.service.abstraction.BookInventoryService;
@@ -50,18 +51,20 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     }
 
     @Override
-    public void processBookReturn(BorrowRequest borrowRequest) {
-        var bookEntity = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
+    @Transactional
+    public void processBookReturn(ReturnRequest returnRequest) {
+        var bookEntity = bookService.getInActiveBookByCode(returnRequest.getBookCode());
+        bookService.setBookStatusToActive(returnRequest.getBookCode());
         updateBookHistory(bookEntity);
     }
 
     @Override
     @Transactional
     public void borrowBook(BorrowRequest borrowRequest) {
-        var book = bookService.getBookEntityByBookCode(borrowRequest.getBookCode());
+        var book = bookService.getActiveBookByCode(borrowRequest.getBookCode());
         var user = userService.getUserEntityByUserName(borrowRequest.getUserName());
         addBookToBorrowHistory(user, book);
-
+        bookService.setBookStatusToInactive(borrowRequest.getBookCode());
         bookInventoryService.decreaseBookQuantity(book);
         bookInventoryService.increaseReadCount(book.getBookInventory().getId());
     }

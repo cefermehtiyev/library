@@ -1,6 +1,7 @@
 package azmiu.library.controller;
 
 import azmiu.library.model.request.BorrowRequest;
+import azmiu.library.model.request.ReturnRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
 import jakarta.validation.Valid;
@@ -33,8 +34,8 @@ public class BookBorrowingController {
 
     @PostMapping("/return")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public void processBookReturn(@RequestBody @Valid BorrowRequest borrowRequest) {
-        bookBorrowingService.processBookReturn(borrowRequest);
+    public void processBookReturn(@RequestBody @Valid ReturnRequest returnRequest) {
+        bookBorrowingService.processBookReturn(returnRequest);
     }
 
     @GetMapping("/{userId}")

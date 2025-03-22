@@ -6,14 +6,15 @@ import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
+import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookService;
-import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
@@ -52,32 +53,30 @@ public class BookServiceHandler implements BookService {
 
     }
 
-    private BookEntity getBookId(String bookCode) {
-        return bookRepository.findByBookCode(bookCode).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
-        );
-    }
-
-
 
     @Override
     public BookResponse getBook(Long id) {
-        return BOOK_MAPPER.buildBookResponse(fetchEntityExist(id));
+        return BOOK_MAPPER.buildBookResponse(findById(id));
     }
 
     @Override
     public BookEntity getBookEntity(Long id) {
-        return fetchEntityExist(id);
+        return findById(id);
     }
 
     @Override
-    public BookEntity getBookEntityByBookCode(String bookCode) {
-        return fetchEntityExist(bookCode);
+    public BookEntity getInActiveBookByCode(String bookCode) {
+        return findByBookCodeStatusInActive(bookCode);
+    }
+
+    @Override
+    public BookEntity getActiveBookByCode(String bookCode){
+        return findByBookCodeStatusActive(bookCode);
     }
 
     @Override
     public void updateBook(Long id, BookRequest bookRequest) {
-        var bookEntity = fetchEntityExist(id);
+        var bookEntity = findById(id);
         BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
         bookRepository.save(bookEntity);
     }
@@ -85,7 +84,25 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void updateBookCategory(Long bookId, Long categoryId) {
-        var book = fetchEntityExist(bookId);
+        var book = findById(bookId);
+        bookRepository.save(book);
+    }
+
+    @Override
+    public void setBookStatusToInactive(String bookCode) {
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getInActive());
+        updateBookStatus(bookCode,status);
+    }
+
+    @Override
+    public void setBookStatusToActive(String bookCode) {
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        updateBookStatus(bookCode,status);
+    }
+
+    private void updateBookStatus(String bookCode, CommonStatusEntity status){
+        var book = findByBookCode(bookCode);
+        BOOK_MAPPER.updateBookStatus(book, status);
         bookRepository.save(book);
     }
 
@@ -111,22 +128,37 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void deleteBook(Long id) {
-        var bookEntity = fetchEntityExist(id);
+        var bookEntity = findById(id);
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
         bookEntity.setCommonStatus(status);
         bookRepository.save(bookEntity);
     }
 
-    public BookEntity fetchEntityExist(Long id) {
+    public BookEntity findById(Long id) {
         return bookRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );
     }
 
-    private BookEntity fetchEntityExist(String bookCode) {
+    private BookEntity findByBookCodeStatusActive(String bookCode) {
+        return bookRepository.findActiveBookByBookCode(bookCode).orElseThrow(
+                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
+        );
+    }
+
+    private BookEntity findByBookCodeStatusInActive(String bookCode) {
+        return bookRepository.findInActiveBookByBookCode(bookCode).orElseThrow(
+                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
+        );
+    }
+
+    private BookEntity findByBookCode(String bookCode) {
         return bookRepository.findByBookCode(bookCode).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
         );
     }
+
+
+
 
 }

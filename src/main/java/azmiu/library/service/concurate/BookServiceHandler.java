@@ -10,10 +10,11 @@ import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookMapper;
+import azmiu.library.mapper.BookInventoryMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
+import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.specification.BookSpecification;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
 @Log
@@ -33,13 +35,16 @@ public class BookServiceHandler implements BookService {
     private final BookRepository bookRepository;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
+    private final BookInventoryService bookInventoryService;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CommonStatusService commonStatusService,
-                              @Lazy CommonStatusConfig commonStatusConfig) {
+                              @Lazy CommonStatusConfig commonStatusConfig,
+                              @Lazy BookInventoryService bookInventoryService) {
         this.bookRepository = bookRepository;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
+        this.bookInventoryService = bookInventoryService;
     }
 
     @Override
@@ -81,12 +86,6 @@ public class BookServiceHandler implements BookService {
 
 
     @Override
-    public void updateBookCategory(Long bookId, Long categoryId) {
-        var book = findById(bookId);
-        bookRepository.save(book);
-    }
-
-    @Override
     public void setBookStatusToInactive(String bookCode) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getInActive());
         updateBookStatus(bookCode, status);
@@ -125,11 +124,12 @@ public class BookServiceHandler implements BookService {
 
 
     @Override
+    @Transactional
     public void deleteBook(Long id) {
         var bookEntity = findById(id);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        bookEntity.setCommonStatus(status);
-        bookRepository.save(bookEntity);
+        var bookInventoryEntity = bookEntity.getBookInventory();
+        bookRepository.delete(bookEntity);
+        bookInventoryService.updateCountsOnBookDeleted(bookInventoryEntity);
     }
 
     public BookEntity findById(Long id) {

@@ -19,8 +19,6 @@ public interface BookService {
 
     boolean existsByBookCode(String bookCode);
 
-    void updateBookCategory(Long bookId, Long categoryId);
-
     void setBookStatusToInactive(String bookCode);
 
     void setBookStatusToActive(String bookCode);

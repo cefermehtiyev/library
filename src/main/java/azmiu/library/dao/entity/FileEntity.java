@@ -13,23 +13,27 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "book_files")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class FileEntity {
 
     @Id
-    private Long id;
+    Long id;
 
-    private String filePath;
-    private BigDecimal fileSize;
+    String filePath;
+    BigDecimal fileSize;
 
     @OneToOne
     @MapsId

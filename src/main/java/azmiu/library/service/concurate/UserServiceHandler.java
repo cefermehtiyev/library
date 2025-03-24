@@ -71,7 +71,7 @@ public class UserServiceHandler implements UserService {
         return findByUserName(userName);
     }
 
-
+    @Override
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
 
         var userEntity = findByUserName(authRequest.getUserName());
@@ -92,11 +92,12 @@ public class UserServiceHandler implements UserService {
     @Override
     public void deleteUser(Long userId) {
         var userEntity = findById(userId);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
         userEntity.setCommonStatus(status);
         userRepository.save(userEntity);
     }
 
+    @Override
     public PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
         var userPage = userRepository.findAllNonAdminUsers(
                 new UserSpecification(userCriteria), PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").descending())

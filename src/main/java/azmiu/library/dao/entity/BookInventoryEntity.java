@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -29,48 +31,50 @@ import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PRIVATE;
 
-@Table(name = "book_inventory")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
-@Entity
+@Table(name = "book_inventory")
+@FieldDefaults(level = PRIVATE)
 public class BookInventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private Integer publicationYear;
-    private Integer reservedQuantity;
-    private Integer borrowedQuantity;
-    private Integer availableQuantity;
-    private Long readCount;
+    Long id;
+    String title;
+    Integer publicationYear;
+    Integer reservedQuantity;
+    Integer borrowedQuantity;
+    Integer availableQuantity;
+    Long readCount;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE},
+            cascade = {MERGE, PERSIST},
             mappedBy = "bookInventory"
     )
     List<RatingEntity> ratings;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE},
+            cascade = {MERGE, PERSIST},
             mappedBy = "bookInventory"
     )
     List<BookEntity> books;
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE}
+            cascade = {MERGE, PERSIST}
     )
     @JoinColumn(name = "inventory_status")
     @ToString.Exclude
@@ -79,14 +83,14 @@ public class BookInventoryEntity {
 
     @OneToOne(
             mappedBy = "bookInventory",
-            cascade = {MERGE, PERSIST}
+            cascade = {MERGE, PERSIST,REMOVE}
     )
     @ToString.Exclude
     ImageEntity image;
 
     @OneToOne(
             mappedBy = "bookInventory",
-            cascade = {MERGE, PERSIST}
+            cascade = {MERGE, PERSIST,REMOVE}
     )
     @ToString.Exclude
     FileEntity file;
@@ -100,6 +104,12 @@ public class BookInventoryEntity {
     @ToString.Exclude
     CategoryEntity category;
 
+    @OneToMany(
+            cascade = {MERGE,PERSIST},
+            fetch = LAZY,
+            mappedBy = "bookInventory"
+    )
+    Set<SavedBookEntity> savedBooks;
 
 
     @Override

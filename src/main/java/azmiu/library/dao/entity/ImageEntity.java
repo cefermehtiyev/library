@@ -13,22 +13,27 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
+
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "images")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class ImageEntity {
 
     @Id
-    private Long id;
-    private String imagePath;
-    private String imageType;
-    private BigDecimal imageSize;
+    Long id;
+    String imagePath;
+    String imageType;
+    BigDecimal imageSize;
 
     @OneToOne
     @MapsId

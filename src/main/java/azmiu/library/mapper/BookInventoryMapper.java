@@ -49,6 +49,11 @@ public enum BookInventoryMapper {
 
     }
 
+    public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity){
+        bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() - 1);
+        bookInventoryEntity.setReservedQuantity(bookInventoryEntity.getReservedQuantity()  - 1);
+    }
+
     public void updateInventoryOnReturn(BookInventoryEntity bookInventoryEntity) {
         bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() - 1);
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);

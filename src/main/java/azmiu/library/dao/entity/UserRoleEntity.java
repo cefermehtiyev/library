@@ -16,31 +16,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
+
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_roles")
 @Builder
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class UserRoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Enumerated(EnumType.STRING)
-    private RoleName roleName;
+    RoleName roleName;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST},
+            cascade = {MERGE, PERSIST},
             mappedBy = "userRole")
     @ToString.Exclude
-    private Set<UserEntity> users;
+    Set<UserEntity> users;
 }

@@ -48,24 +48,6 @@ class BookControllerTest extends Specification {
         1 * bookService.getBook(id)
     }
 
-    def "TestUpdateBookCategory"() {
-        given:
-        def bookId = random.nextLong()
-        def categoryId = random.nextLong()
-
-        def url = "/v1/books/update-category"
-        when:
-        def result = mockMvc
-                .perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("bookId", bookId.toString())
-                        .param("categoryId", categoryId.toString()))
-                .andReturn()
-
-
-        then:
-        1 * bookService.updateBookCategory(bookId, categoryId)
-    }
 
     def "TestGetAllBooks"() {
         given:

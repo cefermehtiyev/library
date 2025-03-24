@@ -1,6 +1,7 @@
 package azmiu.library.dao.entity;
 
 import azmiu.library.model.enums.InventoryStatus;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,25 +13,28 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Objects;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "inventory_statuses")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class InventoryStatusEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    Long id;
     @Enumerated(STRING)
-    private InventoryStatus status;
+    InventoryStatus status;
 
     @Override
     public boolean equals(Object o) {

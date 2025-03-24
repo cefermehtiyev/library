@@ -21,6 +21,7 @@ public enum ErrorMessage {
     RATING_NOT_FOUND("Rating not found"),
     RATING_DETAILS_NOT_FOUND("Rating details not found"),
     FILE_NOT_FOUND("File not found"),
+    SAVED_BOOK_NOT_FOUND("Saved book not found"),
     CATEGORY_ALREADY_EXISTS("Category Already Exists"),
     BOOK_ALREADY_EXISTS("Book Already Exists"),
     INVALID_FILE_URL("File url is invalid"),

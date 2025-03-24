@@ -5,6 +5,9 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.BookInventoryRepository;
+import azmiu.library.dao.repository.FileRepository;
+import azmiu.library.dao.repository.ImageRepository;
+import azmiu.library.dao.repository.SavedBookRepository;
 import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
@@ -38,24 +41,34 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
     private final CategoryService categoryService;
+    private final SavedBookRepository savedBookRepository;
+    private final FileRepository fileRepository;
+    private final ImageRepository imageRepository;
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
                                        @Lazy InventoryStatusService inventoryStatusService,
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
-                                       @Lazy FileService fileService, CategoryService categoryService) {
+                                       @Lazy FileService fileService,
+                                       @Lazy CategoryService categoryService,
+                                       @Lazy SavedBookRepository savedBookRepository,
+                                       @Lazy FileRepository fileRepository,
+                                       @Lazy ImageRepository imageRepository) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
         this.categoryService = categoryService;
+        this.savedBookRepository = savedBookRepository;
+        this.fileRepository = fileRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
     @Transactional
     public void addBookToInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image) {
-        if (bookService.existsByBookCode(bookRequest.getBookCode())){
+        if (bookService.existsByBookCode(bookRequest.getBookCode())) {
             throw new AlreadyExistsException(ErrorMessage.BOOK_ALREADY_EXISTS.getMessage());
         }
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
@@ -68,7 +81,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                     var status = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
                     log.info("Inventory added");
                     var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
-                    categoryService.addBookToCategory(bookRequest.getCategoryId(),newInventory);
+                    categoryService.addBookToCategory(bookRequest.getCategoryId(), newInventory);
                     bookInventoryRepository.save(newInventory);
 
                     fileService.uploadFile(newInventory, file);
@@ -106,6 +119,19 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         BOOK_INVENTORY_MAPPER.updateInventoryOnReturn(bookInventory);
         determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
+    }
+
+    public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity) {
+        BOOK_INVENTORY_MAPPER.updateCountsOnBookDeleted(bookInventoryEntity);
+        log.info("Book reserved count :{}",bookInventoryEntity.getReservedQuantity());
+        if (bookInventoryEntity.getReservedQuantity() == 0) {
+            log.info("Book Deleted");
+            savedBookRepository.deleteAll(bookInventoryEntity.getSavedBooks());
+            bookInventoryRepository.delete(bookInventoryEntity);
+        } else {
+            determineInventoryStatus(bookInventoryEntity);
+        }
+
     }
 
     public void increaseReadCount(Long inventoryId) {

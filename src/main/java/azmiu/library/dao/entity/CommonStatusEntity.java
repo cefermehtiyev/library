@@ -16,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,14 +28,16 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "common_statuses")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class CommonStatusEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -42,7 +45,6 @@ public class CommonStatusEntity {
 
     @Enumerated(STRING)
     CommonStatus status;
-
 
 
     @Override

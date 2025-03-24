@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.proxy.HibernateProxy;
 
 import jakarta.persistence.Entity;
@@ -17,20 +18,22 @@ import jakarta.persistence.Table;
 
 import java.util.Objects;
 
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "students")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class StudentEntity {
     @Id
-    private Long id;
-    private String specialization;
-    private Integer course;
-    private String groupName;
+    Long id;
+    String specialization;
+    Integer course;
+    String groupName;
 
     @OneToOne
     @MapsId

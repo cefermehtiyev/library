@@ -12,26 +12,29 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Objects;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "borrow_statuses")
 @Builder
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class BorrowStatusEntity {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
-    private Long id;
+    Long id;
     @Enumerated(STRING)
-    private BorrowStatus status;
+    BorrowStatus status;
 
     @Override
     public boolean equals(Object o) {

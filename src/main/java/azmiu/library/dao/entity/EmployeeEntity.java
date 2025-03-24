@@ -13,8 +13,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Objects;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Entity
 @Getter
@@ -23,11 +26,12 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = PRIVATE)
 public class EmployeeEntity {
     @Id
-    private Long id;
-    private String department;
-    private String position;
+    Long id;
+    String department;
+    String position;
 
     @OneToOne
     @MapsId

@@ -1,7 +1,6 @@
 package azmiu.library.controller;
 
 import azmiu.library.model.response.RatingDetailsResponse;
-import azmiu.library.model.response.RatingResponse;
 import azmiu.library.service.abstraction.RatingDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

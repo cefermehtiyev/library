@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
@@ -24,46 +25,49 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
 @Builder
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    private String userName;
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String fin;
+    Long id;
+    String userName;
+    String email;
+    String password;
+    String firstName;
+    String lastName;
+    String fin;
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE},
+            cascade = {MERGE, PERSIST},
             mappedBy = "user"
     )
     List<RatingEntity> ratings;
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE}
+            cascade = {MERGE, PERSIST}
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude
@@ -71,28 +75,28 @@ public class UserEntity {
 
     @OneToOne(
             mappedBy = "user",
-            cascade = {PERSIST,MERGE}
+            cascade = {PERSIST, MERGE}
     )
     @ToString.Exclude
     EmployeeEntity employee;
 
     @OneToOne(
             mappedBy = "user",
-            cascade = {PERSIST,MERGE}
+            cascade = {PERSIST, MERGE}
     )
     @ToString.Exclude
     AdminEntity admin;
 
     @OneToOne(
             mappedBy = "user",
-            cascade = {PERSIST,MERGE}
+            cascade = {PERSIST, MERGE}
     )
     @ToString.Exclude
     StudentEntity student;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE,PERSIST},
+            cascade = {MERGE, PERSIST},
             mappedBy = "user"
     )
     @ToString.Exclude
@@ -117,6 +121,14 @@ public class UserEntity {
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     UserRoleEntity userRole;
+
+    @OneToMany(
+            fetch = LAZY,
+            cascade = {MERGE, PERSIST},
+            mappedBy = "user"
+    )
+    Set<SavedBookEntity> savedBooks;
+
 
 
     @Override

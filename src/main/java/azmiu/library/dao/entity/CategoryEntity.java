@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
 @Entity
 @Getter
@@ -35,12 +37,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = PRIVATE)
 @Table(name = "categories")
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    private String bookCategory;
+    Long id;
+    String bookCategory;
 
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -52,7 +55,7 @@ public class CategoryEntity {
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE}
+            cascade = {MERGE, PERSIST}
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude

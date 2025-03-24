@@ -15,6 +15,8 @@ public interface BookInventoryService {
 
     BookInventoryEntity getBookInventoryEntity(Long inventoryId);
 
+    void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity);
+
     void updateBookInventoryOnReturn(BookEntity bookEntity);
 
     void increaseReadCount(Long inventoryId);

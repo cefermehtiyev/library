@@ -16,25 +16,28 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.experimental.FieldDefaults;
+
 import java.util.Objects;
 
 
-
 import static jakarta.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "admins")
-@Entity
-public class  AdminEntity {
+@FieldDefaults(level = PRIVATE)
+public class AdminEntity {
 
     @Id
-    private Long id;
+    Long id;
     @Enumerated(STRING)
-    private AdminRole adminRole;
+    AdminRole adminRole;
 
     @OneToOne
     @MapsId

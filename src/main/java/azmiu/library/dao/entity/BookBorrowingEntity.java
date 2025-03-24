@@ -1,10 +1,12 @@
 package azmiu.library.dao.entity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
@@ -21,34 +23,35 @@ import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-
+import static lombok.AccessLevel.PRIVATE;
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "book_borrowing")
-@Entity
+@FieldDefaults(level = PRIVATE)
 public class BookBorrowingEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    Long id;
 
     @CreationTimestamp
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
+    LocalDate borrowDate;
+    LocalDate returnDate;
 
     @ManyToOne(fetch = LAZY,
             cascade = {MERGE, PERSIST})
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    UserEntity user;
 
     @ManyToOne(
             fetch = LAZY,
             cascade = {PERSIST, MERGE}
     )
     @JoinColumn(name = "book_id")
-    private BookEntity book;
+    BookEntity book;
 
 
     @ManyToOne(

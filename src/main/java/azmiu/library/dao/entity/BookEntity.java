@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
@@ -32,37 +33,39 @@ import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PRIVATE;
 
-@Table(name = "books")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
-@Entity
+@Table(name = "books")
+@FieldDefaults(level = PRIVATE)
 public class BookEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private String bookCode;
-    private String author;
-    private String publisher;
-    private String language;
-    private String description;
-    private Integer pages;
-    private Integer publicationYear;
+    Long id;
+    String title;
+    String bookCode;
+    String author;
+    String publisher;
+    String language;
+    String description;
+    Integer pages;
+    Integer publicationYear;
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST, REMOVE}
+            cascade = {MERGE, PERSIST}
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude
@@ -75,8 +78,6 @@ public class BookEntity {
     @JoinColumn(name = "inventory_id")
     @ToString.Exclude
     BookInventoryEntity bookInventory;
-
-
 
 
     @OneToMany(

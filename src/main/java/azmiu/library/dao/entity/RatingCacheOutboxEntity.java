@@ -9,27 +9,30 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "rating_cache_outbox")
-@Entity
 @Builder
+@FieldDefaults(level = PRIVATE)
 public class RatingCacheOutboxEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    private Long bookInventoryId;
-    private Integer voteCount;
-    private BigDecimal averageRating;
-    private Boolean processed;
+    Long id;
+    Long bookInventoryId;
+    Integer voteCount;
+    BigDecimal averageRating;
+    Boolean processed;
 
 
     @Override

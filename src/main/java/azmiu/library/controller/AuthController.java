@@ -36,13 +36,13 @@ public class AuthController {
     private final UserService userService;
 
 
-    @PostMapping("/sign-in")
+    @PostMapping("/sign-up")
     @ResponseStatus(CREATED)
     public void singIn(@RequestBody @Valid RegistrationRequest registrationRequest) {
         userService.signIn(registrationRequest);
     }
 
-    @PostMapping("/admin/sign-in")
+    @PostMapping("/admin/sign-up")
     @ResponseStatus(CREATED)
 //    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public void adminSingIn(@RequestBody @Valid AdminRequest adminRequest) {

@@ -20,9 +20,12 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
             "CASE WHEN :sortBy = 'createAt' AND :order = 'asc' THEN bi.createdAt END ASC," +
             "CASE WHEN :sortBy = 'createdAt' AND :order = 'desc'THEN bi.createdAt END DESC," +
             "CASE WHEN :sortBy = 'readCount' AND :order = 'asc' THEN bi.readCount END ASC ," +
-            "CASE WHEN :sortBy = 'readCount' AND :order = 'desc' THEN bi.readCount END DESC "
+            "CASE WHEN :sortBy = 'readCount' AND :order = 'desc' THEN bi.readCount END DESC, "+
+            "CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN bi.title END ASC ,"+
+            "CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN bi.title END DESC "
     )
     Page<BookEntity> findDistinctBooks(@Param("sortBy") String sortBy, @Param("order") String order, Pageable pageable);
+
 
 }
 

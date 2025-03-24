@@ -2,7 +2,6 @@ package azmiu.library.mapper;
 
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
-import azmiu.library.model.enums.BookCategory;
 import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.CategoryResponse;
 

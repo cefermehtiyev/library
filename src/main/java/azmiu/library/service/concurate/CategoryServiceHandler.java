@@ -8,6 +8,7 @@ import azmiu.library.dao.repository.CategoryRepository;
 import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.exception.ResourceHasRelationsException;
 import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.CategoryResponse;
@@ -60,9 +61,10 @@ public class CategoryServiceHandler implements CategoryService {
     @Override
     public void deleteCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        category.setCommonStatus(status);
-        categoryRepository.save(category);
+        if(!category.getBooks().isEmpty()){
+            throw new ResourceHasRelationsException(ErrorMessage.CATEGORY_HAS_RELATED_BOOKS.getMessage());
+        }
+        categoryRepository.delete(category);
     }
 
     @Override

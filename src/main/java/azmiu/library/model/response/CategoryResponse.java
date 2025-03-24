@@ -1,6 +1,5 @@
 package azmiu.library.model.response;
 
-import azmiu.library.model.enums.BookCategory;
 import azmiu.library.model.enums.CommonStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

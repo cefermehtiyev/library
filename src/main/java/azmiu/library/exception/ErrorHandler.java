@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static azmiu.library.exception.ErrorMessage.UNEXPECTED_ERROR;
 import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
@@ -46,8 +47,17 @@ public class ErrorHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidFileURLException.class)
+    @ResponseStatus(BAD_REQUEST)
     public ErrorResponse handle(InvalidFileURLException ex){
         log.info("InvalidFileURLException: ",ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(ResourceHasRelationsException.class)
+    @ResponseStatus(CONFLICT)
+    public ErrorResponse handle(ResourceHasRelationsException ex){
+        log.info("ResourceHasRelationsException: ",ex);
         return new ErrorResponse(ex.getMessage());
     }
 

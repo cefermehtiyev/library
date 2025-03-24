@@ -3,7 +3,6 @@ package azmiu.library.service.concurate;
 import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.UserRepository;
-import azmiu.library.model.enums.BookCategory;
 import azmiu.library.model.enums.BorrowStatus;
 import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.enums.InventoryStatus;

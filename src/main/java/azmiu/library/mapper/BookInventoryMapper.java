@@ -1,8 +1,9 @@
 package azmiu.library.mapper;
 
 import azmiu.library.dao.entity.BookInventoryEntity;
-import azmiu.library.dao.entity.CommonStatusEntity;
+import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.entity.InventoryStatusEntity;
+import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
 
 public enum BookInventoryMapper {
@@ -32,14 +33,16 @@ public enum BookInventoryMapper {
                 .build();
     }
 
+    public void updateBookInventory(BookInventoryEntity bookInventoryEntity, CategoryEntity categoryEntity, String title, Integer publicationYear){
+         bookInventoryEntity.setTitle(title);
+         bookInventoryEntity.setPublicationYear(publicationYear);
+         bookInventoryEntity.setCategory(categoryEntity);
+    }
 
-    public BookInventoryEntity updateBookInventoryEntity(BookInventoryEntity bookInventoryEntity) {
+    public BookInventoryEntity increaseBookInventoryQuantities(BookInventoryEntity bookInventoryEntity) {
         bookInventoryEntity.setReservedQuantity(bookInventoryEntity.getReservedQuantity() + 1);
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() + 1);
-
-
         return bookInventoryEntity;
-
     }
 
     public void decreaseAvailableIncreaseBorrowed(BookInventoryEntity bookInventoryEntity) {

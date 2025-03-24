@@ -58,7 +58,6 @@ public enum BookMapper {
     public void updateBookEntity(BookEntity bookEntity,BookRequest bookRequest){
         bookEntity.setTitle(bookRequest.getTitle());
         bookEntity.setAuthor(bookRequest.getAuthor());
-        bookEntity.setBookCode(bookRequest.getBookCode());
         bookEntity.setLanguage(bookRequest.getLanguage());
         bookEntity.setDescription(bookRequest.getDescription());
         bookEntity.setPublisher(bookRequest.getPublisher());

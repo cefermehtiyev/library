@@ -11,6 +11,7 @@ import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.mapper.BookInventoryMapper;
+import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
@@ -78,9 +79,11 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
+    @Transactional
     public void updateBook(Long id, BookRequest bookRequest) {
         var bookEntity = findById(id);
-        BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
+        bookInventoryService.updateBooksInInventory(bookEntity,bookRequest);
+        bookEntity.setBookCode(bookRequest.getBookCode());
         bookRepository.save(bookEntity);
     }
 

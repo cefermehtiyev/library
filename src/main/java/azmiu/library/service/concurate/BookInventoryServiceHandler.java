@@ -19,7 +19,6 @@ import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
-import azmiu.library.util.CacheProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -42,8 +41,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final FileService fileService;
     private final CategoryService categoryService;
     private final SavedBookRepository savedBookRepository;
-    private final FileRepository fileRepository;
-    private final ImageRepository imageRepository;
+
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
@@ -51,9 +49,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService,
                                        @Lazy CategoryService categoryService,
-                                       @Lazy SavedBookRepository savedBookRepository,
-                                       @Lazy FileRepository fileRepository,
-                                       @Lazy ImageRepository imageRepository) {
+                                       @Lazy SavedBookRepository savedBookRepository) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
@@ -61,8 +57,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         this.fileService = fileService;
         this.categoryService = categoryService;
         this.savedBookRepository = savedBookRepository;
-        this.fileRepository = fileRepository;
-        this.imageRepository = imageRepository;
+
     }
 
     @Override
@@ -75,7 +70,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 .map(existingInventory -> {
                     log.info("Inventory updated");
 
-                    return BOOK_INVENTORY_MAPPER.updateBookInventoryEntity(existingInventory);
+                    return BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(existingInventory);
                 })
                 .orElseGet(() -> {
                     var status = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
@@ -173,6 +168,15 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.BOOK_INVENTORY_NOT_FOUND.getMessage())
                 );
+    }
+
+    @Override
+    public void updateBooksInInventory(BookEntity bookEntity, BookRequest bookRequest) {
+        var bookInventory = bookEntity.getBookInventory();
+        bookInventory.getBooks().forEach(book -> BOOK_MAPPER.updateBookEntity(book, bookRequest));
+        var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
+        BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory,category,bookRequest.getTitle(),bookRequest.getPublicationYear());
+        bookInventoryRepository.save(bookInventory);
     }
 
 

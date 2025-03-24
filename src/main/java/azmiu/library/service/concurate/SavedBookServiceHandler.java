@@ -2,12 +2,7 @@ package azmiu.library.service.concurate;
 
 import azmiu.library.dao.entity.SavedBookEntity;
 import azmiu.library.dao.repository.SavedBookRepository;
-import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookInventoryMapper;
-import azmiu.library.mapper.BookMapper;
-import azmiu.library.mapper.SavedBookMapper;
-import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.SavedBookResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.SavedBookService;
@@ -20,8 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static azmiu.library.exception.ErrorMessage.SAVED_BOOK_NOT_FOUND;
-import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
-import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 import static azmiu.library.mapper.SavedBookMapper.SAVED_BOOK_MAPPER;
 
 @Service

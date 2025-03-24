@@ -70,6 +70,11 @@ public class CategoryServiceHandler implements CategoryService {
         return categoryRepository.findAll().stream().map(CATEGORY_MAPPER::buildCategoryResponse).toList();
     }
 
+    @Override
+    public CategoryEntity getCategoryEntity(Long categoryId) {
+        return fetchEntityExist(categoryId);
+    }
+
 
     private CategoryEntity fetchEntityExist(Long id) {
         return categoryRepository.findById(id).orElseThrow(

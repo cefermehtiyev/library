@@ -2,14 +2,14 @@ package azmiu.library.mapper;
 
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
+import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.entity.InventoryStatusEntity;
-import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
 
 public enum BookInventoryMapper {
     BOOK_INVENTORY_MAPPER;
 
-    public BookInventoryEntity buildBookInventoryEntity(String title, Integer publicationYear, InventoryStatusEntity inventoryStatus) {
+    public BookInventoryEntity buildBookInventoryEntity(String title, Integer publicationYear, InventoryStatusEntity inventoryStatus, CommonStatusEntity commonStatus) {
         return BookInventoryEntity.builder()
                 .title(title)
                 .publicationYear(publicationYear)
@@ -17,6 +17,7 @@ public enum BookInventoryMapper {
                 .borrowedQuantity(0)
                 .reservedQuantity(1)
                 .inventoryStatus(inventoryStatus)
+                .commonStatus(commonStatus)
                 .readCount(0L)
                 .build();
     }

@@ -1,5 +1,6 @@
 package azmiu.library.controller;
 
+import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.repository.FileRepository;
 import azmiu.library.model.request.BookRequest;
@@ -43,9 +44,10 @@ public class BookInventoryController {
 
 
     @GetMapping("/sorted")
-    public PageableResponse getBooksSortedByAddedDate(@RequestParam(defaultValue = "readCount") String sortBy, @RequestParam(defaultValue = "asc") String order,
+    public PageableResponse getBooksSortedByAddedDate(@RequestParam(defaultValue = "readCount") String sortBy,
+                                                      @RequestParam(defaultValue = "asc") String order,
                                                       PageCriteria pageCriteria) {
-        return bookInventoryService.getBooksSorted(sortBy, order, pageCriteria);
+        return bookInventoryService.getBooksSorted(sortBy, order ,pageCriteria);
     }
 
     @GetMapping("/{inventoryId}")

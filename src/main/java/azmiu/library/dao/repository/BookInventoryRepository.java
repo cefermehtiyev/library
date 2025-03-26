@@ -4,6 +4,7 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +25,7 @@ public interface BookInventoryRepository extends JpaRepository<BookInventoryEnti
             "CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN bi.title END ASC ,"+
             "CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN bi.title END DESC "
     )
-    Page<BookEntity> findDistinctBooks(@Param("sortBy") String sortBy, @Param("order") String order, Pageable pageable);
+    Page<BookEntity> findDistinctBooks(@Param("sortBy") String sortBy, @Param("order") String order,  Pageable pageable);
 
 
 }

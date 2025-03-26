@@ -10,8 +10,6 @@ import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookInventoryMapper;
-import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
@@ -21,15 +19,17 @@ import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
+
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
-@Log
+
 @Slf4j
 @Service
 public class BookServiceHandler implements BookService {
@@ -78,11 +78,13 @@ public class BookServiceHandler implements BookService {
         return bookRepository.existsByBookCode(bookCode);
     }
 
+
+
     @Override
     @Transactional
     public void updateBook(Long id, BookRequest bookRequest) {
         var bookEntity = findById(id);
-        bookInventoryService.updateBooksInInventory(bookEntity,bookRequest);
+        bookInventoryService.updateBooksInInventory(bookEntity, bookRequest);
         bookEntity.setBookCode(bookRequest.getBookCode());
         bookRepository.save(bookEntity);
     }
@@ -107,32 +109,38 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria) {
+    public PageableResponse getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
         var bookPage = bookRepository.findAll(
                 new BookSpecification(bookCriteria),
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), Sort.by("id").descending())
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
 
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
-
 
     @Override
-    public PageableResponse getBooksSorted(String order, PageCriteria pageCriteria) {
-        var bookPage = bookRepository.findDistinctBooks(order,
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
+    public PageableResponse getAllBooksUser(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        var bookPage = bookRepository.findAllDistinct(
+                new BookSpecification(bookCriteria),
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
+
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
-
 
     @Override
     @Transactional
     public void deleteBook(Long id) {
         var bookEntity = findById(id);
-        var bookInventoryEntity = bookEntity.getBookInventory();
-        bookRepository.delete(bookEntity);
-        bookInventoryService.updateCountsOnBookDeleted(bookInventoryEntity);
+        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        bookEntity.setCommonStatus(status);
+        bookInventoryService.updateCountsOnBookDeleted(bookEntity.getBookInventory());
     }
 
     public BookEntity findById(Long id) {

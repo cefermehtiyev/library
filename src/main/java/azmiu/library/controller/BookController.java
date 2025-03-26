@@ -35,16 +35,14 @@ public class BookController {
 
 
     @GetMapping("/sorted")
-    public PageableResponse getAllBooks( PageCriteria pageCriteria,BookCriteria bookCriteria) {
-        return bookService.getAllBooks(pageCriteria, bookCriteria);
+    public PageableResponse getAllBooks( @RequestParam(defaultValue = "pages") String sortBy, @RequestParam(defaultValue = "asc") String order,PageCriteria pageCriteria,BookCriteria bookCriteria) {
+        return bookService.getAllBooks(sortBy,order,pageCriteria, bookCriteria);
     }
 
-
-    @GetMapping("/sorted/page")
-    public PageableResponse getBooksSorted(@RequestParam(defaultValue = "asc") String order, PageCriteria pageCriteria) {
-        return bookService.getBooksSorted(order, pageCriteria);
+    @GetMapping("/user/sorted")
+    public PageableResponse getAllBooksUser( @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String order,PageCriteria pageCriteria,BookCriteria bookCriteria) {
+        return bookService.getAllBooksUser(sortBy,order,pageCriteria, bookCriteria);
     }
-
 
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")

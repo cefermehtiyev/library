@@ -24,6 +24,7 @@ public class BookResponse {
     private String language;
     private String description;
     private CommonStatus status;
+    private Long readCount;
     private Integer pages;
     private String filePath;
     private InventoryStatus inventoryStatus;

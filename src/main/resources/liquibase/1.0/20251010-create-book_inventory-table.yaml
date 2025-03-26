@@ -54,6 +54,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: status_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
                   name: created_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
@@ -63,13 +68,13 @@ databaseChangeLog:
                   defaultValueComputed: CURRENT_TIMESTAMP
 
   - changeSet:
-      id: inventory  set status
+      id: inventory  set  inventory status
       author: Cefer Mehtiyev
       changes:
         - addForeignKeyConstraint:
             baseTableName: book_inventory
             baseColumnNames: inventory_status
-            constraintName: fk_inventory_status
+            constraintName: fk_inventory_common_status
             referencedTableName: inventory_statuses
             referencedColumnNames: id
   - changeSet:
@@ -81,4 +86,14 @@ databaseChangeLog:
             baseColumnNames: category_id
             constraintName: fk_inventory_category
             referencedTableName: categories
+            referencedColumnNames: id
+  - changeSet:
+      id: inventory set common status
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book_inventory
+            baseColumnNames: status_id
+            constraintName: fk_inventory_status
+            referencedTableName: common_statuses
             referencedColumnNames: id

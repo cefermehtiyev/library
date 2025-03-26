@@ -1,5 +1,6 @@
 package azmiu.library.service.abstraction;
 
+import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;

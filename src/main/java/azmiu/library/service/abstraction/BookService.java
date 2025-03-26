@@ -23,9 +23,10 @@ public interface BookService {
 
     void setBookStatusToActive(String bookCode);
 
-    PageableResponse getAllBooks(PageCriteria pageCriteria, BookCriteria bookCriteria);
+    PageableResponse getAllBooks(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
 
-    PageableResponse getBooksSorted(String order,PageCriteria pageCriteria);
+    PageableResponse getAllBooksUser(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
+
 
     void updateBook(Long id, BookRequest bookRequest);
 

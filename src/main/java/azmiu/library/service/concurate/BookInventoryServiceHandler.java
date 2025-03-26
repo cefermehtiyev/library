@@ -1,6 +1,8 @@
 package azmiu.library.service.concurate;
 
+import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.configuration.InventoryStatusConfig;
+import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
@@ -17,11 +19,14 @@ import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CategoryService;
+import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
+import azmiu.library.service.specification.BookSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +46,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final FileService fileService;
     private final CategoryService categoryService;
     private final SavedBookRepository savedBookRepository;
+    private final CommonStatusService commonStatusService;
+    private final CommonStatusConfig commonStatusConfig;
 
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
@@ -49,7 +56,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService,
                                        @Lazy CategoryService categoryService,
-                                       @Lazy SavedBookRepository savedBookRepository) {
+                                       @Lazy SavedBookRepository savedBookRepository,
+                                       @Lazy CommonStatusService commonStatusService,
+                                       @Lazy CommonStatusConfig commonStatusConfig) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
@@ -57,7 +66,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         this.fileService = fileService;
         this.categoryService = categoryService;
         this.savedBookRepository = savedBookRepository;
-
+        this.commonStatusService = commonStatusService;
+        this.commonStatusConfig = commonStatusConfig;
     }
 
     @Override
@@ -69,13 +79,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");
-
                     return BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(existingInventory);
                 })
                 .orElseGet(() -> {
-                    var status = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
+                    var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
+                    var commonStatus = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+
                     log.info("Inventory added");
-                    var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), status);
+                    var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), inventoryStatus, commonStatus);
                     categoryService.addBookToCategory(bookRequest.getCategoryId(), newInventory);
                     bookInventoryRepository.save(newInventory);
 
@@ -118,15 +129,15 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity) {
         BOOK_INVENTORY_MAPPER.updateCountsOnBookDeleted(bookInventoryEntity);
-        log.info("Book reserved count :{}",bookInventoryEntity.getReservedQuantity());
+        determineInventoryStatus(bookInventoryEntity);
+        log.info("Book reserved count :{}", bookInventoryEntity.getReservedQuantity());
         if (bookInventoryEntity.getReservedQuantity() == 0) {
+            var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+            bookInventoryEntity.setCommonStatus(status);
             log.info("Book Deleted");
             savedBookRepository.deleteAll(bookInventoryEntity.getSavedBooks());
-            bookInventoryRepository.delete(bookInventoryEntity);
-        } else {
-            determineInventoryStatus(bookInventoryEntity);
+            bookInventoryRepository.save(bookInventoryEntity);
         }
-
     }
 
     public void increaseReadCount(Long inventoryId) {
@@ -136,7 +147,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-    @Override
+        @Override
     public PageableResponse getBooksSorted(String sortBy, String order, PageCriteria pageCriteria) {
 
         var page = bookInventoryRepository.findDistinctBooks(sortBy, order,
@@ -146,6 +157,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         return BOOK_MAPPER.pageableBookResponse(page);
 
     }
+
+
 
 
     @Override
@@ -175,7 +188,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var bookInventory = bookEntity.getBookInventory();
         bookInventory.getBooks().forEach(book -> BOOK_MAPPER.updateBookEntity(book, bookRequest));
         var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
-        BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory,category,bookRequest.getTitle(),bookRequest.getPublicationYear());
+        BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
         bookInventoryRepository.save(bookInventory);
     }
 

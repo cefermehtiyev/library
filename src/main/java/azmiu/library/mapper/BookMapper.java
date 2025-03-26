@@ -34,6 +34,7 @@ public enum BookMapper {
                 .publicationYear(bookEntity.getPublicationYear())
                 .bookCode(bookEntity.getBookCode())
                 .language(bookEntity.getLanguage())
+                .readCount(bookEntity.getBookInventory().getReadCount())
                 .status(bookEntity.getCommonStatus().getStatus())
                 .inventoryStatus(bookEntity.getBookInventory().getInventoryStatus().getStatus())
                 .description(bookEntity.getDescription())
@@ -44,6 +45,8 @@ public enum BookMapper {
                 .updatedAt(bookEntity.getUpdatedAt())
                 .build();
     }
+
+
     public PageableResponse pageableBookResponse(Page<BookEntity> bookEntityPage) {
         return PageableResponse.builder()
                 .list(Collections.singletonList((bookEntityPage.map(this::buildBookResponse).toList())))
@@ -54,6 +57,7 @@ public enum BookMapper {
                 .hasNextPage(bookEntityPage.hasNext())
                 .build();
     }
+
 
     public void updateBookEntity(BookEntity bookEntity,BookRequest bookRequest){
         bookEntity.setTitle(bookRequest.getTitle());

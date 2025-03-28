@@ -11,7 +11,4 @@ public enum InventoryStatusMapper {
         return InventoryStatusEntity.builder().status(status).build();
     }
 
-    public InventoryStatusRequest buildInventoryRequest(InventoryStatus status){
-        return InventoryStatusRequest.builder().inventoryStatus(status).build();
-    }
 }

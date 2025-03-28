@@ -2,10 +2,15 @@ package azmiu.library.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
+import java.util.Optional;
 
 import static azmiu.library.exception.ErrorMessage.UNEXPECTED_ERROR;
 import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
@@ -61,6 +66,19 @@ public class ErrorHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse handle(MethodArgumentNotValidException ex) {
+        log.info("MethodArgumentNotValidException: ", ex);
+        return new ErrorResponse(
+                Optional.ofNullable(ex.getFieldError())
+                        .map(FieldError::getDefaultMessage)
+                        .orElse("Validation error occurred")
+        );
+    }
+
+
+
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ErrorResponse> handle(AuthException ex) {
         log.error("AuthException: ", ex);
@@ -68,5 +86,7 @@ public class ErrorHandler {
                 .status(ex.getHttpStatusCode())
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+
 
 }

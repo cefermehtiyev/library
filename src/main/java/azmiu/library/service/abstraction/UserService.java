@@ -22,9 +22,9 @@ public interface UserService {
 
     PageableResponse getAllBooksByFin(String fin, PageCriteria pageCriteria);
 
-    PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria);
+    PageableResponse<UserResponse> getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria);
 
-    PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria);
+    PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria);
 
     String getRolesFromToken(String userId);
 

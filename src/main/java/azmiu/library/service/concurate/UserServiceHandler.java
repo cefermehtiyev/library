@@ -7,6 +7,7 @@ import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.RoleName;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.request.RegistrationRequest;
 import azmiu.library.model.response.PageableResponse;
@@ -18,12 +19,18 @@ import azmiu.library.service.abstraction.UserService;
 import azmiu.library.service.specification.UserSpecification;
 import azmiu.library.service.strategy.RegistrationStrategy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 import static azmiu.library.mapper.UserMapper.USER_MAPPER;
@@ -98,22 +105,31 @@ public class UserServiceHandler implements UserService {
     }
 
     @Override
-    public PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
-        var userPage = userRepository.findAllNonAdminUsers(
-                new UserSpecification(userCriteria), PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").descending())
+    public PageableResponse<UserResponse> getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
+        var userPage = userRepository.findAll(
+                new UserSpecification(userCriteria),
+                PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").ascending())
         );
         return USER_MAPPER.pageableUserResponse(userPage);
 
     }
 
     @Override
-    public PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
-        var userPage = userRepository.findAllAdmins(
-                new UserSpecification(userCriteria), PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").descending())
-        );
+    public PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
+        var userPage = userRepository.findAll(
+                new UserSpecification(userCriteria)).stream()
+                .filter(userEntity -> userEntity.getUserRole().getRoleName().equals(RoleName.ADMIN)).toList();
 
-        return USER_MAPPER.pageableUserResponse(userPage);
+        long totalElements = userPage.size();
+        int pageSize = pageCriteria.getCount();
+        int currentPage = pageCriteria.getPage();
+        int fromIndex = currentPage * pageSize;
 
+        int toIndex = Math.min(fromIndex +pageSize ,(int) totalElements);
+        List<UserEntity> pagedUser = userPage.subList(fromIndex,toIndex);
+        Pageable pageable = PageRequest.of(currentPage,pageSize);
+        Page<UserEntity> page = new PageImpl<>(pagedUser,pageable,totalElements);
+        return USER_MAPPER.pageableUserResponse(page);
     }
 
 

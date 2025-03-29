@@ -51,13 +51,13 @@ public class UserController {
 
     @GetMapping
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public PageableResponse getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
+    public PageableResponse<UserResponse> getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria) {
         return userService.getAllUsers(pageCriteria, userCriteria);
     }
 
     @GetMapping("/all-admins")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public PageableResponse getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
+    public PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
         return userService.getAllAdmins(pageCriteria, userCriteria);
     }
 

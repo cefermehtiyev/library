@@ -39,6 +39,7 @@ public enum UserMapper {
 
 
     public UserResponse buildUserResponse(UserEntity userEntity) {
+        System.out.println(userEntity.getUserRole().getRoleName());
 
          switch (userEntity.getUserRole().getRoleName()){
             case  STUDENT ->{
@@ -50,7 +51,10 @@ public enum UserMapper {
             case ADMIN -> {
                 return
                 ADMIN_MAPPER.buildAdminResponse(userEntity);
-            }
+            }case SUPER_ADMIN ->
+             {
+                 return ADMIN_MAPPER.buildSuperAdminResponse(userEntity);
+             }
             default -> throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
     }
@@ -66,9 +70,9 @@ public enum UserMapper {
         userEntity.setPassword(registrationRequest.getPassword());
     }
 
-    public PageableResponse pageableUserResponse(Page<UserEntity> userEntityPage){
-        return PageableResponse.builder()
-                .list(Collections.singletonList(userEntityPage.map(this::buildUserResponse).toList()))
+    public PageableResponse<UserResponse> pageableUserResponse(Page<UserEntity> userEntityPage){
+        return PageableResponse.<UserResponse>builder()
+                .list(userEntityPage.map(this::buildUserResponse).toList())
                 .currentPageNumber(userEntityPage.getNumber())
                 .totalPages(userEntityPage.getTotalPages())
                 .totalElements(userEntityPage.getTotalElements())

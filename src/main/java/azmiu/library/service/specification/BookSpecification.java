@@ -22,22 +22,22 @@ public class BookSpecification implements Specification<BookEntity> {
     private final BookCriteria bookCriteria;
 
     @Override
-    public Predicate toPredicate(Root<BookEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<BookEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         var predicates = PredicateUtil.builder().addNullSafety(
-                bookCriteria.getTitle(),title -> criteriaBuilder.like(root.get(TITLE),applyLikePattern(title))
+                bookCriteria.getTitle(),title -> cb.like(root.get(TITLE),applyLikePattern(title))
         ).addNullSafety(
-                bookCriteria.getAuthor(),author -> criteriaBuilder.like(root.get(AUTHOR),applyLikePattern(author))
+                bookCriteria.getAuthor(),author -> cb.like(root.get(AUTHOR),applyLikePattern(author))
         ).addNullSafety(
                 bookCriteria.getPublicationYearFrom(),
-                publicationYearFrom -> criteriaBuilder.greaterThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearFrom)
+                publicationYearFrom -> cb.greaterThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearFrom)
         ).addNullSafety(
                 bookCriteria.getPublicationYearTo(),
-                publicationYearTo -> criteriaBuilder.lessThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearTo)
+                publicationYearTo -> cb.lessThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearTo)
         ).addNullSafety(
-                bookCriteria.getLanguage(),language -> criteriaBuilder.like(root.get(LANGUAGE),applyLikePattern(language))
+                bookCriteria.getLanguage(),language -> cb.like(root.get(LANGUAGE),applyLikePattern(language))
         ).build();
 
-        return criteriaBuilder.and(predicates);
+        return cb.and(predicates);
     }
 
 

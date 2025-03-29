@@ -21,11 +21,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
@@ -117,22 +124,38 @@ public class BookServiceHandler implements BookService {
                 new BookSpecification(bookCriteria),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
-
+        bookPage.get().forEach(System.out::println);
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 
     @Override
-    public PageableResponse getAllBooksUser(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
+    public PageableResponse<BookResponse> getAllBooksUser(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
         Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortBy);
 
-        var bookPage = bookRepository.findAllDistinct(
-                new BookSpecification(bookCriteria),
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
-        );
+        List<BookEntity> distinctBooks = bookRepository.findAll(new BookSpecification(bookCriteria)).stream()
+                .collect(Collectors.toMap(BookEntity::getTitle, Function.identity(), (existing, replacement) -> existing))
+                .values()
+                .stream()
+                .toList();;
 
-        return BOOK_MAPPER.pageableBookResponse(bookPage);
+        long totalElements = distinctBooks.size();
+
+        int pageSize = pageCriteria.getCount();
+        int currentPage = pageCriteria.getPage();
+
+        int fromIndex = currentPage * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, (int) totalElements);
+
+        List<BookEntity> pagedBooks = distinctBooks.subList(fromIndex, toIndex);
+
+        Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+        Page<BookEntity> distinctBookPage = new PageImpl<>(pagedBooks, pageable, totalElements);
+
+        return BOOK_MAPPER.pageableBookResponse(distinctBookPage);
     }
+
+
 
     @Override
     @Transactional

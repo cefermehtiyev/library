@@ -40,7 +40,7 @@ public class BookController {
     }
 
     @GetMapping("/user/sorted")
-    public PageableResponse getAllBooksUser( @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String order,PageCriteria pageCriteria,BookCriteria bookCriteria) {
+    public PageableResponse<BookResponse> getAllBooksUser( @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String order,PageCriteria pageCriteria,BookCriteria bookCriteria) {
         return bookService.getAllBooksUser(sortBy,order,pageCriteria, bookCriteria);
     }
 

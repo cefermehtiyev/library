@@ -47,14 +47,14 @@ public enum BookMapper {
     }
 
 
-    public PageableResponse pageableBookResponse(Page<BookEntity> bookEntityPage) {
-        return PageableResponse.builder()
-                .list(Collections.singletonList((bookEntityPage.map(this::buildBookResponse).toList())))
+    public PageableResponse<BookResponse> pageableBookResponse(Page<BookEntity> bookEntityPage) {
+        return PageableResponse.<BookResponse>builder()
+                .list((bookEntityPage.map(this::buildBookResponse).toList()))
                 .currentPageNumber(bookEntityPage.getNumber())
                 .totalPages(bookEntityPage.getTotalPages())
                 .totalElements(bookEntityPage.getTotalElements())
                 .numberOfElements(bookEntityPage.getNumberOfElements())
-                .hasNextPage(bookEntityPage.hasNext())
+                .hasNextPage(bookEntityPage.getNumber() < (bookEntityPage.getTotalPages() - 1))
                 .build();
     }
 

@@ -12,19 +12,18 @@ public class PredicateUtil {
     public static PredicateUtil builder(){
         return new PredicateUtil();
     }
-
-    public <T> PredicateUtil add(T object, Function<T,Predicate> function){
+    public <T> PredicateUtil add(T object, Function<T ,Predicate> function){
         predicates.add(function.apply(object));
         return this;
     }
 
-    public <T> PredicateUtil addNullSafety(T object, Function<T, Predicate> function){
-        if (object != null){
+    public <T> PredicateUtil addNullSafety(T object, Function<T,Predicate>function){
+        if(object != null){
             predicates.add(function.apply(object));
+
         }
         return this;
     }
-
     public Predicate[] build(){
         return predicates.toArray(new Predicate[0]);
     }
@@ -32,5 +31,10 @@ public class PredicateUtil {
     public static String applyLikePattern(String key){
         return "%"+ key +"%";
     }
+
+
+
 }
+
+
 

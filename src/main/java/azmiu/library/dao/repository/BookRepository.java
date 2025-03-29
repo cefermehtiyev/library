@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.awt.print.Book;
 import java.util.Optional;
 
-public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpecificationExecutor<BookEntity> {
+public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpecificationExecutor<BookEntity>{
     @Query("SELECT b FROM BookEntity b WHERE b.bookCode = :bookCode AND b.commonStatus.status = 'ACTIVE'")
     Optional<BookEntity> findActiveBookByBookCode(String bookCode);
 

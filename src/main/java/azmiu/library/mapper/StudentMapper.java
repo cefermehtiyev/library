@@ -3,7 +3,10 @@ package azmiu.library.mapper;
 import azmiu.library.dao.entity.StudentEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.model.request.StudentRequest;
+import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.StudentResponse;
+import azmiu.library.model.response.UserResponse;
+import org.springframework.data.domain.Page;
 
 public enum StudentMapper {
     STUDENT_MAPPER;
@@ -14,6 +17,7 @@ public enum StudentMapper {
                 .course(request.getCourse())
                 .groupName(request.getGroup())
                 .build();
+
 
     }
 
@@ -35,4 +39,5 @@ public enum StudentMapper {
                 .build();
 
     }
+
 }

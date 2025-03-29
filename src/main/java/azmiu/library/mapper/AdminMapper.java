@@ -29,4 +29,19 @@ public enum AdminMapper {
                 .build();
 
     }
+
+    public AdminResponse buildSuperAdminResponse(UserEntity userEntity){
+        return AdminResponse.builder()
+                .id(userEntity.getId())
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
+                .userName(userEntity.getUserName())
+                .email(userEntity.getEmail())
+                .status(userEntity.getCommonStatus().getStatus())
+                .roleName(userEntity.getUserRole().getRoleName())
+                .fin(userEntity.getFin())
+                .createdAt(userEntity.getCreatedAt())
+                .build();
+
+    }
 }

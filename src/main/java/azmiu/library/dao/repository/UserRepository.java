@@ -16,16 +16,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity,Long> , JpaSpecificationExecutor<UserEntity> {
     Optional<UserEntity> findByUserName(String userName);
 
-    Optional<UserEntity> findByUserNameAndPassword(String userName, String password);
 
 
     @Query(value = "SELECT b from BookEntity b JOIN b.users u WHERE u.fin = :fin ")
     Page<BookEntity> findBooksByFin(String fin, Pageable pageable);
-
-    @Query("SELECT u FROM UserEntity u WHERE u.userRole.roleName NOT IN ('ADMIN', 'SUPER_ADMIN')")
-    Page<UserEntity> findAllNonAdminUsers(Specification<UserEntity> spec, Pageable pageable);
-
-    @Query("SELECT u FROM UserEntity u WHERE u.userRole.roleName  IN ('ADMIN')")
-    Page<UserEntity> findAllAdmins(Specification<UserEntity> spec, Pageable pageable);
 
 }

@@ -25,7 +25,7 @@ public interface BookService {
 
     PageableResponse getAllBooks(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
 
-    PageableResponse getAllBooksUser(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
+    PageableResponse<BookResponse> getAllBooksUser(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
 
 
     void updateBook(Long id, BookRequest bookRequest);

@@ -21,26 +21,7 @@ public enum StudentMapper {
 
     }
 
-    public StudentResponse buildStudentResponse(UserEntity userEntity) {
-        var student = userEntity.getStudent();
-        return StudentResponse.builder()
-                .id(userEntity.getId())
-                .firstName(userEntity.getFirstName())
-                .lastName(userEntity.getLastName())
-                .userName(userEntity.getUserName())
-                .email(userEntity.getEmail())
-                .status(userEntity.getCommonStatus().getStatus())
-                .roleName(userEntity.getUserRole().getRoleName())
-                .fin(userEntity.getFin())
-                .specialization(student.getSpecialization())
-                .groupName(student.getGroupName())
-                .course(student.getCourse())
-                .createdAt(userEntity.getCreatedAt())
-                .build();
-
-    }
-
-    public StudentResponse buildStudentResponsePageable(StudentEntity studentEntity) {
+    public StudentResponse buildStudentResponse(StudentEntity studentEntity) {
         var userEntity = studentEntity.getUser();
         return StudentResponse.builder()
                 .id(userEntity.getId())
@@ -60,9 +41,10 @@ public enum StudentMapper {
     }
 
 
+
     public PageableResponse<StudentResponse> pageableStudentResponse(Page<StudentEntity> userEntityPage){
         return PageableResponse.<StudentResponse>builder()
-                .list(userEntityPage.map(this::buildStudentResponsePageable).toList())
+                .list(userEntityPage.map(this::buildStudentResponse).toList())
                 .currentPageNumber(userEntityPage.getNumber())
                 .totalPages(userEntityPage.getTotalPages())
                 .totalElements(userEntityPage.getTotalElements())

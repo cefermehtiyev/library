@@ -9,7 +9,7 @@ import azmiu.library.model.response.StudentResponse;
 
 public interface StudentService {
     void addStudent(UserEntity userEntity, StudentRequest request);
-    StudentResponse getStudent(UserEntity userEntity);
+    StudentResponse getStudent(Long id);
     PageableResponse<StudentResponse> getAllStudents(PageCriteria pageCriteria, StudentCriteria studentCriteria);
 
 

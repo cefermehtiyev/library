@@ -30,7 +30,6 @@ public class SuperAdminInitializer implements CommandLineRunner {
     private final BorrowStatusService borrowStatusService;
     private final InventoryStatusService inventoryStatusService;
     private final UserRoleService userRoleService;
-    private final CategoryService categoryService;
 
     @Override
     @Transactional

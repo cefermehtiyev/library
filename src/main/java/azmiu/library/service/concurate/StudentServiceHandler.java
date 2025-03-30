@@ -2,8 +2,11 @@ package azmiu.library.service.concurate;
 
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.criteria.StudentCriteria;
+import azmiu.library.dao.entity.StudentEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.StudentRepository;
+import azmiu.library.exception.ErrorMessage;
+import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.StudentRequest;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.StudentResponse;
@@ -30,18 +33,25 @@ public class StudentServiceHandler implements StudentService {
     }
 
     @Override
-    public StudentResponse getStudent(UserEntity userEntity) {
-        return STUDENT_MAPPER.buildStudentResponse(userEntity);
+    public StudentResponse getStudent(Long id) {
+
+        return STUDENT_MAPPER.buildStudentResponse(fetchEntityExist(id));
     }
 
     @Override
     public PageableResponse<StudentResponse> getAllStudents(PageCriteria pageCriteria, StudentCriteria studentCriteria) {
         var studentPage = studentRepository.findAll(
                 new StudentSpecification(studentCriteria),
-                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount())
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
         );
 
         return STUDENT_MAPPER.pageableStudentResponse(studentPage);
+    }
+
+    private StudentEntity fetchEntityExist(Long id) {
+        return studentRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(ErrorMessage.STUDENT_NOT_FOUND.getMessage())
+        );
     }
 
 

@@ -43,10 +43,10 @@ public enum UserMapper {
 
          switch (userEntity.getUserRole().getRoleName()){
             case  STUDENT ->{
-                return STUDENT_MAPPER.buildStudentResponse(userEntity);
+                return STUDENT_MAPPER.buildStudentResponse(userEntity.getStudent());
             }
             case EMPLOYEE -> {
-                return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity);
+                return EMPLOYEE_MAPPER.buildEmployeeResponse(userEntity.getEmployee());
             }
             case ADMIN -> {
                 return

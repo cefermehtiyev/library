@@ -1,11 +1,17 @@
 package azmiu.library.controller;
 
+import azmiu.library.criteria.EmployeeCriteria;
 import azmiu.library.criteria.PageCriteria;
+import azmiu.library.criteria.StudentCriteria;
 import azmiu.library.criteria.UserCriteria;
 import azmiu.library.model.request.RegistrationRequest;
 
+import azmiu.library.model.response.EmployeeResponse;
 import azmiu.library.model.response.PageableResponse;
+import azmiu.library.model.response.StudentResponse;
 import azmiu.library.model.response.UserResponse;
+import azmiu.library.service.abstraction.EmployeeService;
+import azmiu.library.service.abstraction.StudentService;
 import azmiu.library.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +35,8 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class UserController {
 
     private final UserService userService;
+    private final StudentService studentService;
+    private final EmployeeService employeeService;
 
 
     @PutMapping("/{id}")

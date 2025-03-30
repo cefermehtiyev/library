@@ -40,4 +40,34 @@ public enum StudentMapper {
 
     }
 
+    public StudentResponse buildStudentResponsePageable(StudentEntity studentEntity) {
+        var userEntity = studentEntity.getUser();
+        return StudentResponse.builder()
+                .id(userEntity.getId())
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
+                .userName(userEntity.getUserName())
+                .email(userEntity.getEmail())
+                .status(userEntity.getCommonStatus().getStatus())
+                .roleName(userEntity.getUserRole().getRoleName())
+                .fin(userEntity.getFin())
+                .specialization(studentEntity.getSpecialization())
+                .groupName(studentEntity.getGroupName())
+                .course(studentEntity.getCourse())
+                .createdAt(userEntity.getCreatedAt())
+                .build();
+
+    }
+
+
+    public PageableResponse<StudentResponse> pageableStudentResponse(Page<StudentEntity> userEntityPage){
+        return PageableResponse.<StudentResponse>builder()
+                .list(userEntityPage.map(this::buildStudentResponsePageable).toList())
+                .currentPageNumber(userEntityPage.getNumber())
+                .totalPages(userEntityPage.getTotalPages())
+                .totalElements(userEntityPage.getTotalElements())
+                .numberOfElements(userEntityPage.getNumberOfElements())
+                .hasNextPage(userEntityPage.hasNext())
+                .build();
+    }
 }

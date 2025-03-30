@@ -110,6 +110,7 @@ public class UserServiceHandler implements UserService {
                 new UserSpecification(userCriteria),
                 PageRequest.of((pageCriteria.getPage()), pageCriteria.getCount(), Sort.by("id").ascending())
         );
+
         return USER_MAPPER.pageableUserResponse(userPage);
 
     }

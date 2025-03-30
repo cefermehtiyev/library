@@ -28,6 +28,7 @@ public enum BookMapper {
 
     public BookResponse buildBookResponse(BookEntity bookEntity){
         return BookResponse.builder()
+                .id(bookEntity.getId())
                 .title(bookEntity.getTitle())
                 .author(bookEntity.getAuthor())
                 .publisher(bookEntity.getPublisher())

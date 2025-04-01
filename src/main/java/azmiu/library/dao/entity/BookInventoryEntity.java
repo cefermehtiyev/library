@@ -58,6 +58,13 @@ public class BookInventoryEntity {
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
+    @OneToOne(
+            mappedBy = "bookInventory",
+            cascade = {PERSIST, MERGE}
+    )
+    @ToString.Exclude
+    RatingDetailsEntity ratingDetails;
+
     @OneToMany(
             fetch = LAZY,
             cascade = {MERGE, PERSIST},

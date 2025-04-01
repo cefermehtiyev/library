@@ -124,7 +124,6 @@ public class BookServiceHandler implements BookService {
                 new BookSpecification(bookCriteria),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
-        bookPage.get().forEach(System.out::println);
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 

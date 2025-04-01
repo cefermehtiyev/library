@@ -39,7 +39,6 @@ public enum UserMapper {
 
 
     public UserResponse buildUserResponse(UserEntity userEntity) {
-        System.out.println(userEntity.getUserRole().getRoleName());
 
          switch (userEntity.getUserRole().getRoleName()){
             case  STUDENT ->{

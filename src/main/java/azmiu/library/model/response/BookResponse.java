@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class BookResponse {
     private String author;
     private String publisher;
     private String bookCode;
+    private BigDecimal averageRating;
     private String language;
     private String description;
     private CommonStatus status;

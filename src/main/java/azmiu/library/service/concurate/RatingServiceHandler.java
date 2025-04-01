@@ -17,6 +17,7 @@ import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.RatingDetailsService;
 import azmiu.library.service.abstraction.RatingService;
 import azmiu.library.service.abstraction.UserService;
+import azmiu.library.util.CacheProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class RatingServiceHandler implements RatingService {
     @Override
     @Transactional
     public void insertOrUpdateRating(RatingRequest ratingRequest) {
-        var bookEntity = bookInventoryService.getBookInventoryEntity(ratingRequest.getBookInventoryId());
+        var bookInventoryEntity = bookInventoryService.getBookInventoryEntity(ratingRequest.getBookInventoryId());
         var userEntity = userService.getUserEntity(ratingRequest.getUserId());
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var ratingEntityOptional = ratingRepository.findByBookInventoryIdAndUserId(ratingRequest.getBookInventoryId(), ratingRequest.getUserId());
@@ -51,9 +52,9 @@ public class RatingServiceHandler implements RatingService {
                     return existingRating;
                 })
                 .orElseGet(() -> {
-                    var entity = RATING_MAPPER.buildRatingEntity(bookEntity, userEntity, ratingRequest, status);
-                    ratingDetailsService.insertRatingDetails(RATING_MAPPER.buildRatingDto(entity));
-                    return entity;
+                    var rating = RATING_MAPPER.buildRatingEntity(bookInventoryEntity, userEntity, ratingRequest, status);
+                    ratingDetailsService.insertRatingDetails(RATING_MAPPER.buildRatingDto(rating));
+                    return rating;
                 });
         ratingRepository.save(ratingEntity);
 

@@ -1,5 +1,6 @@
 package azmiu.library.service.concurate;
 
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.RatingDetailsEntity;
 import azmiu.library.dao.repository.RatingDetailsRepository;
 import azmiu.library.exception.ErrorMessage;
@@ -8,12 +9,14 @@ import azmiu.library.model.dto.RatingCacheDto;
 import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.response.RatingDetailsResponse;
+import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.CacheService;
 import azmiu.library.service.abstraction.RatingDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,18 +29,21 @@ import static azmiu.library.mapper.RatingDetailsMapper.RATING_DETAILS_MAPPER;
 public class RatingDetailsServiceHandler implements RatingDetailsService {
     private final CacheService cacheService;
     private final RatingDetailsRepository ratingDetailsRepository;
+    private final BookInventoryService bookInventoryService;
 
     @Async
+    @Transactional
     public void insertRatingDetails(RatingDto ratingDto) {
-        insertOrUpdateRatingDetails(ratingDto, true);
+        insertOrUpdateRatingDetails(ratingDto,true);
     }
 
     @Async
+    @Transactional
     public void updateRatingDetails(RatingDto ratingDto) {
-        insertOrUpdateRatingDetails(ratingDto, false);
+        insertOrUpdateRatingDetails(ratingDto ,false);
     }
 
-    private void insertOrUpdateRatingDetails(RatingDto ratingDto, boolean isInsertOperation) {
+    private void insertOrUpdateRatingDetails(RatingDto ratingDto,boolean isInsertOperation) {
         var cacheData = cacheService.get(ratingDto.getBookInventoryId());
         int updatedVoteCount;
         BigDecimal updatedAverageRating;
@@ -68,9 +74,14 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private void insertOrUpdateRatingDetails(Long bookInventoryId, Integer voteCount, BigDecimal averageRating) {
         var ratingDetails = ratingDetailsRepository.findByBookInventoryId(bookInventoryId)
                 .map(existingRatingDetails -> updateExistingRatingDetails(existingRatingDetails, voteCount, averageRating))
-                .orElseGet(() -> RATING_DETAILS_MAPPER.buildRatingDetailsEntity(bookInventoryId, voteCount, averageRating));
+                .orElseGet(() ->{
+                    var bookInventory = bookInventoryService.getBookInventoryEntity(bookInventoryId);
+                    return RATING_DETAILS_MAPPER.buildRatingDetailsEntity(bookInventory, voteCount, averageRating);
+
+                } );
 
         ratingDetailsRepository.save(ratingDetails);
+
     }
 
     private RatingDetailsEntity updateExistingRatingDetails(RatingDetailsEntity existingRatingDetails, Integer voteCount, BigDecimal averageRating) {

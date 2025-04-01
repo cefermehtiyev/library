@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: rating_details
             columns:
               - column:
-                  name: book_inventory_id
+                  name: id
                   type: BIGINT
                   constraints:
                     primaryKey: true
@@ -22,4 +22,15 @@ databaseChangeLog:
                   type: NUMERIC(3,2)
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: rating details set book
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rating_details
+            baseColumnNames: id
+            constraintName: fk_ratings_details_books
+            referencedTableName: book_inventory
+            referencedColumnNames: id
 

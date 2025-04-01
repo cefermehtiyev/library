@@ -37,7 +37,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Table(name = "books")
 @FieldDefaults(level = PRIVATE)

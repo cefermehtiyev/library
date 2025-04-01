@@ -1,5 +1,6 @@
 package azmiu.library.service.abstraction;
 
+import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.response.RatingDetailsResponse;
 

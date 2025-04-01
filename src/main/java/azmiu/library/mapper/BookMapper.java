@@ -33,6 +33,7 @@ public enum BookMapper {
                 .author(bookEntity.getAuthor())
                 .publisher(bookEntity.getPublisher())
                 .publicationYear(bookEntity.getPublicationYear())
+                .averageRating(bookEntity.getBookInventory().getRatingDetails().getAverageRating())
                 .bookCode(bookEntity.getBookCode())
                 .language(bookEntity.getLanguage())
                 .readCount(bookEntity.getBookInventory().getReadCount())

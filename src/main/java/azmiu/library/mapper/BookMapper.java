@@ -7,6 +7,7 @@ import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 public enum BookMapper {
@@ -27,6 +28,7 @@ public enum BookMapper {
     }
 
     public BookResponse buildBookResponse(BookEntity bookEntity){
+
         return BookResponse.builder()
                 .id(bookEntity.getId())
                 .title(bookEntity.getTitle())
@@ -42,6 +44,7 @@ public enum BookMapper {
                 .description(bookEntity.getDescription())
                 .pages(bookEntity.getPages())
                 .filePath(bookEntity.getBookInventory().getFile().getFilePath())
+                .imagePath(bookEntity.getBookInventory().getImage().getImagePath())
                 .categoryId(bookEntity.getBookInventory().getCategory().getId())
                 .createdAt(bookEntity.getCreatedAt())
                 .updatedAt(bookEntity.getUpdatedAt())

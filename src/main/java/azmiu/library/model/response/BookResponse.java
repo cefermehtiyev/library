@@ -30,6 +30,7 @@ public class BookResponse {
     private Long readCount;
     private Integer pages;
     private String filePath;
+    private String imagePath;
     private InventoryStatus inventoryStatus;
     private Integer publicationYear;
     private Long categoryId;

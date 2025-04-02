@@ -5,6 +5,7 @@ import azmiu.library.dao.entity.RatingDetailsEntity;
 import azmiu.library.dao.repository.RatingDetailsRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.mapper.RatingDetailsMapper;
 import azmiu.library.model.dto.RatingCacheDto;
 import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.enums.CommonStatus;
@@ -30,6 +31,13 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private final CacheService cacheService;
     private final RatingDetailsRepository ratingDetailsRepository;
     private final BookInventoryService bookInventoryService;
+
+
+    public void initializeRatingDetails(BookInventoryEntity bookInventoryEntity){
+        var ratingDetails = RATING_DETAILS_MAPPER.createDefaultRatingDetails();
+        ratingDetails.setBookInventory(bookInventoryEntity);
+        ratingDetailsRepository.save(ratingDetails);
+    }
 
     @Async
     @Transactional
@@ -91,6 +99,9 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
 
 
     private BigDecimal calculateAverageRating(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
+        if(updatedVoteCount == 0){
+            return BigDecimal.valueOf(0.0);
+        }
         log.info("New score :{}", newScore);
         return ratingCacheDto.getAverageRating()
                 .multiply(BigDecimal.valueOf(ratingCacheDto.getVoteCount())).add(BigDecimal.valueOf(newScore))

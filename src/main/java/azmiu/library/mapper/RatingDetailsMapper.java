@@ -9,6 +9,14 @@ import java.math.BigDecimal;
 public enum RatingDetailsMapper {
     RATING_DETAILS_MAPPER;
 
+    public RatingDetailsEntity createDefaultRatingDetails(){
+        return RatingDetailsEntity
+                .builder()
+                .voteCount(0)
+                .averageRating(BigDecimal.valueOf(0.0))
+                .build();
+    }
+
     public RatingDetailsEntity buildRatingDetailsEntity(BookInventoryEntity bookInventory ,Integer voteCount, BigDecimal averageRating){
         return RatingDetailsEntity.builder().bookInventory(bookInventory)
                 .voteCount(voteCount)

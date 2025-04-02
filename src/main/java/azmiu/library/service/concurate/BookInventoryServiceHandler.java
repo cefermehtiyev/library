@@ -22,7 +22,9 @@ import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
+import azmiu.library.service.abstraction.RatingDetailsService;
 import azmiu.library.service.specification.BookSpecification;
+import azmiu.library.util.CacheProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +50,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final SavedBookRepository savedBookRepository;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
+    private final RatingDetailsService ratingDetailsService;
+    private final CacheProvider cacheProvider;
 
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
@@ -58,7 +62,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy CategoryService categoryService,
                                        @Lazy SavedBookRepository savedBookRepository,
                                        @Lazy CommonStatusService commonStatusService,
-                                       @Lazy CommonStatusConfig commonStatusConfig) {
+                                       @Lazy CommonStatusConfig commonStatusConfig,
+                                       @Lazy RatingDetailsService ratingDetailsService,
+                                       @Lazy CacheProvider cacheProvider) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
@@ -68,6 +74,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         this.savedBookRepository = savedBookRepository;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
+        this.ratingDetailsService = ratingDetailsService;
+        this.cacheProvider = cacheProvider;
     }
 
     @Override
@@ -92,6 +100,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
                     fileService.uploadFile(newInventory, file);
                     fileService.uploadImage(newInventory, image);
+
+                    ratingDetailsService.initializeRatingDetails(newInventory);
                     return newInventory;
                 });
 

@@ -12,7 +12,8 @@ public enum RatingMapper {
     RATING_MAPPER;
 
     public RatingEntity buildRatingEntity(BookInventoryEntity bookInventoryEntity, UserEntity userEntity, RatingRequest ratingRequest, CommonStatusEntity status) {
-        return RatingEntity.builder()
+        return RatingEntity
+                .builder()
                 .user(userEntity)
                 .bookInventory(bookInventoryEntity)
                 .commonStatus(status)
@@ -20,8 +21,11 @@ public enum RatingMapper {
                 .build();
     }
 
+
+
     public RatingResponse buildRatingResponse(RatingEntity ratingEntity){
-        return RatingResponse.builder()
+        return RatingResponse
+                .builder()
                 .id(ratingEntity.getId())
                 .userId(ratingEntity.getUser().getId())
                 .bookInventoryId(ratingEntity.getBookInventory().getId())
@@ -35,7 +39,8 @@ public enum RatingMapper {
     }
 
     public RatingDto buildRatingDto(RatingEntity ratingEntity, RatingRequest ratingRequest){
-        return RatingDto.builder()
+        return RatingDto
+                .builder()
                 .userId(ratingEntity.getUser().getId())
                 .bookInventoryId(ratingEntity.getBookInventory().getId())
                 .score(ratingRequest.getScore() - ratingEntity.getScore())
@@ -45,8 +50,33 @@ public enum RatingMapper {
                 .build();
     }
 
+    public RatingDto restoreRatingWithUpdate(RatingEntity ratingEntity, RatingRequest ratingRequest){
+        return RatingDto
+                .builder()
+                .userId(ratingEntity.getUser().getId())
+                .bookInventoryId(ratingEntity.getBookInventory().getId())
+                .score(ratingRequest.getScore() - ratingEntity.getScore())
+                .status(ratingEntity.getCommonStatus().getStatus())
+                .createdAt(ratingEntity.getCreatedAt())
+                .updatedAt(ratingEntity.getUpdatedAt())
+                .build();
+    }
+
+    public RatingDto buildRatingDtoOnRemoved(RatingEntity ratingEntity){
+        return RatingDto
+                .builder()
+                .userId(ratingEntity.getUser().getId())
+                .bookInventoryId(ratingEntity.getBookInventory().getId())
+                .score(-ratingEntity.getScore())
+                .status(ratingEntity.getCommonStatus().getStatus())
+                .createdAt(ratingEntity.getCreatedAt())
+                .updatedAt(ratingEntity.getUpdatedAt())
+                .build();
+    }
+
     public RatingDto buildRatingDto(RatingEntity ratingEntity){
-        return RatingDto.builder()
+        return RatingDto
+                .builder()
                 .userId(ratingEntity.getUser().getId())
                 .bookInventoryId(ratingEntity.getBookInventory().getId())
                 .score(ratingEntity.getScore())

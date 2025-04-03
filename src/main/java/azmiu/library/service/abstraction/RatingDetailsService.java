@@ -7,10 +7,13 @@ import azmiu.library.model.response.RatingDetailsResponse;
 public interface RatingDetailsService {
     void initializeRatingDetails(BookInventoryEntity bookInventoryEntity);
 
-    void updateRatingDetails(RatingDto ratingDto);
-
     void insertRatingDetails(RatingDto ratingDto);
 
+    void updateRatingDetails(RatingDto ratingDto);
+
     RatingDetailsResponse getRatingDetails(Long bookInventoryId);
+
+    void removeRatingDetails(RatingDto ratingDto);
+
 
 }

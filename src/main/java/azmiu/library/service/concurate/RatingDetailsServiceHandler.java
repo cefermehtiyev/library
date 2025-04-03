@@ -5,15 +5,14 @@ import azmiu.library.dao.entity.RatingDetailsEntity;
 import azmiu.library.dao.repository.RatingDetailsRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.RatingDetailsMapper;
 import azmiu.library.model.dto.RatingCacheDto;
 import azmiu.library.model.dto.RatingDetailsDto;
 import azmiu.library.model.dto.RatingDto;
-import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.response.RatingDetailsResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.CacheService;
 import azmiu.library.service.abstraction.RatingDetailsService;
+import jakarta.servlet.ServletConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import static azmiu.library.mapper.RatingDetailsMapper.RATING_DETAILS_MAPPER;
 
@@ -33,6 +32,7 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private final CacheService cacheService;
     private final RatingDetailsRepository ratingDetailsRepository;
     private final BookInventoryService bookInventoryService;
+    private final ServletConfig servletConfig;
 
 
     public void initializeRatingDetails(BookInventoryEntity bookInventoryEntity) {
@@ -42,39 +42,46 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     }
 
     @Async
+    @Override
     @Transactional
     public void insertRatingDetails(RatingDto ratingDto) {
-        computeRatingDetails(ratingDto, ratingCacheDto -> ratingCacheDto.getVoteCount() + 1);
+        computeRatingDetails(ratingDto,
+                (ratingCacheDto, score) -> addScoreToRatingDetails(ratingCacheDto, score, ratingCacheDto.getVoteCount() + 1));
     }
 
     @Async
+    @Override
     @Transactional
     public void updateRatingDetails(RatingDto ratingDto) {
-        computeRatingDetails(ratingDto, ratingCacheDto -> calculateVoteCount(ratingDto, ratingCacheDto));
+        computeRatingDetails(ratingDto,
+                ((ratingCacheDto, score) -> addScoreToRatingDetails(ratingCacheDto, score, ratingCacheDto.getVoteCount())));
     }
 
-    private void computeRatingDetails(RatingDto ratingDto, Function<RatingCacheDto, Integer> voteCountCalculator) {
+    @Async
+    @Override
+    @Transactional
+    public void removeRatingDetails(RatingDto ratingDto) {
+        computeRatingDetails(ratingDto,
+                ((ratingCacheDto, score) -> subtractScoreFromRatingDetails(ratingCacheDto, score, ratingCacheDto.getVoteCount() - 1)));
+
+    }
+
+    private void computeRatingDetails(RatingDto ratingDto,
+                                      BiFunction<RatingCacheDto, Integer, RatingDetailsDto> averageRatingCalculator) {
         var cacheData = cacheService.get(ratingDto.getBookInventoryId());
-        var ratingDetailsDto = RATING_DETAILS_MAPPER.buildRatingDetailsDto(ratingDto);
+        RatingDetailsDto ratingDetailsDto;
 
         if (cacheData != null) {
-            var updatedVoteCount = voteCountCalculator.apply(cacheData);
-            var averageRating = calculateAverageRating(cacheData, ratingDto.getScore(), updatedVoteCount);
-            ratingDetailsDto.setVoteCount(updatedVoteCount);
-            ratingDetailsDto.setAverageRating(averageRating);
+            ratingDetailsDto = averageRatingCalculator.apply(cacheData, ratingDto.getScore());
+        } else {
+            ratingDetailsDto = RATING_DETAILS_MAPPER.initializeRatingDetailsDto(ratingDto);
         }
+        System.out.println(ratingDetailsDto);
 
         cacheService.save(ratingDto.getBookInventoryId(), ratingDetailsDto.getVoteCount(), ratingDetailsDto.getAverageRating());
         insertOrUpdateRatingDetails(ratingDto.getBookInventoryId(), ratingDetailsDto.getVoteCount(), ratingDetailsDto.getAverageRating());
     }
 
-    private Integer calculateVoteCount(RatingDto ratingDto, RatingCacheDto ratingCacheDto) {
-        if (ratingDto.getStatus().equals(CommonStatus.REMOVED)) {
-            return ratingCacheDto.getVoteCount() - 1;
-        } else {
-            return ratingCacheDto.getVoteCount();
-        }
-    }
 
     private void insertOrUpdateRatingDetails(Long bookInventoryId, Integer voteCount, BigDecimal averageRating) {
         var ratingDetails = ratingDetailsRepository.findByBookInventoryId(bookInventoryId)
@@ -95,16 +102,35 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     }
 
 
-    private BigDecimal calculateAverageRating(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
+    private RatingDetailsDto addScoreToRatingDetails(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
+        BigDecimal averageRating;
         if (updatedVoteCount == 0) {
-            return BigDecimal.valueOf(0.0);
+            averageRating = BigDecimal.valueOf(0.0);
+        } else {
+            averageRating = addScoreToAverage(ratingCacheDto, newScore, updatedVoteCount);
         }
-        log.info("New score :{}", newScore);
+
+        return RATING_DETAILS_MAPPER.buildRatingDetailsDto(updatedVoteCount, averageRating);
+    }
+
+    private RatingDetailsDto subtractScoreFromRatingDetails(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
+        var averageRating = subtractScoreFromAverage(ratingCacheDto, newScore, updatedVoteCount);
+        return RATING_DETAILS_MAPPER.buildRatingDetailsDto(updatedVoteCount, averageRating);
+    }
+
+    private BigDecimal addScoreToAverage(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
         return ratingCacheDto.getAverageRating()
-                .multiply(BigDecimal.valueOf(ratingCacheDto.getVoteCount())).add(BigDecimal.valueOf(newScore))
+                .multiply(BigDecimal.valueOf(ratingCacheDto.getVoteCount()))
+                .add(BigDecimal.valueOf(newScore))
                 .divide(BigDecimal.valueOf(updatedVoteCount), 1, RoundingMode.UP);
     }
 
+    private BigDecimal subtractScoreFromAverage(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
+        return ratingCacheDto.getAverageRating()
+                .multiply(BigDecimal.valueOf(ratingCacheDto.getVoteCount()))
+                .subtract(BigDecimal.valueOf(newScore))
+                .divide(BigDecimal.valueOf(updatedVoteCount), 1, RoundingMode.UP);
+    }
 
     @Override
     public RatingDetailsResponse getRatingDetails(Long bookInventoryId) {

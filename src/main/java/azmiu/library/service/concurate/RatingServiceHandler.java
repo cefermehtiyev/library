@@ -50,13 +50,12 @@ public class RatingServiceHandler implements RatingService {
                     if (existingRating.getCommonStatus().getStatus().equals(CommonStatus.REMOVED)) {
                         existingRating.setCommonStatus(status);
                         ratingDetailsService.insertRatingDetails(RATING_MAPPER.buildRatingDto(existingRating));
-                        return existingRating;
                     } else {
                         ratingDetailsService.updateRatingDetails(RATING_MAPPER.buildRatingDto(existingRating, ratingRequest));
                         updateExistingRating(existingRating, ratingRequest);
                         existingRating.setCommonStatus(status);
-                        return existingRating;
                     }
+                    return existingRating;
                 })
                 .orElseGet(() -> {
                     var rating = RATING_MAPPER.buildRatingEntity(bookInventoryEntity, userEntity, ratingRequest, status);
@@ -78,7 +77,7 @@ public class RatingServiceHandler implements RatingService {
         var rating = findByBookInventoryIdAndUserId(bookInventoryId, userId);
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
         rating.setCommonStatus(status);
-        ratingDetailsService.updateRatingDetails(RATING_MAPPER.buildRatingDtoOnRemoved(rating));
+        ratingDetailsService.removeRatingDetails(RATING_MAPPER.buildRatingDto(rating));
         ratingRepository.save(rating);
     }
 

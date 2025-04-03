@@ -26,13 +26,26 @@ public enum RatingDetailsMapper {
                 .build();
     }
 
-    public RatingDetailsDto buildRatingDetailsDto(RatingDto ratingDto){
+    public RatingDetailsDto initializeRatingDetailsDto(RatingDto ratingDto){
         return RatingDetailsDto
                 .builder()
-                .bookInventoryId(ratingDto.getBookInventoryId())
-                .voteCount(ratingDto.getScore())
-                .averageRating(BigDecimal.valueOf(0.0))
+                .voteCount(1)
+                .averageRating(BigDecimal.valueOf(ratingDto.getScore()))
                 .build();
+    }
+
+    public RatingDetailsDto buildRatingDetailsDto(Integer voteCount, BigDecimal averageRating ){
+        return RatingDetailsDto
+                .builder()
+                .voteCount(voteCount)
+                .averageRating(averageRating)
+                .build();
+    }
+
+    public void updateRatingDetailsDto(RatingDetailsDto ratingDetailsDto, Integer voteCount, BigDecimal averageRating){
+        ratingDetailsDto.setVoteCount(voteCount);
+        ratingDetailsDto.setAverageRating(averageRating);
+
     }
 
     public void updateRatingDetails(RatingDetailsEntity ratingDetailsEntity, Integer voteCount, BigDecimal averageRating ){

@@ -116,7 +116,7 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public PageableResponse getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
+    public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
         Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortBy);
 
@@ -127,32 +127,7 @@ public class BookServiceHandler implements BookService {
         return BOOK_MAPPER.pageableBookResponse(bookPage);
     }
 
-    @Override
-    public PageableResponse<BookResponse> getAllBooksUser(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
-        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
 
-        List<BookEntity> distinctBooks = bookRepository.findAll(new BookSpecification(bookCriteria)).stream()
-                .collect(Collectors.toMap(BookEntity::getTitle, Function.identity(), (existing, replacement) -> existing))
-                .values()
-                .stream()
-                .toList();;
-
-        long totalElements = distinctBooks.size();
-
-        int pageSize = pageCriteria.getCount();
-        int currentPage = pageCriteria.getPage();
-
-        int fromIndex = currentPage * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, (int) totalElements);
-
-        List<BookEntity> pagedBooks = distinctBooks.subList(fromIndex, toIndex);
-
-        Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
-        Page<BookEntity> distinctBookPage = new PageImpl<>(pagedBooks, pageable, totalElements);
-
-        return BOOK_MAPPER.pageableBookResponse(distinctBookPage);
-    }
 
 
 

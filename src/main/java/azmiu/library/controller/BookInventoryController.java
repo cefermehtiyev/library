@@ -5,6 +5,7 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.repository.FileRepository;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import lombok.RequiredArgsConstructor;
@@ -43,15 +44,18 @@ public class BookInventoryController {
     }
 
 
-    @GetMapping("/sorted")
-    public PageableResponse getBooksSortedByAddedDate(@RequestParam(defaultValue = "readCount") String sortBy,
-                                                      @RequestParam(defaultValue = "asc") String order,
-                                                      PageCriteria pageCriteria) {
-        return bookInventoryService.getBooksSorted(sortBy, order ,pageCriteria);
+
+    @GetMapping
+    public PageableResponse<BookResponse> getBooksSorted(@RequestParam(defaultValue = "readCount") String sortBy,
+                                                         @RequestParam(defaultValue = "asc") String order,
+                                                         PageCriteria pageCriteria,
+                                                         BookCriteria bookCriteria) {
+        return bookInventoryService.getAllBooks(sortBy, order, pageCriteria, bookCriteria);
     }
 
+
     @GetMapping("/{inventoryId}")
-    public BookInventoryResponse getBookInventory(@PathVariable Long inventoryId){
+    public BookInventoryResponse getBookInventory(@PathVariable Long inventoryId) {
         return bookInventoryService.getBookInventory(inventoryId);
     }
 

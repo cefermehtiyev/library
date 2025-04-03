@@ -1,10 +1,14 @@
 package azmiu.library.mapper;
 
+import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.entity.InventoryStatusEntity;
 import azmiu.library.model.response.BookInventoryResponse;
+import azmiu.library.model.response.BookResponse;
+import azmiu.library.model.response.PageableResponse;
+import org.springframework.data.domain.Page;
 
 public enum BookInventoryMapper {
     BOOK_INVENTORY_MAPPER;
@@ -39,6 +43,24 @@ public enum BookInventoryMapper {
          bookInventoryEntity.setPublicationYear(publicationYear);
          bookInventoryEntity.setCategory(categoryEntity);
     }
+
+    private BookResponse buildBookResponse(BookInventoryEntity bookInventoryEntity){
+        var bookEntity = bookInventoryEntity.getBooks().getFirst();
+        return BookMapper.BOOK_MAPPER.buildBookResponse(bookEntity);
+
+    }
+
+    public PageableResponse<BookResponse> pageableBookInventoryResponse(Page<BookInventoryEntity> inventoryEntityPage) {
+        return PageableResponse.<BookResponse>builder()
+                .list((inventoryEntityPage.map(this::buildBookResponse).toList()))
+                .currentPageNumber(inventoryEntityPage.getNumber())
+                .totalPages(inventoryEntityPage.getTotalPages())
+                .totalElements(inventoryEntityPage.getTotalElements())
+                .numberOfElements(inventoryEntityPage.getNumberOfElements())
+                .hasNextPage(inventoryEntityPage.getNumber() < (inventoryEntityPage.getTotalPages() - 1))
+                .build();
+    }
+
 
     public BookInventoryEntity increaseBookInventoryQuantities(BookInventoryEntity bookInventoryEntity) {
         bookInventoryEntity.setReservedQuantity(bookInventoryEntity.getReservedQuantity() + 1);

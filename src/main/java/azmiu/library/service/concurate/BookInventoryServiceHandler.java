@@ -13,8 +13,11 @@ import azmiu.library.dao.repository.SavedBookRepository;
 import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.mapper.BookInventoryMapper;
+import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
@@ -23,6 +26,7 @@ import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import azmiu.library.service.abstraction.RatingDetailsService;
+import azmiu.library.service.specification.BookInventorySpecification;
 import azmiu.library.service.specification.BookSpecification;
 import azmiu.library.util.CacheProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -157,15 +161,17 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-        @Override
-    public PageableResponse getBooksSorted(String sortBy, String order, PageCriteria pageCriteria) {
+    @Override
+    public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria,BookCriteria bookCriteria){
+        Sort.Direction direction = "desc".equals(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction,sortBy);
 
-        var page = bookInventoryRepository.findDistinctBooks(sortBy, order,
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
+        var bookPage = bookInventoryRepository.findAll(
+                new BookInventorySpecification(bookCriteria),
+                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount(),sort)
         );
 
-        return BOOK_MAPPER.pageableBookResponse(page);
-
+        return BOOK_INVENTORY_MAPPER.pageableBookInventoryResponse(bookPage);
     }
 
 

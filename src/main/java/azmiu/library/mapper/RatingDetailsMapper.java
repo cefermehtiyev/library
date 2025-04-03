@@ -2,6 +2,8 @@ package azmiu.library.mapper;
 
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.RatingDetailsEntity;
+import azmiu.library.model.dto.RatingDetailsDto;
+import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.response.RatingDetailsResponse;
 
 import java.math.BigDecimal;
@@ -21,6 +23,15 @@ public enum RatingDetailsMapper {
         return RatingDetailsEntity.builder().bookInventory(bookInventory)
                 .voteCount(voteCount)
                 .averageRating(averageRating)
+                .build();
+    }
+
+    public RatingDetailsDto buildRatingDetailsDto(RatingDto ratingDto){
+        return RatingDetailsDto
+                .builder()
+                .bookInventoryId(ratingDto.getBookInventoryId())
+                .voteCount(ratingDto.getScore())
+                .averageRating(BigDecimal.valueOf(0.0))
                 .build();
     }
 

@@ -13,7 +13,6 @@ public final class CriteriaConstants {
     public static final String COURSE = "course";
     public static final String DEPARTMENT = "department";
     public static final String POSITION = "position";
-    public static final String AUTHOR_NAME = "name";
     public static final String AUTHOR = "author";
     public static final String TITLE = "title";
     public static final String PUBLICATION_YEAR = "publicationYear";

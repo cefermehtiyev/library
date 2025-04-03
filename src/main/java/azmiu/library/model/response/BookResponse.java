@@ -28,6 +28,8 @@ public class BookResponse {
     private String description;
     private CommonStatus status;
     private Long readCount;
+    private Integer availableCount;
+    private Integer reservedCount;
     private Integer pages;
     private String filePath;
     private String imagePath;

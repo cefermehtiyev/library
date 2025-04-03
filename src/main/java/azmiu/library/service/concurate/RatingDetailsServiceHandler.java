@@ -7,6 +7,7 @@ import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.mapper.RatingDetailsMapper;
 import azmiu.library.model.dto.RatingCacheDto;
+import azmiu.library.model.dto.RatingDetailsDto;
 import azmiu.library.model.dto.RatingDto;
 import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.response.RatingDetailsResponse;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.function.Function;
 
 import static azmiu.library.mapper.RatingDetailsMapper.RATING_DETAILS_MAPPER;
 
@@ -33,7 +35,7 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private final BookInventoryService bookInventoryService;
 
 
-    public void initializeRatingDetails(BookInventoryEntity bookInventoryEntity){
+    public void initializeRatingDetails(BookInventoryEntity bookInventoryEntity) {
         var ratingDetails = RATING_DETAILS_MAPPER.createDefaultRatingDetails();
         ratingDetails.setBookInventory(bookInventoryEntity);
         ratingDetailsRepository.save(ratingDetails);
@@ -42,33 +44,28 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     @Async
     @Transactional
     public void insertRatingDetails(RatingDto ratingDto) {
-        insertOrUpdateRatingDetails(ratingDto,true);
+        computeRatingDetails(ratingDto, ratingCacheDto -> ratingCacheDto.getVoteCount() + 1);
     }
 
     @Async
     @Transactional
     public void updateRatingDetails(RatingDto ratingDto) {
-        insertOrUpdateRatingDetails(ratingDto ,false);
+        computeRatingDetails(ratingDto, ratingCacheDto -> calculateVoteCount(ratingDto, ratingCacheDto));
     }
 
-    private void insertOrUpdateRatingDetails(RatingDto ratingDto,boolean isInsertOperation) {
+    private void computeRatingDetails(RatingDto ratingDto, Function<RatingCacheDto, Integer> voteCountCalculator) {
         var cacheData = cacheService.get(ratingDto.getBookInventoryId());
-        int updatedVoteCount;
-        BigDecimal updatedAverageRating;
+        var ratingDetailsDto = RATING_DETAILS_MAPPER.buildRatingDetailsDto(ratingDto);
 
         if (cacheData != null) {
-            updatedVoteCount = isInsertOperation ? cacheData.getVoteCount() + 1 : calculateVoteCount(ratingDto, cacheData);
-            updatedAverageRating = calculateAverageRating(cacheData, ratingDto.getScore(), updatedVoteCount);
-
-        } else {
-            log.info("Cache miss for bookInventory ID:{}", ratingDto.getBookInventoryId());
-            updatedVoteCount = 1;
-            updatedAverageRating = BigDecimal.valueOf(ratingDto.getScore());
+            var updatedVoteCount = voteCountCalculator.apply(cacheData);
+            var averageRating = calculateAverageRating(cacheData, ratingDto.getScore(), updatedVoteCount);
+            ratingDetailsDto.setVoteCount(updatedVoteCount);
+            ratingDetailsDto.setAverageRating(averageRating);
         }
 
-        cacheService.save(ratingDto.getBookInventoryId(), updatedVoteCount, updatedAverageRating);
-        insertOrUpdateRatingDetails(ratingDto.getBookInventoryId(), updatedVoteCount, updatedAverageRating);
-
+        cacheService.save(ratingDto.getBookInventoryId(), ratingDetailsDto.getVoteCount(), ratingDetailsDto.getAverageRating());
+        insertOrUpdateRatingDetails(ratingDto.getBookInventoryId(), ratingDetailsDto.getVoteCount(), ratingDetailsDto.getAverageRating());
     }
 
     private Integer calculateVoteCount(RatingDto ratingDto, RatingCacheDto ratingCacheDto) {
@@ -82,11 +79,11 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private void insertOrUpdateRatingDetails(Long bookInventoryId, Integer voteCount, BigDecimal averageRating) {
         var ratingDetails = ratingDetailsRepository.findByBookInventoryId(bookInventoryId)
                 .map(existingRatingDetails -> updateExistingRatingDetails(existingRatingDetails, voteCount, averageRating))
-                .orElseGet(() ->{
+                .orElseGet(() -> {
                     var bookInventory = bookInventoryService.getBookInventoryEntity(bookInventoryId);
                     return RATING_DETAILS_MAPPER.buildRatingDetailsEntity(bookInventory, voteCount, averageRating);
 
-                } );
+                });
 
         ratingDetailsRepository.save(ratingDetails);
 
@@ -99,7 +96,7 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
 
 
     private BigDecimal calculateAverageRating(RatingCacheDto ratingCacheDto, Integer newScore, Integer updatedVoteCount) {
-        if(updatedVoteCount == 0){
+        if (updatedVoteCount == 0) {
             return BigDecimal.valueOf(0.0);
         }
         log.info("New score :{}", newScore);
@@ -114,8 +111,8 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
         return RATING_DETAILS_MAPPER.buildRatingDetailsResponse(findByBookInventoryId(bookInventoryId));
     }
 
-    private RatingDetailsEntity findByBookInventoryId(Long bookInventoryId){
-        return ratingDetailsRepository.findByBookInventoryId( bookInventoryId)
+    private RatingDetailsEntity findByBookInventoryId(Long bookInventoryId) {
+        return ratingDetailsRepository.findByBookInventoryId(bookInventoryId)
                 .orElseThrow(
                         () -> new NotFoundException(ErrorMessage.RATING_DETAILS_NOT_FOUND.getMessage())
                 );

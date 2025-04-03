@@ -39,6 +39,8 @@ public enum BookMapper {
                 .bookCode(bookEntity.getBookCode())
                 .language(bookEntity.getLanguage())
                 .readCount(bookEntity.getBookInventory().getReadCount())
+                .reservedCount(bookEntity.getBookInventory().getReservedQuantity())
+                .availableCount(bookEntity.getBookInventory().getAvailableQuantity())
                 .status(bookEntity.getCommonStatus().getStatus())
                 .inventoryStatus(bookEntity.getBookInventory().getInventoryStatus().getStatus())
                 .description(bookEntity.getDescription())

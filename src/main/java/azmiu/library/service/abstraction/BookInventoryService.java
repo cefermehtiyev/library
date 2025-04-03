@@ -6,6 +6,7 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +25,8 @@ public interface BookInventoryService {
 
     void increaseReadCount(Long inventoryId);
 
-    PageableResponse getBooksSorted(String sortBy, String order, PageCriteria pageCriteria);
+
+    PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria);
 
     void decreaseBookQuantity(BookEntity bookEntity);
 }

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-borrow_statuses-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: borrow_statuses
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true

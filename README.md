@@ -15,7 +15,7 @@ $ java -jar change.my.name.jar
 ### Tech stack
 
 1. Spring Boot
-2. Java 17
+2. Java 21
 
 ### Swagger link
 

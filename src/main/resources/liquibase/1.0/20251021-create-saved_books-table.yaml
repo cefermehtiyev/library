@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ratings-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: saved_books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: book_inventory_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: saved user
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: saved_books
+            baseColumnNames: user_id
+            constraintName: fk_saved_books_user
+            referencedTableName: users
+            referencedColumnNames: id
+
+  - changeSet:
+      id: saved bookInventory
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: saved_books
+            baseColumnNames: book_inventory_id
+            constraintName: fk_saved_books_book_Inventory
+            referencedTableName: book_inventory
+            referencedColumnNames: id

@@ -146,11 +146,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         determineInventoryStatus(bookInventoryEntity);
         log.info("Book reserved count :{}", bookInventoryEntity.getReservedQuantity());
         if (bookInventoryEntity.getReservedQuantity() == 0) {
-            var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-            bookInventoryEntity.setCommonStatus(status);
-            log.info("Book Deleted");
+            bookInventoryRepository.delete(bookInventoryEntity);
             savedBookRepository.deleteAll(bookInventoryEntity.getSavedBooks());
-            bookInventoryRepository.save(bookInventoryEntity);
+            log.info("Book Deleted");
         }
     }
 

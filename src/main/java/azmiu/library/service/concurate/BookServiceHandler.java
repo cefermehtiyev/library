@@ -135,8 +135,7 @@ public class BookServiceHandler implements BookService {
     @Transactional
     public void deleteBook(Long id) {
         var bookEntity = findById(id);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
-        bookEntity.setCommonStatus(status);
+        bookRepository.delete(bookEntity);
         bookInventoryService.updateCountsOnBookDeleted(bookEntity.getBookInventory());
     }
 

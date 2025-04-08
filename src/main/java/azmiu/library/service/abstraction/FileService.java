@@ -1,10 +1,8 @@
 package azmiu.library.service.abstraction;
 
-import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
@@ -12,6 +10,8 @@ public interface FileService {
     void uploadImage(BookInventoryEntity book, MultipartFile file);
     ResponseEntity<InputStreamResource> downloadFile( Long id);
     ResponseEntity<InputStreamResource> downloadImage( Long id);
+    void deleteFile(Long fileId);
+    void  deleteImage(Long imageId);
 
 
 

@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface BookBorrowHistoryRepository extends JpaRepository<BookBorrowingEntity,Long> {
     Optional<BookBorrowingEntity> findByUserIdAndBookId(Long userId, Long bookId);
+    boolean existsByBookId(Long id);
+
     @Query("SELECT b FROM BookBorrowingEntity b WHERE b.book.id = :bookId AND b.borrowStatus.status = 'PENDING'")
     Optional<BookBorrowingEntity> findByBookIdAndStatusPending(Long bookId);
 }

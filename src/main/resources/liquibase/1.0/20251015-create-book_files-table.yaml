@@ -9,9 +9,15 @@ databaseChangeLog:
               - column:
                   name: id
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
+              - column:
+                  name: inventory_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
               - column:
                   name: file_path
                   type: VARCHAR
@@ -25,10 +31,7 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: book_files
-            baseColumnNames: id
-            constraintName: fk_book_file_book_files
+            baseColumnNames: inventory_id
+            constraintName: fk_book_file_book_inventory
             referencedTableName: book_inventory
             referencedColumnNames: id
-
-
-

@@ -8,11 +8,13 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.repository.BookRepository;
+import azmiu.library.exception.BookCurrentlyBorrowedException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
+import azmiu.library.service.abstraction.BookBorrowingService;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CommonStatusService;
@@ -44,15 +46,19 @@ public class BookServiceHandler implements BookService {
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
     private final BookInventoryService bookInventoryService;
+    private final BookBorrowingService bookBorrowingService;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CommonStatusService commonStatusService,
                               @Lazy CommonStatusConfig commonStatusConfig,
-                              @Lazy BookInventoryService bookInventoryService) {
+                              @Lazy BookInventoryService bookInventoryService,
+                              @Lazy BookBorrowingService bookBorrowingService
+    ) {
         this.bookRepository = bookRepository;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
         this.bookInventoryService = bookInventoryService;
+        this.bookBorrowingService = bookBorrowingService;
     }
 
     @Override
@@ -129,14 +135,16 @@ public class BookServiceHandler implements BookService {
 
 
 
-
-
     @Override
     @Transactional
     public void deleteBook(Long id) {
         var bookEntity = findById(id);
+        var bookInventory = bookEntity.getBookInventory();
+        if (bookBorrowingService.isBookBorrowed(id)){
+            throw new BookCurrentlyBorrowedException(ErrorMessage.BOOK_CURRENTLY_BORROWED_EXCEPTION.getMessage());
+        }
         bookRepository.delete(bookEntity);
-        bookInventoryService.updateCountsOnBookDeleted(bookEntity.getBookInventory());
+        bookInventoryService.updateCountsOnBookDeleted(bookInventory);
     }
 
     public BookEntity findById(Long id) {

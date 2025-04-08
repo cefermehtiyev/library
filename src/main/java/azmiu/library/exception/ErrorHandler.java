@@ -48,33 +48,40 @@ public class ErrorHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(NOT_FOUND)
     public ErrorResponse handle(NotFoundException ex) {
-        log.info("NotFoundException: ", ex);
+        log.error("NotFoundException: ", ex);
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(InvalidFileURLException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorResponse handle(InvalidFileURLException ex){
-        log.info("InvalidFileURLException: ",ex);
+        log.error("InvalidFileURLException: ",ex);
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(ResourceHasRelationsException.class)
     @ResponseStatus(CONFLICT)
     public ErrorResponse handle(ResourceHasRelationsException ex){
-        log.info("ResourceHasRelationsException: ",ex);
+        log.error("ResourceHasRelationsException: ",ex);
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorResponse handle(MethodArgumentNotValidException ex) {
-        log.info("MethodArgumentNotValidException: ", ex);
+        log.error("MethodArgumentNotValidException: ", ex);
         return new ErrorResponse(
                 Optional.ofNullable(ex.getFieldError())
                         .map(FieldError::getDefaultMessage)
                         .orElse("Validation error occurred")
         );
+    }
+
+    @ExceptionHandler(BookCurrentlyBorrowedException.class)
+    @ResponseStatus(CONFLICT)
+    public ErrorResponse handle(BookCurrentlyBorrowedException ex){
+        log.error("BookCurrentlyBorrowedException: ",ex);
+        return new ErrorResponse(ex.getMessage());
     }
 
 

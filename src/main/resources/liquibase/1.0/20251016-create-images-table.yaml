@@ -9,8 +9,14 @@ databaseChangeLog:
               - column:
                   name: id
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: BIGINT
+                  constraints:
                     nullable: false
               - column:
                   name: image_path
@@ -30,7 +36,7 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: images
-            baseColumnNames: id
+            baseColumnNames: inventory_id
             constraintName: fk_image_book_images
             referencedTableName: book_inventory
             referencedColumnNames: id

@@ -69,6 +69,11 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
         bookInventoryService.increaseReadCount(book.getBookInventory().getId());
     }
 
+    @Override
+    public boolean isBookBorrowed(Long bookId) {
+        return bookBorrowHistoryRepository.existsByBookId(bookId);
+    }
+
 
     public List<BookBorrowHistoryResponse> getBorrowedBooksByStudent(Long userId) {
         var user = userService.getUserEntity(userId);

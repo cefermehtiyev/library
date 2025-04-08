@@ -60,21 +60,21 @@ public class BookInventoryEntity {
 
     @OneToOne(
             mappedBy = "bookInventory",
-            cascade = {PERSIST, MERGE}
+            cascade = {PERSIST, MERGE,REMOVE}
     )
     @ToString.Exclude
     RatingDetailsEntity ratingDetails;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST},
+            cascade = {MERGE, PERSIST,REMOVE},
             mappedBy = "bookInventory"
     )
     List<RatingEntity> ratings;
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST},
+            cascade = {MERGE, PERSIST,REMOVE},
             mappedBy = "bookInventory"
     )
     List<BookEntity> books;
@@ -97,7 +97,8 @@ public class BookInventoryEntity {
 
     @OneToOne(
             mappedBy = "bookInventory",
-            cascade = {MERGE, PERSIST,REMOVE}
+            cascade = {MERGE, PERSIST,REMOVE},
+            fetch = LAZY
     )
     @ToString.Exclude
     FileEntity file;
@@ -112,7 +113,7 @@ public class BookInventoryEntity {
     CategoryEntity category;
 
     @OneToMany(
-            cascade = {MERGE,PERSIST},
+            cascade = {MERGE,PERSIST,REMOVE},
             fetch = LAZY,
             mappedBy = "bookInventory"
     )

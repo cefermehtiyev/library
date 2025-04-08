@@ -1,6 +1,8 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.dao.entity.BookInventoryEntity;
+import azmiu.library.dao.entity.FileEntity;
+import azmiu.library.dao.entity.ImageEntity;
 import azmiu.library.dao.repository.FileRepository;
 import azmiu.library.dao.repository.ImageRepository;
 import azmiu.library.exception.ErrorMessage;
@@ -10,6 +12,7 @@ import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.FileService;
 import azmiu.library.util.FileStorageUtil;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -27,8 +31,8 @@ import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Objects;
 
+import static azmiu.library.exception.ErrorMessage.FILE_NOT_FOUND;
 import static azmiu.library.mapper.BookFileMapper.FILE_MAPPER;
 import static azmiu.library.mapper.ImageMapper.IMAGE_MAPPER;
 
@@ -38,7 +42,7 @@ import static azmiu.library.mapper.ImageMapper.IMAGE_MAPPER;
 @Service
 public class FileServiceHandler implements FileService {
     private final BookInventoryService bookInventoryService;
-    private final FileRepository fIleRepository;
+    private final FileRepository fileRepository;
     private final ImageRepository imageRepository;
 
     @Override
@@ -46,7 +50,7 @@ public class FileServiceHandler implements FileService {
         try {
             if (file.isEmpty()) {
                 var fileEntity = FILE_MAPPER.buildFileEntity(book, null, null);
-                fIleRepository.save(fileEntity);
+                fileRepository.save(fileEntity);
             } else {
                 String fileName = file.getOriginalFilename();
                 byte[] fileData = file.getBytes();
@@ -55,7 +59,7 @@ public class FileServiceHandler implements FileService {
 
                 var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
                 var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
-                fIleRepository.save(fileEntity);
+                fileRepository.save(fileEntity);
             }
 
 
@@ -104,6 +108,32 @@ public class FileServiceHandler implements FileService {
         return getFileResource(imagePath, true);
     }
 
+    @Override
+    public void deleteFile(Long id) {
+        var fileEntity = findFileById(id);
+        fileRepository.delete(fileEntity);
+    }
+
+
+
+    @Override
+    public void deleteImage(Long imageId) {
+        imageRepository.delete(findImageById(imageId));
+    }
+
+
+    private FileEntity findFileById(Long fileId){
+        return fileRepository.findById(fileId).orElseThrow(
+                () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
+        );
+    }
+
+    private ImageEntity findImageById(Long imageId){
+        return imageRepository.findById(imageId).orElseThrow(
+                () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
+        );
+    }
+
 
     private ResponseEntity<InputStreamResource> getFileResource(String filePath, boolean isImage) {
         try {
@@ -114,7 +144,7 @@ public class FileServiceHandler implements FileService {
                 if (isImage) {
                     throw new NotFoundException(ErrorMessage.IMAGE_NOT_FOUND.getMessage());
                 } else {
-                    throw new NotFoundException(ErrorMessage.FILE_NOT_FOUND.getMessage());
+                    throw new NotFoundException(FILE_NOT_FOUND.getMessage());
                 }
             }
 
@@ -141,7 +171,7 @@ public class FileServiceHandler implements FileService {
             if (isImage) {
                 throw new NotFoundException(ErrorMessage.IMAGE_NOT_FOUND.getMessage());
             } else {
-                throw new NotFoundException(ErrorMessage.FILE_NOT_FOUND.getMessage());
+                throw new NotFoundException(FILE_NOT_FOUND.getMessage());
             }
         }
     }

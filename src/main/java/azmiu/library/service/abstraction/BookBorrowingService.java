@@ -15,5 +15,7 @@ public interface BookBorrowingService {
 
     void borrowBook(BorrowRequest borrowRequest);
 
+    boolean isBookBorrowed(Long bookId);
+
     List<BookBorrowHistoryResponse> getBorrowedBooksByStudent(Long studentId);
 }

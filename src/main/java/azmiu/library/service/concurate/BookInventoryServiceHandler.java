@@ -140,14 +140,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
     }
-
+    @Override
+    @Transactional
     public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity) {
         BOOK_INVENTORY_MAPPER.updateCountsOnBookDeleted(bookInventoryEntity);
         determineInventoryStatus(bookInventoryEntity);
         log.info("Book reserved count :{}", bookInventoryEntity.getReservedQuantity());
         if (bookInventoryEntity.getReservedQuantity() == 0) {
             bookInventoryRepository.delete(bookInventoryEntity);
-            savedBookRepository.deleteAll(bookInventoryEntity.getSavedBooks());
             log.info("Book Deleted");
         }
     }

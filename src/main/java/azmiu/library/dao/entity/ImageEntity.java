@@ -1,5 +1,8 @@
 package azmiu.library.dao.entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +20,10 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
 @Entity
@@ -30,14 +37,14 @@ import static lombok.AccessLevel.PRIVATE;
 public class ImageEntity {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     Long id;
     String imagePath;
     String imageType;
     BigDecimal imageSize;
 
     @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "inventory_id")
     @ToString.Exclude
     BookInventoryEntity bookInventory;
 

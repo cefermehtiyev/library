@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CategoryResponse {
+    private Long id;
     private String bookCategory;
     private CommonStatus status;
 }

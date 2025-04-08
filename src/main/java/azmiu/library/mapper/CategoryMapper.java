@@ -17,6 +17,7 @@ public enum CategoryMapper {
 
     public CategoryResponse buildCategoryResponse(CategoryEntity categoryEntity){
         return CategoryResponse.builder()
+                .id(categoryEntity.getId())
                 .bookCategory(categoryEntity.getBookCategory())
                 .status(categoryEntity.getCommonStatus().getStatus())
                 .build();

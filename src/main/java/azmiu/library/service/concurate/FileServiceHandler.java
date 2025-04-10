@@ -47,53 +47,52 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public void uploadFile(BookInventoryEntity book, MultipartFile file) {
+        if (file.isEmpty()) {
+            var fileEntity = FILE_MAPPER.buildFileEntity(book, null, null);
+            fileRepository.save(fileEntity);
+        } else {
+            fileRepository.save(saveUploadedFile(book, file));
+        }
+    }
+
+    private FileEntity saveUploadedFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
         try {
-            if (file.isEmpty()) {
-                var fileEntity = FILE_MAPPER.buildFileEntity(book, null, null);
-                fileRepository.save(fileEntity);
-            } else {
-                String fileName = file.getOriginalFilename();
-                byte[] fileData = file.getBytes();
-                var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-
-
-                var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
-                var fileEntity = FILE_MAPPER.buildFileEntity(book, filePath, fileSize);
-                fileRepository.save(fileEntity);
-            }
-
-
-        } catch (IOException e) {
+            String fileName = file.getOriginalFilename();
+            byte[] fileData = file.getBytes();
+            var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+            var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
+            return FILE_MAPPER.buildFileEntity(bookInventoryEntity, filePath, fileSize);
+        } catch (IOException ex) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
+        }
+    }
+
+    @Override
+    public void uploadImage(BookInventoryEntity book, MultipartFile image) {
+        if (image.isEmpty()) {
+            var imageEntity = IMAGE_MAPPER.buildImageEntity(book, null, null, null);
+            imageRepository.save(imageEntity);
+        } else {
+
+            imageRepository.save(saveUploadedImage(book, image));
         }
 
 
     }
 
-    @Override
-    public void uploadImage(BookInventoryEntity book, MultipartFile file) {
+    private ImageEntity saveUploadedImage(BookInventoryEntity book, MultipartFile image) {
         try {
-            if (file.isEmpty()) {
-                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, null, null, null);
-                imageRepository.save(imageEntity);
+            String fileName = image.getOriginalFilename();
+            byte[] fileData = image.getBytes();
+            var fileSize = BigDecimal.valueOf(image.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
+            var fileType = image.getContentType();
 
-            } else {
-                String fileName = file.getOriginalFilename();
-                byte[] fileData = file.getBytes();
-                var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-                var fileType = file.getContentType();
-
-                var filePath = FileStorageUtil.saveFile(fileName, fileData, true);
-                var imageEntity = IMAGE_MAPPER.buildImageEntity(book, filePath, fileType, fileSize);
-                imageRepository.save(imageEntity);
-            }
-
-
-        } catch (IOException e) {
+            var filePath = FileStorageUtil.saveFile(fileName, fileData, true);
+            return IMAGE_MAPPER.buildImageEntity(book, filePath, fileType, fileSize);
+        } catch (IOException ex) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
+
         }
-
-
     }
 
     @Override
@@ -109,11 +108,34 @@ public class FileServiceHandler implements FileService {
     }
 
     @Override
+    public void updateFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
+        var fileEntity = saveUploadedFile(bookInventoryEntity, file);
+        System.out.println(bookInventoryEntity.getFile());
+        var updatedFile = bookInventoryEntity.getFile();
+        updatedFile.setFileSize(fileEntity.getFileSize());
+        updatedFile.setFilePath(fileEntity.getFilePath());
+        fileRepository.save(updatedFile);
+        log.info("Files updated");
+
+
+    }
+
+    @Override
+    public void updateImage(BookInventoryEntity bookInventoryEntity, MultipartFile image) {
+        var imageEntity = saveUploadedImage(bookInventoryEntity, image);
+        var updatedImage = bookInventoryEntity.getImage();
+        updatedImage.setImagePath(imageEntity.getImagePath());
+        updatedImage.setImageSize(imageEntity.getImageSize());
+        updatedImage.setImageType(imageEntity.getImageType());
+        imageRepository.save(updatedImage);
+        log.info("Image Updated");
+    }
+
+    @Override
     public void deleteFile(Long id) {
         var fileEntity = findFileById(id);
         fileRepository.delete(fileEntity);
     }
-
 
 
     @Override
@@ -122,13 +144,13 @@ public class FileServiceHandler implements FileService {
     }
 
 
-    private FileEntity findFileById(Long fileId){
+    private FileEntity findFileById(Long fileId) {
         return fileRepository.findById(fileId).orElseThrow(
                 () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
         );
     }
 
-    private ImageEntity findImageById(Long imageId){
+    private ImageEntity findImageById(Long imageId) {
         return imageRepository.findById(imageId).orElseThrow(
                 () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
         );

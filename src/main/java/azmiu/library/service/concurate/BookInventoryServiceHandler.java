@@ -140,6 +140,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         determineInventoryStatus(bookInventory);
         bookInventoryRepository.save(bookInventory);
     }
+
     @Override
     @Transactional
     public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity) {
@@ -159,20 +160,21 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
+
+
+
     @Override
-    public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria,BookCriteria bookCriteria){
+    public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
         Sort.Direction direction = "desc".equals(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction,sortBy);
+        Sort sort = Sort.by(direction, sortBy);
 
         var bookPage = bookInventoryRepository.findAll(
                 new BookInventorySpecification(bookCriteria),
-                PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount(),sort)
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
 
         return BOOK_INVENTORY_MAPPER.pageableBookInventoryResponse(bookPage);
     }
-
-
 
 
     @Override
@@ -198,12 +200,14 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
     @Override
-    public void updateBooksInInventory(BookEntity bookEntity, BookRequest bookRequest) {
-        var bookInventory = bookEntity.getBookInventory();
-        bookInventory.getBooks().forEach(book -> BOOK_MAPPER.updateBookEntity(book, bookRequest));
+    public void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        bookInventory.getBooks().forEach(bookEntity -> BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest));
+        fileService.updateFile(bookInventory, file);
+        fileService.updateImage(bookInventory, image);
+
         var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
         BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
-        bookInventoryRepository.save(bookInventory);
+        log.info("Inventory Updated");
     }
 
 

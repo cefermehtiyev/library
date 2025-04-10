@@ -11,6 +11,7 @@ import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.BookCurrentlyBorrowedException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
@@ -92,13 +94,12 @@ public class BookServiceHandler implements BookService {
     }
 
 
-
     @Override
     @Transactional
-    public void updateBook(Long id, BookRequest bookRequest) {
+    public void updateBook(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         var bookEntity = findById(id);
-        bookInventoryService.updateBooksInInventory(bookEntity, bookRequest);
         bookEntity.setBookCode(bookRequest.getBookCode());
+        bookInventoryService.updateBooksInInventory(bookEntity.getBookInventory(), bookRequest, file, image);
         bookRepository.save(bookEntity);
     }
 

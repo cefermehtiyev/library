@@ -3,6 +3,7 @@ package azmiu.library.mapper;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.FileEntity;
 import azmiu.library.model.response.BookFileResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -22,6 +23,10 @@ public enum BookFileMapper {
                 .filePath(filePath)
                 .fileSize(size)
                 .build();
+    }
+
+    public void updateFileEntity(FileEntity fileEntity , MultipartFile file){
+
     }
 
 }

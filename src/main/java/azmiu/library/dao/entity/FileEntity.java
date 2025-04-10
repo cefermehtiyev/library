@@ -35,6 +35,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @Table(name = "book_files")
 @FieldDefaults(level = PRIVATE)
 public class FileEntity {

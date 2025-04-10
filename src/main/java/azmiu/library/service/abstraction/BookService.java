@@ -7,6 +7,7 @@ import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
     void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity);
@@ -23,11 +24,10 @@ public interface BookService {
 
     void setBookStatusToActive(String bookCode);
 
-    PageableResponse<BookResponse> getAllBooks(String sortBy,String order,PageCriteria pageCriteria, BookCriteria bookCriteria);
+    void updateBook(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
+    PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria);
 
-
-    void updateBook(Long id, BookRequest bookRequest);
 
     void deleteBook(Long id);
 

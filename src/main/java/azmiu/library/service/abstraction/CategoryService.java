@@ -18,6 +18,8 @@ public interface CategoryService {
 
     List<BookResponse> getBooksByCategory(Long categoryId);
 
+    void updateCategory (Long id, CategoryRequest categoryRequest);
+
     void deleteCategory(Long categoryId);
 
     List<CategoryResponse> getAllCategory();

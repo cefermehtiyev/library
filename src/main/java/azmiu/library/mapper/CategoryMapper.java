@@ -23,11 +23,8 @@ public enum CategoryMapper {
                 .build();
     }
 
-    public CategoryRequest buildCategoryRequest(String bookCategory){
-        return CategoryRequest.builder()
-                .bookCategory(bookCategory)
-                .build();
-
+    public void updateCategory(CategoryEntity categoryEntity, CategoryRequest categoryRequest){
+        categoryEntity.setBookCategory(categoryRequest.getBookCategory());
     }
 
 

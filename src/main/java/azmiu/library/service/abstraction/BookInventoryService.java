@@ -17,11 +17,11 @@ public interface BookInventoryService {
 
     BookInventoryEntity getBookInventoryEntity(Long inventoryId);
 
-    void updateBooksInInventory(BookEntity bookEntity, BookRequest bookRequest);
-
     void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity);
 
     void updateBookInventoryOnReturn(BookEntity bookEntity);
+
+    void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
     void increaseReadCount(Long inventoryId);
 

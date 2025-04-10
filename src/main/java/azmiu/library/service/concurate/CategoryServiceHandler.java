@@ -57,11 +57,18 @@ public class CategoryServiceHandler implements CategoryService {
         return category.getBooks().stream().map(existingEntity -> BOOK_MAPPER.buildBookResponse(existingEntity.getBooks().getFirst())).toList();
     }
 
+    @Override
+    public void updateCategory(Long id, CategoryRequest categoryRequest) {
+        var categoryEntity = fetchEntityExist(id);
+        CATEGORY_MAPPER.updateCategory(categoryEntity, categoryRequest);
+        categoryRepository.save(categoryEntity);
+    }
+
 
     @Override
     public void deleteCategory(Long categoryId) {
         var category = fetchEntityExist(categoryId);
-        if(!category.getBooks().isEmpty()){
+        if (!category.getBooks().isEmpty()) {
             throw new ResourceHasRelationsException(ErrorMessage.CATEGORY_HAS_RELATED_BOOKS.getMessage());
         }
         categoryRepository.delete(category);

@@ -41,6 +41,4 @@ public class BookSpecification implements Specification<BookEntity> {
     }
 
 
-
-
 }

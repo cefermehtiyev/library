@@ -51,11 +51,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
     private final CategoryService categoryService;
-    private final SavedBookRepository savedBookRepository;
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
     private final RatingDetailsService ratingDetailsService;
-    private final CacheProvider cacheProvider;
 
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
@@ -64,22 +62,19 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService,
                                        @Lazy CategoryService categoryService,
-                                       @Lazy SavedBookRepository savedBookRepository,
                                        @Lazy CommonStatusService commonStatusService,
                                        @Lazy CommonStatusConfig commonStatusConfig,
-                                       @Lazy RatingDetailsService ratingDetailsService,
-                                       @Lazy CacheProvider cacheProvider) {
+                                       @Lazy RatingDetailsService ratingDetailsService
+                                       ) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
         this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
         this.categoryService = categoryService;
-        this.savedBookRepository = savedBookRepository;
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
         this.ratingDetailsService = ratingDetailsService;
-        this.cacheProvider = cacheProvider;
     }
 
     @Override
@@ -160,9 +155,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
 
-
-
-
     @Override
     public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
         Sort.Direction direction = "desc".equals(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -202,12 +194,28 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     @Override
     public void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         bookInventory.getBooks().forEach(bookEntity -> BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest));
-        fileService.updateFile(bookInventory, file);
-        fileService.updateImage(bookInventory, image);
-
+        updateOrDeleteFile(bookInventory,file);
+        updateOrDeleteImage(bookInventory,image);
         var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
         BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
         log.info("Inventory Updated");
+    }
+
+    private void updateOrDeleteImage(BookInventoryEntity bookInventory, MultipartFile image) {
+        if (image.isEmpty()) {
+            fileService.deleteImage(bookInventory.getId());
+        } else {
+            fileService.updateImage(bookInventory, image);
+
+        }
+    }
+
+    private void updateOrDeleteFile(BookInventoryEntity bookInventory, MultipartFile file) {
+        if (file.isEmpty()) {
+            fileService.deleteFile(bookInventory.getFile().getId());
+        } else {
+            fileService.updateFile(bookInventory, file);
+        }
     }
 
 

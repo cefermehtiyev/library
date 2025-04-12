@@ -19,4 +19,4 @@ $ java -jar change.my.name.jar
 
 ### Swagger link
 
-[Link](http://localhost:8080/swagger-ui.html#/)
+[Link](http://localhost:7777/swagger-ui.html#/)

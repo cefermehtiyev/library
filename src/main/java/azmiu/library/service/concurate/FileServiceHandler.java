@@ -109,6 +109,7 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public void updateFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
+
         var fileEntity = saveUploadedFile(bookInventoryEntity, file);
         System.out.println(bookInventoryEntity.getFile());
         var updatedFile = bookInventoryEntity.getFile();
@@ -134,13 +135,19 @@ public class FileServiceHandler implements FileService {
     @Override
     public void deleteFile(Long id) {
         var fileEntity = findFileById(id);
-        fileRepository.delete(fileEntity);
+        fileEntity.setFilePath(null);
+        fileEntity.setFileSize(null);
+        fileRepository.save(fileEntity);
     }
 
 
     @Override
     public void deleteImage(Long imageId) {
-        imageRepository.delete(findImageById(imageId));
+        var imageEntity = findImageById(imageId);
+        imageEntity.setImagePath(null);
+        imageEntity.setImageSize(null);
+        imageEntity.setImageType(null);
+        imageRepository.save(imageEntity);
     }
 
 
@@ -173,12 +180,10 @@ public class FileServiceHandler implements FileService {
             FileInputStream fileInputStream = new FileInputStream(file);
             HttpHeaders headers = new HttpHeaders();
 
-            // Fayl adını UTF-8 ilə URL-encoded edirik və filename*= atributunu istifadə edirik
             String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)
                     .replaceAll("\\+", "%20");
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
 
-            // Faylın MIME tipini müəyyən edirik
             String contentType = Files.probeContentType(file.toPath());
             if (contentType == null) {
                 contentType = "application/octet-stream"; // default tip

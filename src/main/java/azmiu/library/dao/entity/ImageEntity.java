@@ -1,6 +1,7 @@
 package azmiu.library.dao.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
@@ -43,8 +44,9 @@ public class ImageEntity {
     String imageType;
     BigDecimal imageSize;
 
-    @OneToOne
-    @JoinColumn(name = "inventory_id")
+    @OneToOne(
+            mappedBy = "image"
+    )
     @ToString.Exclude
     BookInventoryEntity bookInventory;
 

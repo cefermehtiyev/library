@@ -44,6 +44,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: file_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
                   name: category_id
                   type: BIGINT
                   constraints:
@@ -67,6 +77,26 @@ databaseChangeLog:
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
 
+  - changeSet:
+      id: inventory set image
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book_inventory
+            baseColumnNames: image_id
+            constraintName: fk_inventory_images
+            referencedTableName: images
+            referencedColumnNames: id
+  - changeSet:
+      id: inventory set file
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book_inventory
+            baseColumnNames: file_id
+            constraintName: fk_inventory_file
+            referencedTableName: files
+            referencedColumnNames: id
   - changeSet:
       id: inventory  set  inventory status
       author: Cefer Mehtiyev

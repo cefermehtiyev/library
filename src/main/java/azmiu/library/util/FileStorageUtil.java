@@ -13,9 +13,9 @@ public class FileStorageUtil {
 
 
     public static String saveFile(String fileName, byte[] fileData, boolean isImage) throws IOException {
-        var fileAdress = isImage ? IMAGE_DIR : UPLOAD_DIR;
+        var fileAddress = isImage ? IMAGE_DIR : UPLOAD_DIR;
 
-        String filePath = fileAdress + fileName;
+        String filePath = fileAddress + fileName;
 
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             fos.write(fileData);

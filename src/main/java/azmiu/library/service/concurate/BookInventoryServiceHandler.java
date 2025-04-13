@@ -24,6 +24,7 @@ import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.abstraction.FileService;
+import azmiu.library.service.abstraction.ImageService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import azmiu.library.service.abstraction.RatingDetailsService;
 import azmiu.library.service.specification.BookInventorySpecification;
@@ -54,6 +55,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final CommonStatusService commonStatusService;
     private final CommonStatusConfig commonStatusConfig;
     private final RatingDetailsService ratingDetailsService;
+    private final ImageService imageService;
 
 
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
@@ -64,8 +66,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                                        @Lazy CategoryService categoryService,
                                        @Lazy CommonStatusService commonStatusService,
                                        @Lazy CommonStatusConfig commonStatusConfig,
-                                       @Lazy RatingDetailsService ratingDetailsService
-                                       ) {
+                                       @Lazy RatingDetailsService ratingDetailsService,
+                                       @Lazy ImageService imageService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
@@ -75,6 +77,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         this.commonStatusService = commonStatusService;
         this.commonStatusConfig = commonStatusConfig;
         this.ratingDetailsService = ratingDetailsService;
+        this.imageService = imageService;
     }
 
     @Override
@@ -91,15 +94,13 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                 .orElseGet(() -> {
                     var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
                     var commonStatus = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
-
+                    var fileEntity = fileService.uploadFile(file);
+                    var imageEntity = imageService.uploadImage(image);
                     log.info("Inventory added");
-                    var newInventory = BOOK_INVENTORY_MAPPER.buildBookInventoryEntity(bookRequest.getTitle(), bookRequest.getPublicationYear(), inventoryStatus, commonStatus);
+                    var newInventory = BOOK_INVENTORY_MAPPER
+                            .buildBookInventoryEntity(fileEntity, imageEntity, bookRequest.getTitle(), bookRequest.getPublicationYear(), inventoryStatus, commonStatus);
                     categoryService.addBookToCategory(bookRequest.getCategoryId(), newInventory);
                     bookInventoryRepository.save(newInventory);
-
-                    fileService.uploadFile(newInventory, file);
-                    fileService.uploadImage(newInventory, image);
-
                     ratingDetailsService.initializeRatingDetails(newInventory);
                     return newInventory;
                 });
@@ -194,8 +195,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     @Override
     public void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         bookInventory.getBooks().forEach(bookEntity -> BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest));
-        updateOrDeleteFile(bookInventory,file);
-        updateOrDeleteImage(bookInventory,image);
+        updateOrDeleteFile(bookInventory, file);
+        updateOrDeleteImage(bookInventory, image);
         var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
         BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
         log.info("Inventory Updated");
@@ -203,9 +204,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
     private void updateOrDeleteImage(BookInventoryEntity bookInventory, MultipartFile image) {
         if (image.isEmpty()) {
-            fileService.deleteImage(bookInventory.getId());
+            imageService.deleteImage(bookInventory.getImage().getId());
         } else {
-            fileService.updateImage(bookInventory, image);
+            imageService.updateImage(bookInventory, image);
 
         }
     }

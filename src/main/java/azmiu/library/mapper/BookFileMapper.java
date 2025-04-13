@@ -17,9 +17,8 @@ public enum BookFileMapper {
                 .build();
     }
 
-    public FileEntity buildFileEntity(BookInventoryEntity bookInventoryEntity, String filePath, BigDecimal size){
+    public FileEntity buildFileEntity( String filePath, BigDecimal size){
         return FileEntity.builder()
-                .bookInventory(bookInventoryEntity)
                 .filePath(filePath)
                 .fileSize(size)
                 .build();

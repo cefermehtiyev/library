@@ -10,6 +10,7 @@ import azmiu.library.exception.FileStorageFailureException;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.FileService;
+import azmiu.library.util.DownloadUtil;
 import azmiu.library.util.FileStorageUtil;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -46,71 +47,42 @@ public class FileServiceHandler implements FileService {
     private final ImageRepository imageRepository;
 
     @Override
-    public void uploadFile(BookInventoryEntity book, MultipartFile file) {
+    public FileEntity uploadFile( MultipartFile file) {
         if (file.isEmpty()) {
-            var fileEntity = FILE_MAPPER.buildFileEntity(book, null, null);
+            var fileEntity = FILE_MAPPER.buildFileEntity( null, null);
             fileRepository.save(fileEntity);
+            return fileEntity;
         } else {
-            fileRepository.save(saveUploadedFile(book, file));
+            var fileEntity = saveUploadedFile(file);
+            fileRepository.save(fileEntity);
+            return fileEntity;
         }
     }
 
-    private FileEntity saveUploadedFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
+    private FileEntity saveUploadedFile( MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
             byte[] fileData = file.getBytes();
             var fileSize = BigDecimal.valueOf(file.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
             var filePath = FileStorageUtil.saveFile(fileName, fileData, false);
-            return FILE_MAPPER.buildFileEntity(bookInventoryEntity, filePath, fileSize);
+            return FILE_MAPPER.buildFileEntity(filePath, fileSize);
         } catch (IOException ex) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
         }
     }
 
-    @Override
-    public void uploadImage(BookInventoryEntity book, MultipartFile image) {
-        if (image.isEmpty()) {
-            var imageEntity = IMAGE_MAPPER.buildImageEntity(book, null, null, null);
-            imageRepository.save(imageEntity);
-        } else {
-
-            imageRepository.save(saveUploadedImage(book, image));
-        }
-
-
-    }
-
-    private ImageEntity saveUploadedImage(BookInventoryEntity book, MultipartFile image) {
-        try {
-            String fileName = image.getOriginalFilename();
-            byte[] fileData = image.getBytes();
-            var fileSize = BigDecimal.valueOf(image.getSize()).divide(BigDecimal.valueOf(1_048_576), 2, RoundingMode.HALF_UP);
-            var fileType = image.getContentType();
-
-            var filePath = FileStorageUtil.saveFile(fileName, fileData, true);
-            return IMAGE_MAPPER.buildImageEntity(book, filePath, fileType, fileSize);
-        } catch (IOException ex) {
-            throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
-
-        }
-    }
 
     @Override
     public ResponseEntity<InputStreamResource> downloadFile(Long id) {
         var filePath = bookInventoryService.getBookInventoryEntity(id).getFile().getFilePath();
-        return getFileResource(filePath, false);
+        return DownloadUtil.getFileResource(filePath, false);
     }
 
-    @Override
-    public ResponseEntity<InputStreamResource> downloadImage(Long id) {
-        var imagePath = bookInventoryService.getBookInventoryEntity(id).getImage().getImagePath();
-        return getFileResource(imagePath, true);
-    }
 
     @Override
     public void updateFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
 
-        var fileEntity = saveUploadedFile(bookInventoryEntity, file);
+        var fileEntity = saveUploadedFile( file);
         System.out.println(bookInventoryEntity.getFile());
         var updatedFile = bookInventoryEntity.getFile();
         updatedFile.setFileSize(fileEntity.getFileSize());
@@ -121,16 +93,6 @@ public class FileServiceHandler implements FileService {
 
     }
 
-    @Override
-    public void updateImage(BookInventoryEntity bookInventoryEntity, MultipartFile image) {
-        var imageEntity = saveUploadedImage(bookInventoryEntity, image);
-        var updatedImage = bookInventoryEntity.getImage();
-        updatedImage.setImagePath(imageEntity.getImagePath());
-        updatedImage.setImageSize(imageEntity.getImageSize());
-        updatedImage.setImageType(imageEntity.getImageType());
-        imageRepository.save(updatedImage);
-        log.info("Image Updated");
-    }
 
     @Override
     public void deleteFile(Long id) {
@@ -141,67 +103,16 @@ public class FileServiceHandler implements FileService {
     }
 
 
-    @Override
-    public void deleteImage(Long imageId) {
-        var imageEntity = findImageById(imageId);
-        imageEntity.setImagePath(null);
-        imageEntity.setImageSize(null);
-        imageEntity.setImageType(null);
-        imageRepository.save(imageEntity);
-    }
-
-
     private FileEntity findFileById(Long fileId) {
         return fileRepository.findById(fileId).orElseThrow(
                 () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
         );
     }
 
-    private ImageEntity findImageById(Long imageId) {
-        return imageRepository.findById(imageId).orElseThrow(
-                () -> new NotFoundException(FILE_NOT_FOUND.getMessage())
-        );
-    }
 
 
-    private ResponseEntity<InputStreamResource> getFileResource(String filePath, boolean isImage) {
-        try {
-            File file = new File(filePath);
-            log.info("FilePath: {}", filePath);
 
-            if (!file.exists()) {
-                if (isImage) {
-                    throw new NotFoundException(ErrorMessage.IMAGE_NOT_FOUND.getMessage());
-                } else {
-                    throw new NotFoundException(FILE_NOT_FOUND.getMessage());
-                }
-            }
 
-            FileInputStream fileInputStream = new FileInputStream(file);
-            HttpHeaders headers = new HttpHeaders();
-
-            String encodedFileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)
-                    .replaceAll("\\+", "%20");
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
-
-            String contentType = Files.probeContentType(file.toPath());
-            if (contentType == null) {
-                contentType = "application/octet-stream"; // default tip
-            }
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentLength(file.length())
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(new InputStreamResource(fileInputStream));
-        } catch (IOException | NullPointerException e) {
-            if (isImage) {
-                throw new NotFoundException(ErrorMessage.IMAGE_NOT_FOUND.getMessage());
-            } else {
-                throw new NotFoundException(FILE_NOT_FOUND.getMessage());
-            }
-        }
-    }
 
 
 }

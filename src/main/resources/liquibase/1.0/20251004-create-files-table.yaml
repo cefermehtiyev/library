@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-book_files-table
+      id: create-files-table
       author: Cefer Mehtiyev
       changes:
         - createTable:
-            tableName: book_files
+            tableName: files
             columns:
               - column:
                   name: id
@@ -13,11 +13,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
-              - column:
-                  name: inventory_id
-                  type: BIGINT
-                  constraints:
-                    nullable: true
               - column:
                   name: file_path
                   type: VARCHAR
@@ -29,9 +24,3 @@ databaseChangeLog:
                   constraints:
                     nullable: true
 
-        - addForeignKeyConstraint:
-            baseTableName: book_files
-            baseColumnNames: inventory_id
-            constraintName: fk_book_file_book_inventory
-            referencedTableName: book_inventory
-            referencedColumnNames: id

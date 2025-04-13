@@ -4,6 +4,8 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
+import azmiu.library.dao.entity.FileEntity;
+import azmiu.library.dao.entity.ImageEntity;
 import azmiu.library.dao.entity.InventoryStatusEntity;
 import azmiu.library.model.response.BookInventoryResponse;
 import azmiu.library.model.response.BookResponse;
@@ -13,10 +15,12 @@ import org.springframework.data.domain.Page;
 public enum BookInventoryMapper {
     BOOK_INVENTORY_MAPPER;
 
-    public BookInventoryEntity buildBookInventoryEntity(String title, Integer publicationYear, InventoryStatusEntity inventoryStatus, CommonStatusEntity commonStatus) {
+    public BookInventoryEntity buildBookInventoryEntity(FileEntity file, ImageEntity image, String title, Integer publicationYear, InventoryStatusEntity inventoryStatus, CommonStatusEntity commonStatus) {
         return BookInventoryEntity.builder()
                 .title(title)
                 .publicationYear(publicationYear)
+                .file(file)
+                .image(image)
                 .availableQuantity(1)
                 .borrowedQuantity(0)
                 .reservedQuantity(1)

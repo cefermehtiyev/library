@@ -36,7 +36,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @Builder
 @ToString
-@Table(name = "book_files")
+@Table(name = "files")
 @FieldDefaults(level = PRIVATE)
 public class FileEntity {
 
@@ -46,8 +46,9 @@ public class FileEntity {
     String filePath;
     BigDecimal fileSize;
 
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "inventory_id",nullable = false)
+    @OneToOne(
+            mappedBy = "file"
+    )
     @ToString.Exclude
     BookInventoryEntity bookInventory;
 

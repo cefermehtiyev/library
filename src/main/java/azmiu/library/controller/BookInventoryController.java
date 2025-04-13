@@ -42,6 +42,7 @@ public class BookInventoryController {
                                    @RequestParam(value = "file", required = false) MultipartFile file,
                                    @RequestParam(value = "image", required = false) MultipartFile image) {
 
+
         bookInventoryService.addBookToInventory(bookRequest, file, image);
     }
 

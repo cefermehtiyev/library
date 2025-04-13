@@ -89,17 +89,18 @@ public class BookInventoryEntity {
 
 
     @OneToOne(
-            mappedBy = "bookInventory",
-            cascade = {MERGE, PERSIST,REMOVE}
+            cascade = {MERGE, PERSIST,REMOVE},
+            fetch = LAZY
     )
+    @JoinColumn(name = "image_id")
     @ToString.Exclude
     ImageEntity image;
 
     @OneToOne(
-            mappedBy = "bookInventory",
             cascade = {MERGE, PERSIST,REMOVE},
             fetch = LAZY
     )
+    @JoinColumn(name = "file_id")
     @ToString.Exclude
     FileEntity file;
 

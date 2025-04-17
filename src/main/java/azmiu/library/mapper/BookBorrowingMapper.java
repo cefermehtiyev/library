@@ -5,6 +5,8 @@ import azmiu.library.dao.entity.BookBorrowingEntity;
 import azmiu.library.dao.entity.BorrowStatusEntity;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
+import azmiu.library.model.response.BookResponse;
+import azmiu.library.model.response.PageableResponse;
 
 import java.time.LocalDate;
 
@@ -30,6 +32,7 @@ public enum BookBorrowingMapper {
                 .build();
 
     }
+
 
     public void updateReturnBookBorrowHistory(BookBorrowingEntity bookBorrowHistory, BorrowStatusEntity status){
         bookBorrowHistory.setBorrowStatus(status);

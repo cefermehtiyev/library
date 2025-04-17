@@ -58,6 +58,7 @@ public class BookInventoryEntity {
     LocalDateTime updatedAt;
 
     @OneToOne(
+            fetch = LAZY,
             mappedBy = "bookInventory",
             cascade = {PERSIST, MERGE,REMOVE}
     )

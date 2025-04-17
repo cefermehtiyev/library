@@ -49,7 +49,7 @@ public enum UserMapper {
             }
             case ADMIN -> {
                 return
-                ADMIN_MAPPER.buildAdminResponse(userEntity);
+                ADMIN_MAPPER.buildAdminResponse(userEntity.getAdmin());
             }case SUPER_ADMIN ->
              {
                  return ADMIN_MAPPER.buildSuperAdminResponse(userEntity);

@@ -1,6 +1,7 @@
 package azmiu.library.service.concurate;
 
 import azmiu.library.configuration.BorrowStatusConfig;
+import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookBorrowingEntity;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.UserEntity;
@@ -10,12 +11,15 @@ import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.request.ReturnRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
+import azmiu.library.model.response.BookResponse;
+import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
 import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.BorrowStatusService;
 import azmiu.library.service.abstraction.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static azmiu.library.mapper.BookBorrowingMapper.BOOK_LOAN_HISTORY_MAPPER;
+import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +44,14 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     public void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity) {
         var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getPending());
         bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity, status));
+    }
+
+    @Override
+    public PageableResponse<BookResponse> getAllBooksByFin(String fin, PageCriteria pageCriteria) {
+        var page = bookBorrowHistoryRepository.findBooksByUserFin(
+                fin, PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
+        );
+        return BOOK_MAPPER.pageableBookResponse(page);
     }
 
 

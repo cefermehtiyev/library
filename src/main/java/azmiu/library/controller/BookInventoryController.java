@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/bookInventory")
+@RequestMapping("/v1/book-inventory")
 public class BookInventoryController {
     private final BookInventoryService bookInventoryService;
 

@@ -4,12 +4,14 @@ import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.criteria.UserCriteria;
 import azmiu.library.dao.entity.UserEntity;
+import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.model.enums.RoleName;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.request.RegistrationRequest;
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
 import azmiu.library.model.response.UserResponse;
@@ -58,7 +60,7 @@ public class UserServiceHandler implements UserService {
         registrationStrategy.register(userEntity, registrationRequest);
     }
 
-    private String setPasswordEncoder(String password){
+    private String setPasswordEncoder(String password) {
         return passwordEncoder.encode(password);
     }
 
@@ -82,7 +84,7 @@ public class UserServiceHandler implements UserService {
     public UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest) {
 
         var userEntity = findByUserName(authRequest.getUserName());
-        if (!passwordEncoder.matches(authRequest.getPassword(),userEntity.getPassword())){
+        if (!passwordEncoder.matches(authRequest.getPassword(), userEntity.getPassword())) {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
 
@@ -115,23 +117,6 @@ public class UserServiceHandler implements UserService {
 
     }
 
-    @Override
-    public PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
-        var userPage = userRepository.findAll(
-                new UserSpecification(userCriteria)).stream()
-                .filter(userEntity -> userEntity.getUserRole().getRoleName().equals(RoleName.ADMIN)).toList();
-
-        long totalElements = userPage.size();
-        int pageSize = pageCriteria.getCount();
-        int currentPage = pageCriteria.getPage();
-        int fromIndex = currentPage * pageSize;
-
-        int toIndex = Math.min(fromIndex +pageSize ,(int) totalElements);
-        List<UserEntity> pagedUser = userPage.subList(fromIndex,toIndex);
-        Pageable pageable = PageRequest.of(currentPage,pageSize);
-        Page<UserEntity> page = new PageImpl<>(pagedUser,pageable,totalElements);
-        return USER_MAPPER.pageableUserResponse(page);
-    }
 
 
     private UserEntity findById(Long userId) {
@@ -145,15 +130,6 @@ public class UserServiceHandler implements UserService {
                 () -> new NotFoundException(ErrorMessage.USER_NOT_FOUND.getMessage())
         );
     }
-
-    @Override
-    public PageableResponse getAllBooksByFin(String fin, PageCriteria pageCriteria) {
-        var page = userRepository.findBooksByFin(
-                fin, PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount())
-        );
-        return BOOK_MAPPER.pageableBookResponse(page);
-    }
-
 
 
     @Override

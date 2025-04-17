@@ -1,7 +1,9 @@
 package azmiu.library.dao.repository;
 
+import azmiu.library.dao.entity.AdminEntity;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.UserEntity;
+import azmiu.library.dao.entity.UserRoleEntity;
 import io.micrometer.common.lang.NonNull;
 import io.micrometer.common.lang.NonNullApi;
 import org.apache.catalina.User;
@@ -30,7 +32,5 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> , JpaSpec
     Page<UserEntity> findAll(@NonNull Specification<UserEntity> spec, @NonNull Pageable pageable);
 
 
-    @Query(value = "SELECT b from BookEntity b JOIN b.users u WHERE u.fin = :fin ")
-    Page<BookEntity> findBooksByFin(String fin, Pageable pageable);
 
 }

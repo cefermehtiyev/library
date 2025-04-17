@@ -1,8 +1,11 @@
 package azmiu.library.controller;
 
+import azmiu.library.criteria.PageCriteria;
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.request.ReturnRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
+import azmiu.library.model.response.BookResponse;
+import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +45,11 @@ public class BookBorrowingController {
     @GetMapping("/{userId}")
     public List<BookBorrowHistoryResponse> getBooksHistoryByStudent(@PathVariable Long userId) {
         return bookBorrowingService.getBorrowedBooksByStudent(userId);
+    }
+
+    @GetMapping("/by-fin")
+    public PageableResponse<BookResponse> getAllBooksByFin(@RequestParam String fin, PageCriteria pageCriteria) {
+        return bookBorrowingService.getAllBooksByFin(fin, pageCriteria);
     }
 
 

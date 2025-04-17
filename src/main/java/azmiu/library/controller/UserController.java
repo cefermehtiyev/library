@@ -6,6 +6,7 @@ import azmiu.library.criteria.StudentCriteria;
 import azmiu.library.criteria.UserCriteria;
 import azmiu.library.model.request.RegistrationRequest;
 
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.EmployeeResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.StudentResponse;
@@ -51,10 +52,7 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @GetMapping("/by-fin")
-    public PageableResponse getAllBooksByFin(@RequestParam String fin, PageCriteria pageCriteria) {
-        return userService.getAllBooksByFin(fin, pageCriteria);
-    }
+
 
 
     @GetMapping
@@ -63,11 +61,7 @@ public class UserController {
         return userService.getAllUsers(pageCriteria, userCriteria);
     }
 
-    @GetMapping("/all-admins")
-//    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria) {
-        return userService.getAllAdmins(pageCriteria, userCriteria);
-    }
+
 
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)

@@ -5,6 +5,7 @@ import azmiu.library.criteria.UserCriteria;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.request.RegistrationRequest;
+import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
 import azmiu.library.model.response.UserResponse;
@@ -20,11 +21,7 @@ public interface UserService {
 
     UserIdResponse getUserIdByUserNameAndPassword(AuthRequest authRequest);
 
-    PageableResponse getAllBooksByFin(String fin, PageCriteria pageCriteria);
-
     PageableResponse<UserResponse> getAllUsers(PageCriteria pageCriteria, UserCriteria userCriteria);
-
-    PageableResponse<UserResponse> getAllAdmins(PageCriteria pageCriteria, UserCriteria userCriteria);
 
     String getRolesFromToken(String userId);
 

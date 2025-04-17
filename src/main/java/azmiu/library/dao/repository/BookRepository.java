@@ -26,6 +26,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
 
     Optional<BookEntity> findByBookCode(String bookCode);
 
+
     @Query("SELECT b.bookInventory FROM BookEntity b WHERE b.title = :title AND b.author = :author AND b.publicationYear = :publicationYear")
     Optional<BookInventoryEntity> findFirstByTitleAndAuthorAndPublicationYear(String title, String author, Integer publicationYear);
 
@@ -62,6 +63,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
             "commonStatus"
     })
     List<BookEntity> findAll(@NonNull Specification<BookEntity> spec);
+
+
 
 
 

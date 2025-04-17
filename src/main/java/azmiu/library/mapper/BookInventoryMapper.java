@@ -75,8 +75,6 @@ public enum BookInventoryMapper {
     public void decreaseAvailableIncreaseBorrowed(BookInventoryEntity bookInventoryEntity) {
         bookInventoryEntity.setAvailableQuantity(bookInventoryEntity.getAvailableQuantity() - 1);
         bookInventoryEntity.setBorrowedQuantity(bookInventoryEntity.getBorrowedQuantity() + 1);
-
-
     }
 
     public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity){

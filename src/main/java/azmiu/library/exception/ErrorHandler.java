@@ -84,6 +84,19 @@ public class ErrorHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidUpdateException.class)
+    @ResponseStatus(CONFLICT)
+    public ErrorResponse handle(InvalidUpdateException ex){
+        log.error("InvalidUpdateException: ",ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataMismatchException.class)
+    @ResponseStatus(CONFLICT)
+    public ErrorResponse handle(DataMismatchException ex){
+        log.error("DataMismatchException: ",ex);
+        return new ErrorResponse(ex.getMessage());
+    }
 
 
     @ExceptionHandler(AuthException.class)

@@ -23,8 +23,9 @@ public interface BookInventoryService {
 
     void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
-    void increaseReadCount(Long inventoryId);
+    void updateSingleBookInInventory(BookEntity bookEntity, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
+    void increaseReadCount(Long inventoryId);
 
     PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria);
 

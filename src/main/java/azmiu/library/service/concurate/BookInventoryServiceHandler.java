@@ -7,13 +7,12 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.BookInventoryRepository;
-import azmiu.library.dao.repository.FileRepository;
-import azmiu.library.dao.repository.ImageRepository;
-import azmiu.library.dao.repository.SavedBookRepository;
+import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.AlreadyExistsException;
+import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
+import azmiu.library.exception.InvalidUpdateException;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookInventoryMapper;
 import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
@@ -28,8 +27,6 @@ import azmiu.library.service.abstraction.ImageService;
 import azmiu.library.service.abstraction.InventoryStatusService;
 import azmiu.library.service.abstraction.RatingDetailsService;
 import azmiu.library.service.specification.BookInventorySpecification;
-import azmiu.library.service.specification.BookSpecification;
-import azmiu.library.util.CacheProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -86,27 +83,34 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         if (bookService.existsByBookCode(bookRequest.getBookCode())) {
             throw new AlreadyExistsException(ErrorMessage.BOOK_ALREADY_EXISTS.getMessage());
         }
-        var bookInventoryEntity = bookInventoryRepository.findByTitleAndPublicationYear(bookRequest.getTitle(), bookRequest.getPublicationYear())
+
+        var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");
+                    if (!validateBookDataConsistency(existingInventory.getBooks().getFirst(), bookRequest)) {
+                        throw new DataMismatchException(ErrorMessage.BOOK_DATA_MISMATCH_EXCEPTION.getMessage());
+                    }
                     return BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(existingInventory);
                 })
-                .orElseGet(() -> {
-                    var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
-                    var commonStatus = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
-                    var fileEntity = fileService.uploadFile(file);
-                    var imageEntity = imageService.uploadImage(image);
-                    log.info("Inventory added");
-                    var newInventory = BOOK_INVENTORY_MAPPER
-                            .buildBookInventoryEntity(fileEntity, imageEntity, bookRequest.getTitle(), bookRequest.getPublicationYear(), inventoryStatus, commonStatus);
-                    categoryService.addBookToCategory(bookRequest.getCategoryId(), newInventory);
-                    bookInventoryRepository.save(newInventory);
-                    ratingDetailsService.initializeRatingDetails(newInventory);
-                    return newInventory;
-                });
+                .orElseGet(() -> createNewBookInventory(bookRequest, file, image));
 
         determineInventoryStatus(bookInventoryEntity);
         bookService.addBook(bookRequest, bookInventoryEntity);
+    }
+
+
+    private BookInventoryEntity createNewBookInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
+        var commonStatus = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var fileEntity = fileService.uploadFile(file);
+        var imageEntity = imageService.uploadImage(image);
+        log.info("Inventory added");
+        var newInventory = BOOK_INVENTORY_MAPPER
+                .buildBookInventoryEntity(fileEntity, imageEntity, bookRequest.getTitle(), bookRequest.getPublicationYear(), inventoryStatus, commonStatus);
+        categoryService.addBookToCategory(bookRequest.getCategoryId(), newInventory);
+        bookInventoryRepository.save(newInventory);
+        ratingDetailsService.initializeRatingDetails(newInventory);
+        return newInventory;
     }
 
     @Override
@@ -138,11 +142,11 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
     @Override
-    @Transactional
     public void updateCountsOnBookDeleted(BookInventoryEntity bookInventoryEntity) {
         BOOK_INVENTORY_MAPPER.updateCountsOnBookDeleted(bookInventoryEntity);
         determineInventoryStatus(bookInventoryEntity);
         log.info("Book reserved count :{}", bookInventoryEntity.getReservedQuantity());
+        System.out.println(bookInventoryEntity.getBooks().getFirst().getBookCode());
         if (bookInventoryEntity.getReservedQuantity() == 0) {
             bookInventoryRepository.delete(bookInventoryEntity);
             log.info("Book Deleted");
@@ -199,7 +203,61 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         updateOrDeleteImage(bookInventory, image);
         var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
         BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
-        log.info("Inventory Updated");
+        log.info("Book all instances updated in Inventory");
+    }
+
+    @Override
+    @Transactional
+    public void updateSingleBookInInventory(BookEntity bookEntity, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        var currentInventory = bookEntity.getBookInventory();
+
+        if (isBookEquivalent(bookEntity, bookRequest)) {
+            if (validateBookDataConsistency(bookEntity, bookRequest)) {
+                log.info("Request data is consistent. Updating book code.");
+                bookEntity.setBookCode(bookRequest.getBookCode());
+            } else {
+                throw new InvalidUpdateException(ErrorMessage.INVALID_BOOK_UPDATE_EXCEPTION.getMessage());
+            }
+        }else  {
+            log.info("Book is not equivalent. Reassigning book to appropriate inventory.");
+            reassignBookToFoundInventory(bookEntity, bookRequest, currentInventory, file, image);
+        }
+    }
+
+    private void reassignBookToFoundInventory(BookEntity bookEntity, BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
+        var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
+                .map(bookInventory -> {
+                    var updatedInventory = BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(bookInventory);
+                    BOOK_MAPPER.updateBookEntity(bookEntity, bookInventory.getBooks().getFirst());
+                    bookEntity.setBookInventory(updatedInventory);
+                    return updatedInventory;
+                })
+                .orElseGet(() ->{
+                    var  newInventory = createNewBookInventory(bookRequest, file, image);
+                    BOOK_MAPPER.updateBookEntity(bookEntity,bookRequest);
+                    bookEntity.setBookInventory(newInventory);
+                    return newInventory;});
+        determineInventoryStatus(bookInventoryEntity);
+        updateInventoryAfterBookRemoval(currentInventory);
+        bookInventoryRepository.save(bookInventoryEntity);
+    }
+    private void updateInventoryAfterBookRemoval(BookInventoryEntity bookInventory){
+        updateCountsOnBookDeleted(bookInventory);
+        determineInventoryStatus(bookInventory);
+    }
+
+    private boolean validateBookDataConsistency(BookEntity bookEntity, BookRequest bookRequest) {
+        return bookEntity.getBookInventory().getCategory().getId().equals(bookRequest.getCategoryId()) &&
+                bookEntity.getLanguage().equals(bookRequest.getLanguage()) &&
+                bookEntity.getPages().equals(bookRequest.getPages()) &&
+                bookEntity.getDescription().equals(bookRequest.getDescription()) &&
+                bookEntity.getPublisher().equals(bookRequest.getPublisher());
+    }
+
+    private boolean isBookEquivalent(BookEntity bookEntity, BookRequest bookRequest) {
+        return bookEntity.getTitle().equals(bookRequest.getTitle())
+                && bookEntity.getPublicationYear().equals(bookRequest.getPublicationYear())
+                && bookEntity.getAuthor().equals(bookRequest.getAuthor());
     }
 
     private void updateOrDeleteImage(BookInventoryEntity bookInventory, MultipartFile image) {

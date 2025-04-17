@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.annotation.Log;
 import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
@@ -8,10 +7,11 @@ import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
 import azmiu.library.dao.repository.BookRepository;
+import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.BookCurrentlyBorrowedException;
+import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
@@ -20,14 +20,12 @@ import azmiu.library.service.abstraction.BookInventoryService;
 import azmiu.library.service.abstraction.BookService;
 import azmiu.library.service.abstraction.CommonStatusService;
 import azmiu.library.service.specification.BookSpecification;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 
@@ -69,7 +66,14 @@ public class BookServiceHandler implements BookService {
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         bookEntity.setBookInventory(bookInventoryEntity);
         bookRepository.save(bookEntity);
+    }
 
+
+    @Override
+    public List<BookInventoryEntity> test(String title, String author, Integer publicationYear) {
+        var data  = findInventoryByBookDetails(title,author,publicationYear);
+        System.out.println(data);
+        return null;
     }
 
 
@@ -96,11 +100,24 @@ public class BookServiceHandler implements BookService {
 
     @Override
     @Transactional
-    public void updateBook(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+    public void updateAllInstancesForBook(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         var bookEntity = findById(id);
         bookEntity.setBookCode(bookRequest.getBookCode());
         bookInventoryService.updateBooksInInventory(bookEntity.getBookInventory(), bookRequest, file, image);
         bookRepository.save(bookEntity);
+    }
+
+    @Override
+    @Transactional
+    public void updateSingleBookInstance(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        var bookEntity = findById(id);
+        if(!bookEntity.getBookCode().equals(bookRequest.getBookCode())){
+            if (bookRepository.existsByBookCode(bookRequest.getBookCode())){
+                throw new AlreadyExistsException(ErrorMessage.BOOK_CODE_ALREADY_EXISTS.getMessage());
+            }
+        }
+        bookEntity.setBookCode(bookRequest.getBookCode());
+        bookInventoryService.updateSingleBookInInventory(bookEntity, bookRequest, file, image);
     }
 
 
@@ -108,6 +125,11 @@ public class BookServiceHandler implements BookService {
     public void setBookStatusToInactive(String bookCode) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getInActive());
         updateBookStatus(bookCode, status);
+    }
+
+    @Override
+    public Optional<BookInventoryEntity> findInventoryByBookDetails(String title, String author ,Integer publicationYear) {
+        return bookRepository.findFirstByTitleAndAuthorAndPublicationYear(title, author,publicationYear);
     }
 
     @Override
@@ -135,13 +157,12 @@ public class BookServiceHandler implements BookService {
     }
 
 
-
     @Override
     @Transactional
     public void deleteBook(Long id) {
         var bookEntity = findById(id);
         var bookInventory = bookEntity.getBookInventory();
-        if (bookBorrowingService.isBookBorrowed(id)){
+        if (bookBorrowingService.isBookBorrowed(id)) {
             throw new BookCurrentlyBorrowedException(ErrorMessage.BOOK_CURRENTLY_BORROWED_EXCEPTION.getMessage());
         }
         bookRepository.delete(bookEntity);

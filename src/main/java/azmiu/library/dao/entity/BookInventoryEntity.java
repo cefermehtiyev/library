@@ -38,7 +38,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Table(name = "book_inventory")
 @FieldDefaults(level = PRIVATE)
@@ -74,7 +73,7 @@ public class BookInventoryEntity {
 
     @OneToMany(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST,REMOVE},
+            cascade = {MERGE, PERSIST},
             mappedBy = "bookInventory"
     )
     List<BookEntity> books;

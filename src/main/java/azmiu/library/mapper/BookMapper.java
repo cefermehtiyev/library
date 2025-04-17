@@ -28,7 +28,6 @@ public enum BookMapper {
     }
 
     public BookResponse buildBookResponse(BookEntity bookEntity){
-
         return BookResponse.builder()
                 .id(bookEntity.getId())
                 .title(bookEntity.getTitle())
@@ -74,6 +73,16 @@ public enum BookMapper {
         bookEntity.setPublisher(bookRequest.getPublisher());
         bookEntity.setPages(bookRequest.getPages());
         bookEntity.setPublicationYear(bookRequest.getPublicationYear());
+    }
+
+    public void updateBookEntity(BookEntity updatedBookEntity,BookEntity bookEntity){
+        updatedBookEntity.setTitle(bookEntity.getTitle());
+        updatedBookEntity.setAuthor(bookEntity.getAuthor());
+        updatedBookEntity.setPublicationYear(bookEntity.getPublicationYear());
+        updatedBookEntity.setLanguage(bookEntity.getLanguage());
+        updatedBookEntity.setDescription(bookEntity.getDescription());
+        updatedBookEntity.setPublisher(bookEntity.getPublisher());
+        updatedBookEntity.setPages(bookEntity.getPages());
     }
 
     public void updateBookStatus(BookEntity book, CommonStatusEntity status){

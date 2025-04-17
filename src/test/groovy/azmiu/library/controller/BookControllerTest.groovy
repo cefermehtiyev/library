@@ -5,7 +5,6 @@ import azmiu.library.criteria.BookCriteria
 import azmiu.library.criteria.PageCriteria
 import azmiu.library.model.request.BookRequest
 import azmiu.library.service.abstraction.BookService
-import azmiu.library.service.abstraction.FileService
 import io.github.benas.randombeans.EnhancedRandomBuilder
 import io.github.benas.randombeans.api.EnhancedRandom
 import org.springframework.http.HttpStatus
@@ -13,8 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
-
-import java.net.http.HttpResponse
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
@@ -118,7 +115,7 @@ class BookControllerTest extends Specification {
                         .andReturn()
 
         then:
-        1 * bookService.updateBook(id,bookRequest)
+        1 * bookService.updateAllInstancesForBook(id,bookRequest)
         def response = result.response
         response .status == HttpStatus.NO_CONTENT.value()
     }

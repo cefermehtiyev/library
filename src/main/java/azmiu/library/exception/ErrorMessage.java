@@ -26,17 +26,20 @@ public enum ErrorMessage {
     CATEGORY_HAS_RELATED_BOOKS("Category cannot be deleted because it has related books"),
     CATEGORY_ALREADY_EXISTS("Category Already Exists"),
     BOOK_ALREADY_EXISTS("Book Already Exists"),
+    BOOK_CODE_ALREADY_EXISTS("Book Code Already Exists"),
     INVALID_FILE_URL("File url is invalid"),
     FILE_STORAGE_FAILURE("File storage operation failed"),
     STUDENT_NOT_FOUND("Student not found"),
     OUT_OF_STOCK("The book is out of stock"),
     BOOK_BORROW_NOT_FOUND("Book borrow not found"),
     BOOK_INVENTORY_NOT_FOUND("Book not Found in inventory"),
+    BOOK_DATA_MISMATCH_EXCEPTION("Book data mismatch"),
     IMAGE_NOT_FOUND("Image not Found"),
     COMMON_STATUS_NOT_FOUND("Common status not found"),
     INVENTORY_STATUS_NOT_FOUND("Inventory status not found"),
     BORROW_STATUS_NOT_FOUND("Borrow status not found"),
-    USER_ROLE_NOT_FUND("User role not Found");
+    USER_ROLE_NOT_FUND("User role not Found"),
+    INVALID_BOOK_UPDATE_EXCEPTION("Invalid book update Exception");
 
 
 

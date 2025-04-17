@@ -1,6 +1,7 @@
 package azmiu.library.dao.repository;
 
 import azmiu.library.dao.entity.BookEntity;
+import azmiu.library.dao.entity.BookInventoryEntity;
 import io.micrometer.common.lang.NonNull;
 import io.micrometer.common.lang.NonNullApi;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +26,26 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
 
     Optional<BookEntity> findByBookCode(String bookCode);
 
+    @Query("SELECT b.bookInventory FROM BookEntity b WHERE b.title = :title AND b.author = :author AND b.publicationYear = :publicationYear")
+    Optional<BookInventoryEntity> findFirstByTitleAndAuthorAndPublicationYear(String title, String author, Integer publicationYear);
 
     @EntityGraph(attributePaths = {
             "bookInventory",
             "bookInventory.ratingDetails",
             "bookInventory.file",
+            "bookInventory.image",
+            "bookInventory.category",
+            "bookInventory.inventoryStatus",
+            "commonStatus"
+    })
+    Optional<BookEntity> findById(Long id);
+
+
+    @EntityGraph(attributePaths = {
+            "bookInventory",
+            "bookInventory.ratingDetails",
+            "bookInventory.file",
+            "bookInventory.image",
             "bookInventory.category",
             "bookInventory.inventoryStatus",
             "commonStatus"
@@ -39,6 +56,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
             "bookInventory",
             "bookInventory.ratingDetails",
             "bookInventory.file",
+            "bookInventory.image",
             "bookInventory.category",
             "bookInventory.inventoryStatus",
             "commonStatus"

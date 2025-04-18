@@ -2,8 +2,12 @@ package azmiu.library.mapper;
 
 import azmiu.library.dao.entity.CategoryEntity;
 import azmiu.library.dao.entity.CommonStatusEntity;
+import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.CategoryResponse;
+import azmiu.library.model.response.PageableResponse;
+import azmiu.library.model.response.UserResponse;
+import org.springframework.data.domain.Page;
 
 public enum CategoryMapper {
     CATEGORY_MAPPER;
@@ -25,6 +29,17 @@ public enum CategoryMapper {
 
     public void updateCategory(CategoryEntity categoryEntity, CategoryRequest categoryRequest){
         categoryEntity.setBookCategory(categoryRequest.getBookCategory());
+    }
+
+    public PageableResponse<CategoryResponse> pageableUserResponse(Page<CategoryEntity> categoryEntityPage){
+        return PageableResponse.<CategoryResponse>builder()
+                .list(categoryEntityPage.map(this::buildCategoryResponse).toList())
+                .currentPageNumber(categoryEntityPage.getNumber())
+                .totalPages(categoryEntityPage.getTotalPages())
+                .totalElements(categoryEntityPage.getTotalElements())
+                .numberOfElements(categoryEntityPage.getNumberOfElements())
+                .hasNextPage(categoryEntityPage.hasNext())
+                .build();
     }
 
 

@@ -33,10 +33,6 @@ dependencies {
     implementation 'org.springframework.retry:spring-retry'
 
 
-
-
-
-
     compileOnly "org.projectlombok:lombok:$lombok"
     annotationProcessor "org.projectlombok:lombok:$lombok"
 
@@ -86,9 +82,7 @@ dependencies {
     implementation "org.liquibase:liquibase-core"
     runtimeOnly "org.postgresql:postgresql"
 
-    //mail
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+    
 }
 
 test {

@@ -46,14 +46,14 @@ public class SavedBookEntity {
     LocalDateTime updatedAt;
 
     @ManyToOne(
-            cascade = {MERGE, PERSIST},
+            cascade = {MERGE},
             fetch = LAZY
     )
     @JoinColumn(name = "user_id")
     UserEntity user;
 
     @ManyToOne(
-            cascade = {MERGE, PERSIST},
+            cascade = {MERGE},
             fetch = LAZY
     )
     @JoinColumn(name = "book_inventory_id")

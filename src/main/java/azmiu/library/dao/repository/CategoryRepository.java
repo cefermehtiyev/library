@@ -18,6 +18,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity ,Long>,
     @EntityGraph(attributePaths = {
             "commonStatus"
     })
-    Page<CategoryEntity> findAll(@NonNull Specification<CategoryEntity> spec,@NonNull Pageable pageable);
+    Page<CategoryEntity> findAll( Specification<CategoryEntity> spec, Pageable pageable);
 
 }

@@ -57,6 +57,14 @@ public class BookInventoryEntity {
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
+    @ManyToOne(
+            cascade = {MERGE},
+            fetch = LAZY
+    )
+    @JoinColumn(name = "status_id")
+    @ToString.Exclude
+    CommonStatusEntity commonStatus;
+
     @OneToOne(
             fetch = LAZY,
             mappedBy = "bookInventory",
@@ -120,13 +128,7 @@ public class BookInventoryEntity {
     )
     Set<SavedBookEntity> savedBooks;
 
-    @ManyToOne(
-            cascade = {MERGE,PERSIST},
-            fetch = LAZY
-    )
-    @JoinColumn(name = "status_id")
-    @ToString.Exclude
-    CommonStatusEntity commonStatus;
+
 
 
     @Override

@@ -5,13 +5,12 @@ import azmiu.library.criteria.UserCriteria;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.request.RegistrationRequest;
-import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.UserIdResponse;
 import azmiu.library.model.response.UserResponse;
 
 public interface UserService {
-    void signIn(RegistrationRequest registrationRequest);
+    void signUp(RegistrationRequest registrationRequest);
 
     UserResponse getUser(Long userId);
 

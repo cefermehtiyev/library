@@ -20,4 +20,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity,Long>, Jp
     }
     )
     Page<StudentEntity> findAll(@NonNull Specification<StudentEntity>spec, @NonNull Pageable pageable);
+
+
 }

@@ -41,7 +41,10 @@ public class BookController {
 
 
     @GetMapping("/sorted")
-    public PageableResponse<BookResponse> getAllBooks( @RequestParam(defaultValue = "pages") String sortBy, @RequestParam(defaultValue = "asc") String order,PageCriteria pageCriteria,BookCriteria bookCriteria) {
+    public PageableResponse<BookResponse> getAllBooks( @RequestParam(defaultValue = "pages") String sortBy,
+                                                       @RequestParam(defaultValue = "asc") String order,
+                                                       PageCriteria pageCriteria,
+                                                       BookCriteria bookCriteria) {
         return bookService.getAllBooks(sortBy,order,pageCriteria, bookCriteria);
     }
 

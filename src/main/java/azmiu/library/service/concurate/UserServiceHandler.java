@@ -49,7 +49,7 @@ public class UserServiceHandler implements UserService {
 
     @Override
     @Transactional
-    public void signIn(RegistrationRequest registrationRequest) {
+    public void signUp(RegistrationRequest registrationRequest) {
         var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
         var hashedPassword = setPasswordEncoder(registrationRequest.getPassword());
         registrationRequest.setPassword(hashedPassword);

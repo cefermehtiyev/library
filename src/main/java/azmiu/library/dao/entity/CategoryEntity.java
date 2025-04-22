@@ -55,7 +55,7 @@ public class CategoryEntity {
 
     @ManyToOne(
             fetch = LAZY,
-            cascade = {MERGE, PERSIST}
+            cascade = {MERGE}
     )
     @JoinColumn(name = "status_id")
     @ToString.Exclude

@@ -9,7 +9,7 @@ import azmiu.library.service.abstraction.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static azmiu.library.exception.ErrorMessage.USER_ROLE_NOT_FUND;
+import static azmiu.library.exception.ErrorMessage.USER_ROLE_NOT_FOUND;
 import static azmiu.library.mapper.UserRoleMapper.USER_ROLE_MAPPER;
 
 @Service
@@ -40,7 +40,7 @@ public class UserRoleServiceHandler implements UserRoleService {
 
     private UserRoleEntity findById(Long id){
         return userRoleRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(USER_ROLE_NOT_FUND.getMessage())
+                () -> new NotFoundException(USER_ROLE_NOT_FOUND.getMessage())
         );
     }
 }

@@ -17,6 +17,4 @@ public class BookCriteria {
     private Integer publicationYearTo;
     private Integer readCountFrom;
     private Integer readCountTo;
-
-
 }

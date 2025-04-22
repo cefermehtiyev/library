@@ -8,7 +8,9 @@ import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.BookBorrowingService;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,13 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/borrow/history")
+@FieldDefaults(makeFinal = true,level = PRIVATE)
 public class BookBorrowingController {
-    private final BookBorrowingService bookBorrowingService;
+    BookBorrowingService bookBorrowingService;
 
     @PostMapping("/add")
     @ResponseStatus(NO_CONTENT)

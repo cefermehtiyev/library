@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudentController {
     private final StudentService studentService;
 
+
     @GetMapping
     public PageableResponse<StudentResponse> getAllStudents(PageCriteria pageCriteria, StudentCriteria studentCriteria){
         return studentService.getAllStudents(pageCriteria,studentCriteria);
     }
+
 }

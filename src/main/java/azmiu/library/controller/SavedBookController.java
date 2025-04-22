@@ -1,6 +1,8 @@
 package azmiu.library.controller;
 
+import azmiu.library.criteria.PageCriteria;
 import azmiu.library.model.response.BookResponse;
+import azmiu.library.model.response.PageableResponse;
 import azmiu.library.model.response.SavedBookResponse;
 import azmiu.library.service.abstraction.SavedBookService;
 import lombok.AccessLevel;
@@ -29,9 +31,9 @@ public class SavedBookController {
     public void saveBook(@RequestParam Long userId, @RequestParam Long bookInventoryId){
         savedBookService.saveBook(userId, bookInventoryId);
     }
-    @GetMapping("{userId}")
-    public List<SavedBookResponse> getUserSavedBooks(@PathVariable Long userId){
-        return savedBookService.getUserSavedBooks(userId);
+    @GetMapping
+    public PageableResponse<SavedBookResponse> getUserSavedBooks(@RequestParam Long userId, PageCriteria pageCriteria){
+        return savedBookService.getUserSavedBooks(userId,pageCriteria);
     }
 
     @DeleteMapping("{id}")

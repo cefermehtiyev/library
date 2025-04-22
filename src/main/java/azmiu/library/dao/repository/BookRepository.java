@@ -51,18 +51,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
             "bookInventory.inventoryStatus",
             "commonStatus"
     })
-    Page<BookEntity> findAll(@NonNull Specification<BookEntity> spec, @NonNull Pageable pageable);
+    Page<BookEntity> findAll(Specification<BookEntity> spec, Pageable pageable);
 
-    @EntityGraph(attributePaths = {
-            "bookInventory",
-            "bookInventory.ratingDetails",
-            "bookInventory.file",
-            "bookInventory.image",
-            "bookInventory.category",
-            "bookInventory.inventoryStatus",
-            "commonStatus"
-    })
-    List<BookEntity> findAll(@NonNull Specification<BookEntity> spec);
 
 
 

@@ -70,7 +70,7 @@ public class ImageServiceHandler implements ImageService {
 
     @Override
     public ResponseEntity<InputStreamResource> downloadImage(Long id) {
-        var imagePath = bookInventoryService.getBookInventoryEntity(id).getImage().getImagePath();
+        var imagePath = findImageById(id).getImagePath();
         return DownloadUtil.getFileResource(imagePath,true);
     }
 

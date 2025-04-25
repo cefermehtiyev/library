@@ -74,6 +74,9 @@ public enum BookMapper {
         bookEntity.setPages(bookRequest.getPages());
         bookEntity.setPublicationYear(bookRequest.getPublicationYear());
     }
+    public void updateBookCode(BookEntity bookEntity, String bookCode){
+        bookEntity.setBookCode(bookCode);
+    }
 
     public void updateBookEntity(BookEntity updatedBookEntity,BookEntity bookEntity){
         updatedBookEntity.setTitle(bookEntity.getTitle());

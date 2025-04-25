@@ -21,7 +21,7 @@ public interface BookInventoryService {
 
     void updateBookInventoryOnReturn(BookEntity bookEntity);
 
-    void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image);
+    void updateBooksInInventory(BookEntity bookEntity, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 
     void updateSingleBookInInventory(BookEntity bookEntity, BookRequest bookRequest, MultipartFile file, MultipartFile image);
 

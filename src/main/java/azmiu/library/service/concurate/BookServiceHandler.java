@@ -71,7 +71,7 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public List<BookInventoryEntity> test(String title, String author, Integer publicationYear) {
-        var data  = findInventoryByBookDetails(title,author,publicationYear);
+        var data = findInventoryByBookDetails(title, author, publicationYear);
         System.out.println(data);
         return null;
     }
@@ -102,8 +102,11 @@ public class BookServiceHandler implements BookService {
     @Transactional
     public void updateAllInstancesForBook(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         var bookEntity = findById(id);
-        bookEntity.setBookCode(bookRequest.getBookCode());
-        bookInventoryService.updateBooksInInventory(bookEntity.getBookInventory(), bookRequest, file, image);
+        if (!bookEntity.getBookCode().equals(bookRequest.getBookCode())) {
+            validateUniqueBookCode(bookRequest.getBookCode());
+        }
+        BOOK_MAPPER.updateBookCode(bookEntity, bookRequest.getBookCode());
+        bookInventoryService.updateBooksInInventory(bookEntity, bookRequest, file, image);
         bookRepository.save(bookEntity);
     }
 
@@ -111,13 +114,17 @@ public class BookServiceHandler implements BookService {
     @Transactional
     public void updateSingleBookInstance(Long id, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
         var bookEntity = findById(id);
-        if(!bookEntity.getBookCode().equals(bookRequest.getBookCode())){
-            if (bookRepository.existsByBookCode(bookRequest.getBookCode())){
-                throw new AlreadyExistsException(ErrorMessage.BOOK_CODE_ALREADY_EXISTS.getMessage());
-            }
+        if (!bookEntity.getBookCode().equals(bookRequest.getBookCode())) {
+            validateUniqueBookCode(bookRequest.getBookCode());
         }
-        bookEntity.setBookCode(bookRequest.getBookCode());
+        BOOK_MAPPER.updateBookCode(bookEntity, bookRequest.getBookCode());
         bookInventoryService.updateSingleBookInInventory(bookEntity, bookRequest, file, image);
+    }
+
+    public void validateUniqueBookCode(String newBookCode) {
+        if (bookRepository.existsByBookCode(newBookCode)) {
+            throw new AlreadyExistsException(ErrorMessage.BOOK_CODE_ALREADY_EXISTS.getMessage());
+        }
     }
 
 
@@ -128,8 +135,8 @@ public class BookServiceHandler implements BookService {
     }
 
     @Override
-    public Optional<BookInventoryEntity> findInventoryByBookDetails(String title, String author ,Integer publicationYear) {
-        return bookRepository.findFirstByTitleAndAuthorAndPublicationYear(title, author,publicationYear);
+    public Optional<BookInventoryEntity> findInventoryByBookDetails(String title, String author, Integer publicationYear) {
+        return bookRepository.findFirstByTitleAndAuthorAndPublicationYear(title, author, publicationYear);
     }
 
     @Override

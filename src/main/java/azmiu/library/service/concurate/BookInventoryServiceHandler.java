@@ -7,13 +7,11 @@ import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.repository.BookInventoryRepository;
-import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.exception.AlreadyExistsException;
 import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.InvalidUpdateException;
 import azmiu.library.exception.NotFoundException;
-import azmiu.library.mapper.BookMapper;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
 import azmiu.library.model.response.BookResponse;
@@ -84,6 +82,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
             throw new AlreadyExistsException(ErrorMessage.BOOK_ALREADY_EXISTS.getMessage());
         }
 
+
         var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
                 .map(existingInventory -> {
                     log.info("Inventory updated");
@@ -146,7 +145,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         BOOK_INVENTORY_MAPPER.updateCountsOnBookDeleted(bookInventoryEntity);
         determineInventoryStatus(bookInventoryEntity);
         log.info("Book reserved count :{}", bookInventoryEntity.getReservedQuantity());
-        System.out.println(bookInventoryEntity.getBooks().getFirst().getBookCode());
         if (bookInventoryEntity.getReservedQuantity() == 0) {
             bookInventoryRepository.delete(bookInventoryEntity);
             log.info("Book Deleted");
@@ -197,13 +195,44 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     }
 
     @Override
-    public void updateBooksInInventory(BookInventoryEntity bookInventory, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
-        bookInventory.getBooks().forEach(bookEntity -> BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest));
-        updateOrDeleteFile(bookInventory, file);
-        updateOrDeleteImage(bookInventory, image);
-        var category = categoryService.getCategoryEntity(bookRequest.getCategoryId());
-        BOOK_INVENTORY_MAPPER.updateBookInventory(bookInventory, category, bookRequest.getTitle(), bookRequest.getPublicationYear());
+    public void updateBooksInInventory(BookEntity bookEntity, BookRequest bookRequest, MultipartFile file, MultipartFile image) {
+        var currentInventory = bookEntity.getBookInventory();
+        if (isBookEquivalent(bookEntity, bookRequest)) {
+            if (validateBookDataConsistency(bookEntity, bookRequest)) {
+                log.info("Request data is consistent. Updating book code.");
+                bookEntity.setBookCode(bookRequest.getBookCode());
+            } else {
+                throw new InvalidUpdateException(ErrorMessage.INVALID_BOOK_UPDATE_EXCEPTION.getMessage());
+            }
+        } else {
+            reassignAllBooksToInventory(bookRequest, currentInventory, file, image);
+        }
+
         log.info("Book all instances updated in Inventory");
+    }
+
+    public void reassignAllBooksToInventory(BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
+        var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
+                .map(updatedBookInventory -> {
+                    System.out.println(currentInventory.getBooks());
+                    currentInventory.getBooks().forEach(bookEntity -> {
+                        BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(updatedBookInventory);
+                        BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
+                        bookEntity.setBookInventory(updatedBookInventory);
+                        updateInventoryAfterBookRemoval(currentInventory);
+                    });
+                    return updatedBookInventory;
+                })
+                .orElseGet(() -> {
+                    var newInventory = createNewBookInventory(bookRequest, file, image);
+                    currentInventory.getBooks().forEach(bookEntity -> {
+                        BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
+                        bookEntity.setBookInventory(newInventory);
+                    });
+                    return newInventory;
+                });
+        determineInventoryStatus(bookInventoryEntity);
+        bookInventoryRepository.save(bookInventoryEntity);
     }
 
     @Override
@@ -212,19 +241,15 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var currentInventory = bookEntity.getBookInventory();
 
         if (isBookEquivalent(bookEntity, bookRequest)) {
-            if (validateBookDataConsistency(bookEntity, bookRequest)) {
-                log.info("Request data is consistent. Updating book code.");
                 bookEntity.setBookCode(bookRequest.getBookCode());
-            } else {
-                throw new InvalidUpdateException(ErrorMessage.INVALID_BOOK_UPDATE_EXCEPTION.getMessage());
-            }
-        }else  {
+        } else {
             log.info("Book is not equivalent. Reassigning book to appropriate inventory.");
-            reassignBookToFoundInventory(bookEntity, bookRequest, currentInventory, file, image);
+            reassignSingleBookToInventory(bookEntity, bookRequest, currentInventory, file, image);
         }
     }
 
-    private void reassignBookToFoundInventory(BookEntity bookEntity, BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
+
+    private void reassignSingleBookToInventory(BookEntity bookEntity, BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
         var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
                 .map(bookInventory -> {
                     var updatedInventory = BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(bookInventory);
@@ -232,16 +257,18 @@ public class BookInventoryServiceHandler implements BookInventoryService {
                     bookEntity.setBookInventory(updatedInventory);
                     return updatedInventory;
                 })
-                .orElseGet(() ->{
-                    var  newInventory = createNewBookInventory(bookRequest, file, image);
-                    BOOK_MAPPER.updateBookEntity(bookEntity,bookRequest);
+                .orElseGet(() -> {
+                    var newInventory = createNewBookInventory(bookRequest, file, image);
+                    BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
                     bookEntity.setBookInventory(newInventory);
-                    return newInventory;});
+                    return newInventory;
+                });
         determineInventoryStatus(bookInventoryEntity);
         updateInventoryAfterBookRemoval(currentInventory);
         bookInventoryRepository.save(bookInventoryEntity);
     }
-    private void updateInventoryAfterBookRemoval(BookInventoryEntity bookInventory){
+
+    private void updateInventoryAfterBookRemoval(BookInventoryEntity bookInventory) {
         updateCountsOnBookDeleted(bookInventory);
         determineInventoryStatus(bookInventory);
     }

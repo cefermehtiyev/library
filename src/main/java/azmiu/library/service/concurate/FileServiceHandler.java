@@ -74,7 +74,7 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public ResponseEntity<InputStreamResource> downloadFile(Long id) {
-        var filePath = bookInventoryService.getBookInventoryEntity(id).getFile().getFilePath();
+        var filePath = findFileById(id).getFilePath();
         return DownloadUtil.getFileResource(filePath, false);
     }
 
@@ -83,7 +83,6 @@ public class FileServiceHandler implements FileService {
     public void updateFile(BookInventoryEntity bookInventoryEntity, MultipartFile file) {
 
         var fileEntity = saveUploadedFile( file);
-        System.out.println(bookInventoryEntity.getFile());
         var updatedFile = bookInventoryEntity.getFile();
         updatedFile.setFileSize(fileEntity.getFileSize());
         updatedFile.setFilePath(fileEntity.getFilePath());
@@ -96,6 +95,7 @@ public class FileServiceHandler implements FileService {
 
     @Override
     public void deleteFile(Long id) {
+        log.info("Removed file id: {}",id);
         var fileEntity = findFileById(id);
         fileEntity.setFilePath(null);
         fileEntity.setFileSize(null);

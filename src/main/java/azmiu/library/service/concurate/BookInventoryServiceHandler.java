@@ -241,6 +241,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var currentInventory = bookEntity.getBookInventory();
 
         if (isBookEquivalent(bookEntity, bookRequest)) {
+                updateOrDeleteImage(currentInventory, image);
+                updateOrDeleteFile(currentInventory, file);
                 bookEntity.setBookCode(bookRequest.getBookCode());
         } else {
             log.info("Book is not equivalent. Reassigning book to appropriate inventory.");

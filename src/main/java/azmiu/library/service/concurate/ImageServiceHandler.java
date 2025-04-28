@@ -38,7 +38,6 @@ import static azmiu.library.mapper.ImageMapper.IMAGE_MAPPER;
 @RequiredArgsConstructor
 public class ImageServiceHandler implements ImageService {
     private final ImageRepository imageRepository;
-    private final BookInventoryService bookInventoryService;
 
     @Override
     public ImageEntity uploadImage( MultipartFile image) {
@@ -64,7 +63,6 @@ public class ImageServiceHandler implements ImageService {
             return IMAGE_MAPPER.buildImageEntity(filePath, fileType, fileSize);
         } catch (IOException ex) {
             throw new FileStorageFailureException(ErrorMessage.FILE_STORAGE_FAILURE.getMessage());
-
         }
     }
 

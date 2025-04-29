@@ -6,5 +6,5 @@ import azmiu.library.model.enums.CommonStatus;
 public interface CommonStatusService {
     void addStatus(CommonStatus status);
     Long getCount();
-    CommonStatusEntity getCommonStatusEntity(Long id);
+    CommonStatusEntity getCommonStatusEntity(CommonStatus status);
 }

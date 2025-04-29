@@ -1,7 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
-import azmiu.library.configuration.InventoryStatusConfig;
 import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
@@ -12,6 +10,7 @@ import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.InvalidUpdateException;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.InventoryStatus;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
 import azmiu.library.model.response.BookResponse;
@@ -36,6 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static azmiu.library.mapper.BookInventoryMapper.BOOK_INVENTORY_MAPPER;
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
+import static azmiu.library.model.enums.InventoryStatus.IN_STOCK;
+import static azmiu.library.model.enums.InventoryStatus.LOW_STOCK;
+import static azmiu.library.model.enums.InventoryStatus.OUT_OF_STOCK;
 
 @Slf4j
 @Service
@@ -44,11 +47,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private final BookInventoryRepository bookInventoryRepository;
     private final BookService bookService;
     private final InventoryStatusService inventoryStatusService;
-    private final InventoryStatusConfig inventoryStatusConfig;
     private final FileService fileService;
     private final CategoryService categoryService;
     private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
     private final RatingDetailsService ratingDetailsService;
     private final ImageService imageService;
 
@@ -56,21 +57,17 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     public BookInventoryServiceHandler(BookInventoryRepository bookInventoryRepository,
                                        @Lazy BookService bookService,
                                        @Lazy InventoryStatusService inventoryStatusService,
-                                       @Lazy InventoryStatusConfig inventoryStatusConfig,
                                        @Lazy FileService fileService,
                                        @Lazy CategoryService categoryService,
                                        @Lazy CommonStatusService commonStatusService,
-                                       @Lazy CommonStatusConfig commonStatusConfig,
                                        @Lazy RatingDetailsService ratingDetailsService,
                                        @Lazy ImageService imageService) {
         this.bookInventoryRepository = bookInventoryRepository;
         this.bookService = bookService;
         this.inventoryStatusService = inventoryStatusService;
-        this.inventoryStatusConfig = inventoryStatusConfig;
         this.fileService = fileService;
         this.categoryService = categoryService;
         this.commonStatusService = commonStatusService;
-        this.commonStatusConfig = commonStatusConfig;
         this.ratingDetailsService = ratingDetailsService;
         this.imageService = imageService;
     }
@@ -99,8 +96,8 @@ public class BookInventoryServiceHandler implements BookInventoryService {
 
 
     private BookInventoryEntity createNewBookInventory(BookRequest bookRequest, MultipartFile file, MultipartFile image) {
-        var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(inventoryStatusConfig.getLowStock());
-        var commonStatus = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var inventoryStatus = inventoryStatusService.getInventoryEntityStatus(LOW_STOCK);
+        var commonStatus = commonStatusService.getCommonStatusEntity(ACTIVE);
         var fileEntity = fileService.uploadFile(file);
         var imageEntity = imageService.uploadImage(image);
         log.info("Inventory added");
@@ -123,11 +120,10 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var quantity = bookInventoryEntity.getAvailableQuantity();
         log.info("Available quantity {}", quantity);
 
-        var statusId = quantity == 0 ? inventoryStatusConfig.getStockOut() :
-                quantity < 3 ? inventoryStatusConfig.getLowStock() :
-                        inventoryStatusConfig.getInStock();
+        var status = quantity == 0 ? OUT_OF_STOCK :
+                quantity < 3 ? LOW_STOCK : IN_STOCK;
 
-        bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntityStatus(statusId));
+        bookInventoryEntity.setInventoryStatus(inventoryStatusService.getInventoryEntityStatus(status));
 
     }
 
@@ -177,7 +173,7 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var bookInventoryEntity = bookEntity.getBookInventory();
 
         if (bookInventoryEntity.getAvailableQuantity() <= 0) {
-            throw new NotFoundException(ErrorMessage.OUT_OF_STOCK.getMessage());
+            throw new NotFoundException(ErrorMessage.OUT_OF_STOCK_EXCEPTION.getMessage());
         }
 
         BOOK_INVENTORY_MAPPER.decreaseAvailableIncreaseBorrowed(bookInventoryEntity);

@@ -40,7 +40,7 @@ public enum ErrorMessage {
     SAVED_BOOK_ALREADY_EXISTS("Saved book already exists"),
 
     FILE_STORAGE_FAILURE("File storage operation failed"),
-    OUT_OF_STOCK("The book is out of stock"),
+    OUT_OF_STOCK_EXCEPTION("The book is out of stock"),
 
     BOOK_DATA_MISMATCH_EXCEPTION("Book data mismatch"),
     INVALID_FILE_URL("File url is invalid"),

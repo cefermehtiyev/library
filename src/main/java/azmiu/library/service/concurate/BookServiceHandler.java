@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.criteria.BookCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
@@ -12,6 +11,7 @@ import azmiu.library.exception.BookCurrentlyBorrowedException;
 import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.PageableResponse;
@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
 
 
 @Slf4j
@@ -43,26 +44,24 @@ import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 public class BookServiceHandler implements BookService {
     private final BookRepository bookRepository;
     private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
     private final BookInventoryService bookInventoryService;
     private final BookBorrowingService bookBorrowingService;
 
     public BookServiceHandler(BookRepository bookRepository,
                               @Lazy CommonStatusService commonStatusService,
-                              @Lazy CommonStatusConfig commonStatusConfig,
+
                               @Lazy BookInventoryService bookInventoryService,
                               @Lazy BookBorrowingService bookBorrowingService
     ) {
         this.bookRepository = bookRepository;
         this.commonStatusService = commonStatusService;
-        this.commonStatusConfig = commonStatusConfig;
         this.bookInventoryService = bookInventoryService;
         this.bookBorrowingService = bookBorrowingService;
     }
 
     @Override
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         bookEntity.setBookInventory(bookInventoryEntity);
         bookRepository.save(bookEntity);
@@ -82,10 +81,7 @@ public class BookServiceHandler implements BookService {
         return BOOK_MAPPER.buildBookResponse(findById(id));
     }
 
-    @Override
-    public BookEntity getInActiveBookByCode(String bookCode) {
-        return findByBookCodeStatusInActive(bookCode);
-    }
+
 
     @Override
     public BookEntity getActiveBookByCode(String bookCode) {
@@ -130,7 +126,7 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void setBookStatusToInactive(String bookCode) {
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getInActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         updateBookStatus(bookCode, status);
     }
 
@@ -141,7 +137,7 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void setBookStatusToActive(String bookCode) {
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         updateBookStatus(bookCode, status);
     }
 
@@ -188,11 +184,7 @@ public class BookServiceHandler implements BookService {
         );
     }
 
-    private BookEntity findByBookCodeStatusInActive(String bookCode) {
-        return bookRepository.findInActiveBookByBookCode(bookCode).orElseThrow(
-                () -> new NotFoundException(ErrorMessage.BOOK_NOT_FOUND.getMessage())
-        );
-    }
+
 
     private BookEntity findByBookCode(String bookCode) {
         return bookRepository.findByBookCode(bookCode).orElseThrow(

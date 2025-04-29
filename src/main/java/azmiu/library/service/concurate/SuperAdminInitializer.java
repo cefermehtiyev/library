@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.model.enums.BorrowStatus;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static azmiu.library.mapper.CategoryMapper.CATEGORY_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
 import static azmiu.library.model.enums.RoleName.SUPER_ADMIN;
 
 @Slf4j
@@ -26,7 +26,6 @@ public class SuperAdminInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
     private final BorrowStatusService borrowStatusService;
     private final InventoryStatusService inventoryStatusService;
     private final UserRoleService userRoleService;
@@ -83,7 +82,7 @@ public class SuperAdminInitializer implements CommandLineRunner {
         var superAdminUserName = "superadmin";
 
         if (userRepository.findByUserName(superAdminUserName).isEmpty()) {
-            var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+            var status = commonStatusService.getCommonStatusEntity(ACTIVE);
             var role = userRoleService.getUserRole(SUPER_ADMIN);
 
             var superAdmin = UserEntity.builder()

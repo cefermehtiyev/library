@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.dao.entity.BookInventoryEntity;
 import azmiu.library.dao.entity.RatingEntity;
 import azmiu.library.dao.repository.RatingRepository;
@@ -26,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static azmiu.library.mapper.RatingDetailsMapper.RATING_DETAILS_MAPPER;
 import static azmiu.library.mapper.RatingMapper.RATING_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
+import static azmiu.library.model.enums.CommonStatus.REMOVED;
 
 @Slf4j
 @Service
@@ -35,7 +36,6 @@ public class RatingServiceHandler implements RatingService {
     private final RatingDetailsService ratingDetailsService;
     private final BookInventoryService bookInventoryService;
     private final UserService userService;
-    private final CommonStatusConfig commonStatusConfig;
     private final CommonStatusService commonStatusService;
 
     @Override
@@ -43,11 +43,11 @@ public class RatingServiceHandler implements RatingService {
     public void insertOrUpdateRating(RatingRequest ratingRequest) {
         var bookInventoryEntity = bookInventoryService.getBookInventoryEntity(ratingRequest.getBookInventoryId());
         var userEntity = userService.getUserEntity(ratingRequest.getUserId());
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         var ratingEntityOptional = ratingRepository.findByBookInventoryIdAndUserId(ratingRequest.getBookInventoryId(), ratingRequest.getUserId());
         var ratingEntity = ratingEntityOptional
                 .map(existingRating -> {
-                    if (existingRating.getCommonStatus().getStatus().equals(CommonStatus.REMOVED)) {
+                    if (existingRating.getCommonStatus().getStatus().equals(REMOVED)) {
                         existingRating.setCommonStatus(status);
                         ratingDetailsService.insertRatingDetails(RATING_MAPPER.buildRatingDto(existingRating));
                     } else {
@@ -75,7 +75,7 @@ public class RatingServiceHandler implements RatingService {
     @Transactional
     public void removeRating(Long bookInventoryId, Long userId) {
         var rating = findByBookInventoryIdAndUserId(bookInventoryId, userId);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        var status = commonStatusService.getCommonStatusEntity(REMOVED);
         rating.setCommonStatus(status);
         ratingDetailsService.removeRatingDetails(RATING_MAPPER.buildRatingDto(rating));
         ratingRepository.save(rating);

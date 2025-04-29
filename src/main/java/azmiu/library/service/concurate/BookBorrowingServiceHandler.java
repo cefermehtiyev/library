@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.BorrowStatusConfig;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookBorrowingEntity;
 import azmiu.library.dao.entity.BookEntity;
@@ -8,6 +7,7 @@ import azmiu.library.dao.entity.UserEntity;
 import azmiu.library.dao.repository.BookBorrowHistoryRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.BorrowStatus;
 import azmiu.library.model.request.BorrowRequest;
 import azmiu.library.model.request.ReturnRequest;
 import azmiu.library.model.response.BookBorrowHistoryResponse;
@@ -28,6 +28,8 @@ import java.util.List;
 
 import static azmiu.library.mapper.BookBorrowingMapper.BOOK_LOAN_HISTORY_MAPPER;
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
+import static azmiu.library.model.enums.BorrowStatus.PENDING;
+import static azmiu.library.model.enums.BorrowStatus.RETURNED;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +39,11 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     private final BookInventoryService bookInventoryService;
     private final BookService bookService;
     private final BorrowStatusService borrowStatusService;
-    private final BorrowStatusConfig borrowStatusConfig;
 
 
     @Override
     public void addBookToBorrowHistory(UserEntity userEntity, BookEntity bookEntity) {
-        var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getPending());
+        var status = borrowStatusService.getBorrowStatus(PENDING);
         bookBorrowHistoryRepository.save(BOOK_LOAN_HISTORY_MAPPER.buildBookBorrowHistoryEntity(userEntity, bookEntity, status));
     }
 
@@ -57,7 +58,7 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
 
     private void updateBookHistory( BookEntity bookEntity) {
         var bookBorrowHistory = findByBookIdAndStatusPending( bookEntity.getId());
-        var status = borrowStatusService.getBorrowStatus(borrowStatusConfig.getReturned());
+        var status = borrowStatusService.getBorrowStatus(RETURNED);
         BOOK_LOAN_HISTORY_MAPPER.updateReturnBookBorrowHistory(bookBorrowHistory, status);
         bookBorrowHistoryRepository.save(bookBorrowHistory);
         bookInventoryService.updateBookInventoryOnReturn(bookEntity);
@@ -66,7 +67,7 @@ public class BookBorrowingServiceHandler implements BookBorrowingService {
     @Override
     @Transactional
     public void processBookReturn(ReturnRequest returnRequest) {
-        var bookEntity = bookService.getInActiveBookByCode(returnRequest.getBookCode());
+        var bookEntity = bookService.getActiveBookByCode(returnRequest.getBookCode());
         bookService.setBookStatusToActive(returnRequest.getBookCode());
         updateBookHistory(bookEntity);
     }

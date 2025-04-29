@@ -6,5 +6,6 @@ import azmiu.library.model.enums.BorrowStatus;
 public interface BorrowStatusService {
     void addStatus(BorrowStatus status);
     Long getCount();
-    BorrowStatusEntity getBorrowStatus(Long id);
+    BorrowStatusEntity getBorrowStatus(BorrowStatus status);
+
 }

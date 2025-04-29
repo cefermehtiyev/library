@@ -26,13 +26,15 @@ public class BorrowStatusServiceHandler implements BorrowStatusService {
         return borrowStatusRepository.count();
     }
 
+
     @Override
-    public BorrowStatusEntity getBorrowStatus(Long id) {
-        return findById(id);
+    public BorrowStatusEntity getBorrowStatus(BorrowStatus borrowStatus) {
+        return findByStatus(borrowStatus);
     }
 
-    private BorrowStatusEntity findById(Long id){
-        return borrowStatusRepository.findById(id).orElseThrow(
+
+    private BorrowStatusEntity findByStatus(BorrowStatus borrowStatus){
+        return borrowStatusRepository.findByStatus(borrowStatus).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.BORROW_STATUS_NOT_FOUND.getMessage())
         );
     }

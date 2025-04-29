@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.criteria.UserCriteria;
 import azmiu.library.dao.entity.UserEntity;
@@ -8,6 +7,7 @@ import azmiu.library.dao.repository.BookRepository;
 import azmiu.library.dao.repository.UserRepository;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.enums.RoleName;
 import azmiu.library.model.request.AuthRequest;
 import azmiu.library.model.request.RegistrationRequest;
@@ -31,11 +31,9 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 import static azmiu.library.mapper.UserMapper.USER_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
+import static azmiu.library.model.enums.CommonStatus.REMOVED;
 
 @RequiredArgsConstructor
 @Service
@@ -43,14 +41,13 @@ public class UserServiceHandler implements UserService {
     private final UserRepository userRepository;
     private final RegistrationStrategy registrationStrategy;
     private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
 
     @Override
     @Transactional
     public void signUp(RegistrationRequest registrationRequest) {
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         var hashedPassword = setPasswordEncoder(registrationRequest.getPassword());
         registrationRequest.setPassword(hashedPassword);
         var userRole = userRoleService.getUserRole(registrationRequest.getRoleName());
@@ -101,7 +98,7 @@ public class UserServiceHandler implements UserService {
     @Override
     public void deleteUser(Long userId) {
         var userEntity = findById(userId);
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getRemoved());
+        var status = commonStatusService.getCommonStatusEntity(REMOVED);
         userEntity.setCommonStatus(status);
         userRepository.save(userEntity);
     }

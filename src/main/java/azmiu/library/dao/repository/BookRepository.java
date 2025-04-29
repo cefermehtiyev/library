@@ -21,9 +21,6 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>,JpaSpeci
     @Query("SELECT b FROM BookEntity b WHERE b.bookCode = :bookCode AND b.commonStatus.status = 'ACTIVE'")
     Optional<BookEntity> findActiveBookByBookCode(String bookCode);
 
-    @Query("SELECT b FROM BookEntity b WHERE b.bookCode = :bookCode AND b.commonStatus.status = 'INACTIVE'")
-    Optional<BookEntity> findInActiveBookByBookCode(String bookCode);
-
     Optional<BookEntity> findByBookCode(String bookCode);
 
 

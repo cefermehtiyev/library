@@ -28,12 +28,13 @@ public class InventoryStatusServiceHandler implements InventoryStatusService {
     }
 
     @Override
-    public InventoryStatusEntity getInventoryEntityStatus(Long id) {
-        return fetchByExist(id);
+    public InventoryStatusEntity getInventoryEntityStatus(InventoryStatus inventoryStatus) {
+        return findByStatus(inventoryStatus);
     }
 
-    private InventoryStatusEntity fetchByExist(Long id){
-        return inventoryStatusRepository.findById(id).orElseThrow(
+
+    private InventoryStatusEntity findByStatus(InventoryStatus inventoryStatus) {
+        return inventoryStatusRepository.findByStatus(inventoryStatus).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.INVENTORY_STATUS_NOT_FOUND.getMessage())
         );
     }

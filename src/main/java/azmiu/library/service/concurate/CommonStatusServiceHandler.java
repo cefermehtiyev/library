@@ -27,12 +27,13 @@ public class CommonStatusServiceHandler implements CommonStatusService {
     }
 
     @Override
-    public CommonStatusEntity getCommonStatusEntity(Long id){
-        return findById(id);
+    public CommonStatusEntity getCommonStatusEntity(CommonStatus status){
+        return findByStatus(status);
     }
 
-    private CommonStatusEntity findById(Long id){
-        return commonStatusRepository.findById(id).orElseThrow(
+
+    private CommonStatusEntity findByStatus(CommonStatus status){
+        return commonStatusRepository.findByStatus(status).orElseThrow(
                 () -> new NotFoundException(ErrorMessage.COMMON_STATUS_NOT_FOUND.getMessage())
         );
     }

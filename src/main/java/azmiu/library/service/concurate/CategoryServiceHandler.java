@@ -1,6 +1,5 @@
 package azmiu.library.service.concurate;
 
-import azmiu.library.configuration.CommonStatusConfig;
 import azmiu.library.criteria.CategoryCriteria;
 import azmiu.library.criteria.PageCriteria;
 import azmiu.library.dao.entity.BookEntity;
@@ -12,6 +11,7 @@ import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.NotFoundException;
 import azmiu.library.exception.ResourceHasRelationsException;
 import azmiu.library.mapper.CategoryMapper;
+import azmiu.library.model.enums.CommonStatus;
 import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.CategoryResponse;
@@ -28,20 +28,20 @@ import java.util.List;
 
 import static azmiu.library.mapper.BookMapper.BOOK_MAPPER;
 import static azmiu.library.mapper.CategoryMapper.CATEGORY_MAPPER;
+import static azmiu.library.model.enums.CommonStatus.ACTIVE;
 
 @RequiredArgsConstructor
 @Service
 public class CategoryServiceHandler implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CommonStatusService commonStatusService;
-    private final CommonStatusConfig commonStatusConfig;
 
     @Override
     public void addCategory(CategoryRequest categoryRequest) {
         if (categoryRepository.existsByBookCategory(categoryRequest.getBookCategory())) {
             throw new AlreadyExistsException(ErrorMessage.CATEGORY_ALREADY_EXISTS.getMessage());
         }
-        var status = commonStatusService.getCommonStatusEntity(commonStatusConfig.getActive());
+        var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest, status));
 
     }

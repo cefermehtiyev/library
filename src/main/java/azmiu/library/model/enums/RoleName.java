@@ -8,6 +8,4 @@ public enum RoleName {
     EMPLOYEE,
     ADMIN,
     SUPER_ADMIN,
-
-
 }

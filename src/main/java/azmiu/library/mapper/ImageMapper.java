@@ -15,4 +15,10 @@ public enum ImageMapper {
                 .imageSize(imageSize)
                 .build();
     }
+
+    public void removeImageDetails(ImageEntity imageEntity){
+        imageEntity.setImagePath(null);
+        imageEntity.setImageSize(null);
+        imageEntity.setImageType(null);
+    }
 }

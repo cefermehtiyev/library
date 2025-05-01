@@ -11,8 +11,10 @@ import org.springframework.data.domain.Page;
 public enum StudentMapper {
     STUDENT_MAPPER;
 
-    public StudentEntity buildStudentEntity(StudentRequest request) {
-        return StudentEntity.builder()
+    public StudentEntity buildStudentEntity(UserEntity userEntity,StudentRequest request) {
+        return StudentEntity
+                .builder()
+                .user(userEntity)
                 .specialization(request.getSpecialization())
                 .course(request.getCourse())
                 .groupName(request.getGroup())

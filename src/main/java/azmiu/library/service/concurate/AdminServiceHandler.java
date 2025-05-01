@@ -24,8 +24,7 @@ public class AdminServiceHandler implements AdminService {
 
     @Override
     public void addAdmin(UserEntity userEntity, AdminRequest adminRequest) {
-        var admin = ADMIN_MAPPER.buildAdminEntity(adminRequest);
-        admin.setUser(userEntity);
+        var admin = ADMIN_MAPPER.buildAdminEntity(userEntity,adminRequest);
         adminRepository.save(admin);
     }
 

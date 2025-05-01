@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 public enum AdminMapper {
     ADMIN_MAPPER;
 
-    public AdminEntity buildAdminEntity(AdminRequest adminRequest) {
-        return AdminEntity.builder()
+    public AdminEntity buildAdminEntity(UserEntity userEntity, AdminRequest adminRequest) {
+        return AdminEntity
+                .builder()
+                .user(userEntity)
                 .adminRole(adminRequest.getAdminRole())
                 .build();
     }

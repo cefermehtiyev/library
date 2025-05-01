@@ -23,8 +23,7 @@ public class EmployeeServiceHandler implements EmployeeService {
 
     @Override
     public void addEmployee(UserEntity userEntity, EmployeeRequest request) {
-        var employee = EMPLOYEE_MAPPER.buildEmployeeEntity(request);
-        employee.setUser(userEntity);
+        var employee = EMPLOYEE_MAPPER.buildEmployeeEntity(userEntity,request);
         employeeRepository.save(employee);
     }
 

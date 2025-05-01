@@ -27,14 +27,12 @@ public class StudentServiceHandler implements StudentService {
 
     @Override
     public void addStudent(UserEntity userEntity, StudentRequest studentRequest) {
-        var student = STUDENT_MAPPER.buildStudentEntity(studentRequest);
-        student.setUser(userEntity);
+        var student = STUDENT_MAPPER.buildStudentEntity(userEntity,studentRequest);
         studentRepository.save(student);
     }
 
     @Override
     public StudentResponse getStudent(Long id) {
-
         return STUDENT_MAPPER.buildStudentResponse(fetchEntityExist(id));
     }
 

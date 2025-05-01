@@ -32,7 +32,6 @@ public class RatingDetailsServiceHandler implements RatingDetailsService {
     private final CacheService cacheService;
     private final RatingDetailsRepository ratingDetailsRepository;
     private final BookInventoryService bookInventoryService;
-    private final ServletConfig servletConfig;
 
 
     public void initializeRatingDetails(BookInventoryEntity bookInventoryEntity) {

@@ -44,14 +44,7 @@ public class SavedBookServiceHandler implements SavedBookService {
 
 
 
-//    @Override
-//    public List<SavedBookResponse> getUserSavedBooks(Long userId) {
-//        var user = userService.getUserEntity(userId);
-//
-//        return user.getSavedBooks().stream()
-//                .map(SAVED_BOOK_MAPPER::buildSavedBookResponse).toList();
-//    }
-
+    @Override
     public PageableResponse<SavedBookResponse> getUserSavedBooks(Long userId, PageCriteria pageCriteria){
         var page = savedBookRepository.findAllByUserId(userId,
                 PageRequest.of(pageCriteria.getPage(),pageCriteria.getCount()));

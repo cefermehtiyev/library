@@ -52,7 +52,6 @@ public class UserServiceHandler implements UserService {
         registrationRequest.setPassword(hashedPassword);
         var userRole = userRoleService.getUserRole(registrationRequest.getRoleName());
         var userEntity = USER_MAPPER.buildUserEntity(registrationRequest, status, userRole);
-
         userRepository.save(userEntity);
         registrationStrategy.register(userEntity, registrationRequest);
     }

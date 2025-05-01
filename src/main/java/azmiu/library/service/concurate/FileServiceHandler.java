@@ -42,9 +42,7 @@ import static azmiu.library.mapper.ImageMapper.IMAGE_MAPPER;
 @RequiredArgsConstructor
 @Service
 public class FileServiceHandler implements FileService {
-    private final BookInventoryService bookInventoryService;
     private final FileRepository fileRepository;
-    private final ImageRepository imageRepository;
 
     @Override
     public FileEntity uploadFile( MultipartFile file) {

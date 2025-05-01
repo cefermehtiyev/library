@@ -88,9 +88,7 @@ public class ImageServiceHandler implements ImageService {
     @Override
     public void deleteImage(Long imageId) {
         var imageEntity = findImageById(imageId);
-        imageEntity.setImagePath(null);
-        imageEntity.setImageSize(null);
-        imageEntity.setImageType(null);
+        IMAGE_MAPPER.removeImageDetails(imageEntity);
         imageRepository.save(imageEntity);
     }
 

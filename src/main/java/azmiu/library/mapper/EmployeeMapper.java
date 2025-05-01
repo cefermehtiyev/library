@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 public enum EmployeeMapper {
     EMPLOYEE_MAPPER;
 
-    public EmployeeEntity buildEmployeeEntity(EmployeeRequest request){
-        return EmployeeEntity.builder()
+    public EmployeeEntity buildEmployeeEntity(UserEntity userEntity, EmployeeRequest request){
+        return EmployeeEntity.builder().user(userEntity)
                 .department(request.getDepartment())
                 .position(request.getPosition())
                 .build();

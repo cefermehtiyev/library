@@ -61,6 +61,7 @@ public class BookServiceHandler implements BookService {
 
     @Override
     public void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity) {
+        bookRequest.setTitle(capitalizeWords(bookRequest.getTitle()));
         var status = commonStatusService.getCommonStatusEntity(ACTIVE);
         var bookEntity = BOOK_MAPPER.buildBookEntity(bookRequest, status);
         bookEntity.setBookInventory(bookInventoryEntity);
@@ -68,12 +69,6 @@ public class BookServiceHandler implements BookService {
     }
 
 
-    @Override
-    public List<BookInventoryEntity> test(String title, String author, Integer publicationYear) {
-        var data = findInventoryByBookDetails(title, author, publicationYear);
-        System.out.println(data);
-        return null;
-    }
 
 
     @Override
@@ -151,12 +146,31 @@ public class BookServiceHandler implements BookService {
     public PageableResponse<BookResponse> getAllBooks(String sortBy, String order, PageCriteria pageCriteria, BookCriteria bookCriteria) {
         Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortBy);
-
         var bookPage = bookRepository.findAll(
                 new BookSpecification(bookCriteria),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount(), sort)
         );
         return BOOK_MAPPER.pageableBookResponse(bookPage);
+    }
+    private String capitalizeWords(String sentence) {
+        if (sentence == null || sentence.isEmpty()) {
+            return sentence;
+        }
+
+        String[] words = sentence.trim().split("\\s+");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)));
+                if (word.length() > 1) {
+                    result.append(word.substring(1).toLowerCase());
+                }
+                result.append(" ");
+            }
+        }
+
+        return result.toString().trim();
     }
 
 

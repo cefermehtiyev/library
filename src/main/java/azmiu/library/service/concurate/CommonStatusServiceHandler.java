@@ -13,7 +13,8 @@ import static azmiu.library.mapper.CommonStatusMapper.COMMON_STATUS_MAPPER;
 
 @Service
 @RequiredArgsConstructor
-public class CommonStatusServiceHandler implements CommonStatusService {
+public class
+CommonStatusServiceHandler implements CommonStatusService {
     private final CommonStatusRepository commonStatusRepository;
 
     @Override

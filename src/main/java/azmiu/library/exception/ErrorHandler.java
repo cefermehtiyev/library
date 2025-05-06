@@ -31,6 +31,13 @@ public class ErrorHandler {
         return new ErrorResponse(UNEXPECTED_ERROR.getMessage());
     }
 
+    @ExceptionHandler(FileStorageFailureException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ErrorResponse handle(FileStorageFailureException ex){
+        log.error("FileStorageFailureException: ",ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(METHOD_NOT_ALLOWED)
     public ErrorResponse handle(HttpRequestMethodNotSupportedException ex) {

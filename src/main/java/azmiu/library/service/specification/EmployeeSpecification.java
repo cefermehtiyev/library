@@ -25,14 +25,14 @@ public class EmployeeSpecification implements Specification<EmployeeEntity> {
         var predicates = PredicateUtil.builder()
                 .addNullSafety(
                         employeeCriteria.getUserName(),
-                        userName -> cb.like(userJoin.get(CriteriaConstants.USER_NAME), applyLikePattern(userName))
+                        userName -> cb.like(cb.lower(userJoin.get(CriteriaConstants.USER_NAME)), applyLikePattern(userName.toLowerCase()))
                 )
                 .addNullSafety(
                         employeeCriteria.getDepartment(),
-                        department -> cb.like(root.get(CriteriaConstants.DEPARTMENT), applyLikePattern(department))
+                        department -> cb.like(cb.lower(root.get(CriteriaConstants.DEPARTMENT)), applyLikePattern(department.toLowerCase()))
                 ).addNullSafety(
                         employeeCriteria.getPosition(),
-                        position -> cb.like(root.get(CriteriaConstants.POSITION),applyLikePattern(position))
+                        position -> cb.like(cb.lower(root.get(CriteriaConstants.POSITION)),applyLikePattern(position.toLowerCase()))
                 )
                 .build();
 

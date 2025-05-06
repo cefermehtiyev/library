@@ -16,7 +16,8 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity ,Long>,
     boolean existsByBookCategory(String bookCategory);
 
     @EntityGraph(attributePaths = {
-            "commonStatus"
+            "commonStatus",
+            "image"
     })
     Page<CategoryEntity> findAll( Specification<CategoryEntity> spec, Pageable pageable);
 

@@ -40,7 +40,7 @@ public class BookController {
 
 
 
-    @GetMapping("/sorted")
+    @GetMapping
     public PageableResponse<BookResponse> getAllBooks( @RequestParam(defaultValue = "pages") String sortBy,
                                                        @RequestParam(defaultValue = "asc") String order,
                                                        PageCriteria pageCriteria,
@@ -65,10 +65,7 @@ public class BookController {
         bookService.updateSingleBookInstance(id, bookRequest, file, image);
     }
 
-    @GetMapping
-    public List<BookInventoryEntity> test(@RequestParam String title, @RequestParam String author, @RequestParam Integer publicationYear){
-        return bookService.test(title, author, publicationYear);
-    }
+
 
 
     @DeleteMapping("/{id}")

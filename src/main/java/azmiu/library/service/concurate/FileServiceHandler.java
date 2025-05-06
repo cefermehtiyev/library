@@ -71,8 +71,7 @@ public class FileServiceHandler implements FileService {
 
 
     @Override
-    public ResponseEntity<InputStreamResource> downloadFile(Long id) {
-        var filePath = findFileById(id).getFilePath();
+    public ResponseEntity<InputStreamResource> downloadFile(String filePath) {
         return DownloadUtil.getFileResource(filePath, false);
     }
 

@@ -11,7 +11,7 @@ public interface ImageService {
 
     ImageEntity uploadImage(MultipartFile file);
 
-    ResponseEntity<InputStreamResource> downloadImage(Long id);
+    ResponseEntity<InputStreamResource> downloadImage(String imagePath);
 
 
     void updateImage(BookInventoryEntity bookInventoryEntity, MultipartFile image);

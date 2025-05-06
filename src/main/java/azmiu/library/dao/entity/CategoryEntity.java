@@ -1,6 +1,7 @@
 package azmiu.library.dao.entity;
 
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,6 +61,14 @@ public class CategoryEntity {
     @JoinColumn(name = "status_id")
     @ToString.Exclude
     CommonStatusEntity commonStatus;
+
+    @OneToOne(
+            fetch = LAZY,
+            cascade = {MERGE,REMOVE}
+    )
+    @JoinColumn(name = "image_id")
+    @ToString.Exclude
+    ImageEntity image;
 
 
     @Override

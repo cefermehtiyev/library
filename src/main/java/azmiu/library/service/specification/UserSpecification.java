@@ -19,12 +19,12 @@ public class UserSpecification implements Specification<UserEntity> {
 
 
     @Override
-    public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         var predicates = PredicateUtil.builder().addNullSafety(
                 userCriteria.getUserName(),
-                userName -> criteriaBuilder.like(root.get(USER_NAME),PredicateUtil.applyLikePattern(userName))
+                userName -> cb.like(cb.lower(root.get(USER_NAME)),PredicateUtil.applyLikePattern(userName.toLowerCase()))
         ).build();
-        return criteriaBuilder.and(predicates);
+        return cb.and(predicates);
     }
 
 

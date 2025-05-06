@@ -18,10 +18,13 @@ import azmiu.library.model.response.CategoryResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.CategoryService;
 import azmiu.library.service.abstraction.CommonStatusService;
+import azmiu.library.service.abstraction.ImageService;
 import azmiu.library.service.specification.CategorySpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,15 +38,17 @@ import static azmiu.library.model.enums.CommonStatus.ACTIVE;
 public class CategoryServiceHandler implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CommonStatusService commonStatusService;
+    private final ImageService imageService;
 
     @Override
-    public void addCategory(CategoryRequest categoryRequest) {
+    @Transactional
+    public void addCategory(CategoryRequest categoryRequest, MultipartFile image) {
         if (categoryRepository.existsByBookCategory(categoryRequest.getBookCategory())) {
             throw new AlreadyExistsException(ErrorMessage.CATEGORY_ALREADY_EXISTS.getMessage());
         }
+        var imageEntity = imageService.uploadImage(image);
         var status = commonStatusService.getCommonStatusEntity(ACTIVE);
-        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest, status));
-
+        categoryRepository.save(CATEGORY_MAPPER.buildCategoryEntity(categoryRequest, status, imageEntity));
     }
 
     @Override

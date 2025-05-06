@@ -30,14 +30,14 @@ public class StudentSpecification implements Specification<StudentEntity> {
         var predicates = PredicateUtil.builder()
                 .addNullSafety(
                         studentCriteria.getUserName(),
-                        userName -> cb.like(userJoin.get(USER_NAME), applyLikePattern(userName))
+                        userName -> cb.like(cb.lower(userJoin.get(USER_NAME)), applyLikePattern(userName.toLowerCase()))
                 )
                 .addNullSafety(
                         studentCriteria.getSpecialization(),
-                        specialization -> cb.like(root.get(SPECIALIZATION), applyLikePattern(specialization))
+                        specialization -> cb.like(cb.lower(root.get(SPECIALIZATION)), applyLikePattern(specialization.toLowerCase()))
                 ).addNullSafety(
                         studentCriteria.getGroupName(),
-                        groupName -> cb.like(root.get(GROUP_NAME),applyLikePattern(groupName))
+                        groupName -> cb.like(cb.lower(root.get(GROUP_NAME)),applyLikePattern(groupName.toLowerCase()))
                 ).addNullSafety(
                         studentCriteria.getCourseFrom(),
                         courseFrom -> cb.greaterThanOrEqualTo(root.get(CriteriaConstants.COURSE),courseFrom)

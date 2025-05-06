@@ -24,6 +24,11 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
+              - column:
+                  name: image_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
 
 
   - changeSet:
@@ -35,5 +40,15 @@ databaseChangeLog:
             baseColumnNames: status_id
             constraintName: fk_categories_status
             referencedTableName: common_statuses
+            referencedColumnNames: id
+  - changeSet:
+      id: category  set images
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: image_id
+            constraintName: fk_category_image
+            referencedTableName: images
             referencedColumnNames: id
 

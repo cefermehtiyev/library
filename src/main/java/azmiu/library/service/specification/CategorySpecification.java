@@ -25,7 +25,7 @@ public class CategorySpecification implements Specification<CategoryEntity> {
     public Predicate toPredicate(Root<CategoryEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         var predicates = PredicateUtil.builder()
                 .addNullSafety(categoryCriteria.getBookCategory(),
-                        bookCategory -> cb.like(root.get(CriteriaConstants.BOOK_CATEGORY),applyLikePattern(bookCategory)))
+                        bookCategory -> cb.like(cb.lower(root.get(CriteriaConstants.BOOK_CATEGORY)),applyLikePattern(bookCategory.toLowerCase())))
                 .build();
 
         return cb.and(predicates);

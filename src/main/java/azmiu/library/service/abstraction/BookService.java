@@ -15,8 +15,6 @@ import java.util.Optional;
 public interface BookService {
     void addBook(BookRequest bookRequest, BookInventoryEntity bookInventoryEntity);
 
-    List<BookInventoryEntity> test(String title, String author,Integer publicationYear);
-
     BookResponse getBook(Long id);
 
     BookEntity getActiveBookByCode(String bookCode);

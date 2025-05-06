@@ -19,8 +19,8 @@ public class ImageController {
 
     @GetMapping("/download-image")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public ResponseEntity<InputStreamResource> downloadImage(@RequestParam Long id) {
-        return imageService.downloadImage(id);
+    public ResponseEntity<InputStreamResource> downloadImage(@RequestParam String imagePath) {
+        return imageService.downloadImage(imagePath);
     }
 
     @DeleteMapping("/image/{imageId}")

@@ -19,8 +19,8 @@ public class FileController {
 
     @GetMapping("/download-file")
 //    @PreAuthorize("hasRole('SUPER_ADMIN')||hasRole('ADMIN')")
-    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam Long id) {
-        return fileService.downloadFile(id);
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam String path) {
+        return fileService.downloadFile(path);
     }
 
 

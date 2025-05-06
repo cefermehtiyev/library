@@ -27,9 +27,9 @@ public class BookInventorySpecification implements Specification<BookInventoryEn
 
         var predicates = PredicateUtil.builder()
                 .addNullSafety(bookCriteria.getTitle(),
-                        title -> cb.like(bookJoin.get(CriteriaConstants.TITLE), applyLikePattern(title)))
+                        title -> cb.like(cb.lower(bookJoin.get(CriteriaConstants.TITLE)), applyLikePattern(title.toLowerCase())))
                 .addNullSafety(bookCriteria.getAuthor(),
-                        author -> cb.like(bookJoin.get(CriteriaConstants.AUTHOR), applyLikePattern(author)))
+                        author -> cb.like(cb.lower(bookJoin.get(CriteriaConstants.AUTHOR)), applyLikePattern(author.toLowerCase())))
                 .addNullSafety(
                         bookCriteria.getPublicationYearFrom(),
                         publicationYearFrom -> cb.greaterThanOrEqualTo(bookJoin.get(PUBLICATION_YEAR), publicationYearFrom))
@@ -37,7 +37,7 @@ public class BookInventorySpecification implements Specification<BookInventoryEn
                         bookCriteria.getPublicationYearTo(),
                         publicationYearTo -> cb.lessThanOrEqualTo(bookJoin.get(PUBLICATION_YEAR), publicationYearTo))
                 .addNullSafety(
-                        bookCriteria.getLanguage(), language -> cb.like(bookJoin.get(LANGUAGE), applyLikePattern(language)))
+                        bookCriteria.getLanguage(), language -> cb.like(cb.lower(bookJoin.get(LANGUAGE)), applyLikePattern(language.toLowerCase())))
                 .addNullSafety(bookCriteria.getReadCountFrom(),
                         readCountFrom -> cb.greaterThanOrEqualTo(root.get(READ_COUNT),readCountFrom)
                         )

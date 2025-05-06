@@ -24,9 +24,9 @@ public class BookSpecification implements Specification<BookEntity> {
     @Override
     public Predicate toPredicate(Root<BookEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         var predicates = PredicateUtil.builder().addNullSafety(
-                bookCriteria.getTitle(),title -> cb.like(root.get(TITLE),applyLikePattern(title))
+                bookCriteria.getTitle(),title -> cb.like(cb.lower(root.get(TITLE)),applyLikePattern(title.toLowerCase()))
         ).addNullSafety(
-                bookCriteria.getAuthor(),author -> cb.like(root.get(AUTHOR),applyLikePattern(author))
+                bookCriteria.getAuthor(),author -> cb.like(cb.lower(root.get(AUTHOR)),applyLikePattern(author.toLowerCase()))
         ).addNullSafety(
                 bookCriteria.getPublicationYearFrom(),
                 publicationYearFrom -> cb.greaterThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearFrom)
@@ -34,7 +34,7 @@ public class BookSpecification implements Specification<BookEntity> {
                 bookCriteria.getPublicationYearTo(),
                 publicationYearTo -> cb.lessThanOrEqualTo(root.get(PUBLICATION_YEAR),publicationYearTo)
         ).addNullSafety(
-                bookCriteria.getLanguage(),language -> cb.like(root.get(LANGUAGE),applyLikePattern(language))
+                bookCriteria.getLanguage(),language -> cb.like(cb.lower(root.get(LANGUAGE)),applyLikePattern(language.toLowerCase()))
         ).build();
 
         return cb.and(predicates);

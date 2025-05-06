@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoryResponse {
     private Long id;
+    private String imagePath;
     private String bookCategory;
     private CommonStatus status;
 }

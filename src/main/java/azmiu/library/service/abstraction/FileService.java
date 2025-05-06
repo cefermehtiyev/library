@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileService {
     FileEntity uploadFile(MultipartFile file);
 
-    ResponseEntity<InputStreamResource> downloadFile(Long id);
+    ResponseEntity<InputStreamResource> downloadFile(String path);
 
     void updateFile(BookInventoryEntity bookInventoryEntity, MultipartFile file);
 

@@ -67,8 +67,7 @@ public class ImageServiceHandler implements ImageService {
     }
 
     @Override
-    public ResponseEntity<InputStreamResource> downloadImage(Long id) {
-        var imagePath = findImageById(id).getImagePath();
+    public ResponseEntity<InputStreamResource> downloadImage(String imagePath) {
         return DownloadUtil.getFileResource(imagePath,true);
     }
 

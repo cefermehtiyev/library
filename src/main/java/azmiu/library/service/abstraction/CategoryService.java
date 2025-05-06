@@ -9,11 +9,12 @@ import azmiu.library.model.request.CategoryRequest;
 import azmiu.library.model.response.BookResponse;
 import azmiu.library.model.response.CategoryResponse;
 import azmiu.library.model.response.PageableResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface CategoryService {
-    void addCategory(CategoryRequest categoryRequest);
+    void addCategory(CategoryRequest categoryRequest, MultipartFile image);
 
 
     Long getCount();

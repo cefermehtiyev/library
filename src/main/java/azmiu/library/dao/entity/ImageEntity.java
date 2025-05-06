@@ -50,4 +50,10 @@ public class ImageEntity {
     @ToString.Exclude
     BookInventoryEntity bookInventory;
 
+    @OneToOne(
+            mappedBy = "image"
+    )
+    @ToString.Exclude
+    CategoryEntity category;
+
 }

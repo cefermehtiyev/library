@@ -41,7 +41,7 @@ public class ImageServiceHandler implements ImageService {
 
     @Override
     public ImageEntity uploadImage( MultipartFile image) {
-        if (image.isEmpty()) {
+        if (image == null || image.isEmpty()) {
             var imageEmptyEntity = IMAGE_MAPPER.buildImageEntity(null, null, null);
             imageRepository.save(imageEmptyEntity);
             return imageEmptyEntity;

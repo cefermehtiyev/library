@@ -44,7 +44,7 @@ public class CategoryController {
         categoryService.updateCategory(id, categoryRequest);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public PageableResponse<CategoryResponse> getAllCategories(PageCriteria pageCriteria, CategoryCriteria categoryCriteria){
         return categoryService.getAllCategory(pageCriteria, categoryCriteria);
     }

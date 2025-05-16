@@ -48,26 +48,32 @@ class BookControllerTest extends Specification {
 
     def "TestGetAllBooks"() {
         given:
+        def order = "asc"
+        def sortBy = "pages"
         def pageCriteria = random.nextObject(PageCriteria)
         def bookCriteria = random.nextObject(BookCriteria)
-        def url = "/v1/books/sorted"
+        def url = "/v1/books"
 
         when:
         def result = mockMvc
                 .perform(get(url)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("order", order)
+                        .param("sortBy", sortBy)
                         .param("page", pageCriteria.page.toString())
                         .param("count", pageCriteria.count.toString())
                         .param("title", bookCriteria.title)
                         .param("author", bookCriteria.author)
                         .param("language", bookCriteria.language)
-                        .param("publicationYearFrom", bookCriteria.publicationYearFrom?.toString())
-                        .param("publicationYearTo", bookCriteria.publicationYearTo?.toString())
-                        .param("readCount", bookCriteria.readCount?.toString()))
+                        .param("publicationYearFrom", bookCriteria.publicationYearFrom.toString())
+                        .param("publicationYearTo", bookCriteria.publicationYearTo.toString())
+                        .param("readCountFrom", bookCriteria.readCountFrom.toString())
+                        .param("readCountTo", bookCriteria.readCountTo.toString())
+                )
                 .andReturn()
 
         then:
-        1 * bookService.getAllBooks(pageCriteria, bookCriteria)
+        1 * bookService.getAllBooks(sortBy, order, pageCriteria, bookCriteria)
     }
 
     def "TestGetBookSorted"() {
@@ -112,12 +118,12 @@ class BookControllerTest extends Specification {
                 .perform(put(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                        .andReturn()
+                .andReturn()
 
         then:
-        1 * bookService.updateAllInstancesForBook(id,bookRequest)
+        1 * bookService.updateAllInstancesForBook(id, bookRequest)
         def response = result.response
-        response .status == HttpStatus.NO_CONTENT.value()
+        response.status == HttpStatus.NO_CONTENT.value()
     }
 
 

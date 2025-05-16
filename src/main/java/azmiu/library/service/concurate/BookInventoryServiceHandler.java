@@ -10,6 +10,7 @@ import azmiu.library.exception.DataMismatchException;
 import azmiu.library.exception.ErrorMessage;
 import azmiu.library.exception.InvalidUpdateException;
 import azmiu.library.exception.NotFoundException;
+import azmiu.library.mapper.BookInventoryMapper;
 import azmiu.library.model.enums.InventoryStatus;
 import azmiu.library.model.request.BookRequest;
 import azmiu.library.model.response.BookInventoryResponse;
@@ -210,7 +211,6 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     public void reassignAllBooksToInventory(BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
         var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
                 .map(updatedBookInventory -> {
-                    System.out.println(currentInventory.getBooks());
                     currentInventory.getBooks().forEach(bookEntity -> {
                         BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(updatedBookInventory);
                         BOOK_MAPPER.updateBookEntity(bookEntity, bookRequest);
@@ -237,9 +237,11 @@ public class BookInventoryServiceHandler implements BookInventoryService {
         var currentInventory = bookEntity.getBookInventory();
 
         if (isBookEquivalent(bookEntity, bookRequest)) {
-                updateOrDeleteImage(currentInventory, image);
-                updateOrDeleteFile(currentInventory, file);
-                bookEntity.setBookCode(bookRequest.getBookCode());
+            var newCategory = categoryService.getCategoryEntity(bookRequest.getCategoryId());
+            BOOK_INVENTORY_MAPPER.updateBookInventory(bookEntity.getBookInventory(),newCategory);
+            updateOrDeleteImage(currentInventory, image);
+            updateOrDeleteFile(currentInventory, file);
+            bookEntity.setBookCode(bookRequest.getBookCode());
         } else {
             log.info("Book is not equivalent. Reassigning book to appropriate inventory.");
             reassignSingleBookToInventory(bookEntity, bookRequest, currentInventory, file, image);
@@ -250,7 +252,9 @@ public class BookInventoryServiceHandler implements BookInventoryService {
     private void reassignSingleBookToInventory(BookEntity bookEntity, BookRequest bookRequest, BookInventoryEntity currentInventory, MultipartFile file, MultipartFile image) {
         var bookInventoryEntity = bookService.findInventoryByBookDetails(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getPublicationYear())
                 .map(bookInventory -> {
+                    var newCategory = categoryService.getCategoryEntity(bookRequest.getCategoryId());
                     var updatedInventory = BOOK_INVENTORY_MAPPER.increaseBookInventoryQuantities(bookInventory);
+                    BOOK_INVENTORY_MAPPER.updateBookInventory(updatedInventory, newCategory);
                     BOOK_MAPPER.updateBookEntity(bookEntity, bookInventory.getBooks().getFirst());
                     bookEntity.setBookInventory(updatedInventory);
                     return updatedInventory;

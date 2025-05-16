@@ -42,9 +42,7 @@ public enum BookInventoryMapper {
                 .build();
     }
 
-    public void updateBookInventory(BookInventoryEntity bookInventoryEntity, CategoryEntity categoryEntity, String title, Integer publicationYear){
-         bookInventoryEntity.setTitle(title);
-         bookInventoryEntity.setPublicationYear(publicationYear);
+    public void updateBookInventory(BookInventoryEntity bookInventoryEntity, CategoryEntity categoryEntity){
          bookInventoryEntity.setCategory(categoryEntity);
     }
 

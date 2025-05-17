@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
+
 @NonNullApi
 public interface CategoryRepository extends JpaRepository<CategoryEntity ,Long>, JpaSpecificationExecutor<CategoryEntity> {
     boolean existsByBookCategory(String bookCategory);
@@ -20,5 +22,12 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity ,Long>,
             "image"
     })
     Page<CategoryEntity> findAll( Specification<CategoryEntity> spec, Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+            "commonStatus",
+            "image",
+            "books"
+    })
+    Optional<CategoryEntity> findById(Long id);
 
 }

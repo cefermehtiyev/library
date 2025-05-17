@@ -45,8 +45,6 @@ public class BookInventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String title;
-    Integer publicationYear;
     Integer reservedQuantity;
     Integer borrowedQuantity;
     Integer availableQuantity;

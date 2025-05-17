@@ -47,10 +47,10 @@ public class BookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String title;
-    String bookCode;
     String author;
     String publisher;
     String language;
+    String bookCode;
     String description;
     Integer pages;
     Integer publicationYear;

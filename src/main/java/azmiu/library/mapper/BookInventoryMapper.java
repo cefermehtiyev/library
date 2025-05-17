@@ -17,8 +17,6 @@ public enum BookInventoryMapper {
 
     public BookInventoryEntity buildBookInventoryEntity(FileEntity file, ImageEntity image, String title, Integer publicationYear, InventoryStatusEntity inventoryStatus, CommonStatusEntity commonStatus) {
         return BookInventoryEntity.builder()
-                .title(title)
-                .publicationYear(publicationYear)
                 .file(file)
                 .image(image)
                 .availableQuantity(1)
@@ -32,11 +30,9 @@ public enum BookInventoryMapper {
 
     public BookInventoryResponse buildBookInventoryResponse(BookInventoryEntity bookInventoryEntity){
         return BookInventoryResponse.builder()
-                .title(bookInventoryEntity.getTitle())
                 .reservedQuantity(bookInventoryEntity.getReservedQuantity())
                 .availableQuantity(bookInventoryEntity.getAvailableQuantity())
                 .borrowedQuantity(bookInventoryEntity.getBorrowedQuantity())
-                .publicationYear(bookInventoryEntity.getPublicationYear())
                 .inventoryStatus(bookInventoryEntity.getInventoryStatus().getStatus())
                 .readCount(bookInventoryEntity.getReadCount())
                 .build();

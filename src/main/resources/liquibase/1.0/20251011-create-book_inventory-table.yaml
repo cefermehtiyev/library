@@ -14,16 +14,6 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: title
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: publication_year
-                  type: INTEGER
-                  constraints:
-                    nullable: false
-              - column:
                   name: borrowed_quantity
                   type: INTEGER
                   constraints:

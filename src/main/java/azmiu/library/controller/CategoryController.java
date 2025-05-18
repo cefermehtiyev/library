@@ -8,6 +8,7 @@ import azmiu.library.model.response.CategoryResponse;
 import azmiu.library.model.response.PageableResponse;
 import azmiu.library.service.abstraction.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,13 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public void addCategory(@ModelAttribute CategoryRequest categoryRequest,
                             @RequestParam(value = "image", required = false) MultipartFile image){
         categoryService.addCategory(categoryRequest, image);

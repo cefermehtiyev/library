@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: created rating details
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: rating_details
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vote_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: average_rating
+                  type: NUMERIC(3,2)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: rating details set book
+      author: Cefer Mehtiyev
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rating_details
+            baseColumnNames: id
+            constraintName: fk_ratings_details_books
+            referencedTableName: book_inventory
+            referencedColumnNames: id
+

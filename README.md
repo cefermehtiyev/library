@@ -15,8 +15,8 @@ $ java -jar change.my.name.jar
 ### Tech stack
 
 1. Spring Boot
-2. Java 17
+2. Java 21
 
 ### Swagger link
 
-[Link](http://localhost:8080/swagger-ui.html#/)
+[Link](http://localhost:7777/swagger-ui.html#/)

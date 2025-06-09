@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: create book borrow
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: book_borrowing
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: borrow_status
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: borrow_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: return_date
+                  type: date
+                  constraints:
+                    nullable: true
+
+
+        - addForeignKeyConstraint:
+            baseTableName: book_borrowing
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_book_borrow_users
+
+        - addForeignKeyConstraint:
+            baseTableName: book_borrowing
+            baseColumnNames: book_id
+            referencedTableName: books
+            referencedColumnNames: id
+            constraintName: fk_book_borrow_book
+
+        - addForeignKeyConstraint:
+            baseTableName: book_borrowing
+            baseColumnNames: borrow_status
+            referencedTableName: borrow_statuses
+            referencedColumnNames: id
+            constraintName: fk_status_borrow
+

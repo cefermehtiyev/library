@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-images-table
+      author: Cefer Mehtiyev
+      changes:
+        - createTable:
+            tableName: images
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image_path
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: image_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: image_size
+                  type: NUMERIC(10,2)
+                  constraints:
+                    nullable: true
+
+
+

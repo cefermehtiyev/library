@@ -1,17 +1,18 @@
 server:
   port: 7777
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:postgresql://localhost:1010/library_db
     username: postgres
     password: j@vacefer2005
   jpa:
-    open-in-view: true
+    open-in-view: false
   liquibase:
     change-log: classpath:liquibase/changelog-master.yaml
 
@@ -22,7 +23,7 @@ redis:
 
 token:
   expiration:
-    access-token: 50
+    access-token: 100
     refresh-token: 21600
 
 logging:
